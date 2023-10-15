@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link';
 
 export default function Header() {
   return (
@@ -11,38 +12,38 @@ export default function Header() {
           <div className="col-lg-6 col-md-6">
             <ul className="topbar-list">
               <li>
-                <a href="#!">
+                <Link href="#!">
                   <i className="fab fa-facebook" />
-                </a>
-                <a href="#!">
+                </Link>
+                <Link href="#!">
                   <i className="fab fa-twitter-square" />
-                </a>
-                <a href="#!">
+                </Link>
+                <Link href="#!">
                   <i className="fab fa-instagram" />
-                </a>
-                <a href="#!">
+                </Link>
+                <Link href="#!">
                   <i className="fab fa-linkedin" />
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#!">
+                <Link href="#!">
                   <span>+91-8178020841</span>
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#!">
+                <Link href="#!">
                   <span>support@serviceyatri.com</span>
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
           <div className="col-lg-6 col-md-6">
             <ul className="topbar-others-options">
               <li>
-                <a href="/login">Login</a>
+                <Link href="/login">Login</Link>
               </li>
               <li>
-                <a href="/becomevendor">Sign up</a>
+                <Link href="/becomevendor">Sign up</Link>
               </li>
               <li>
                 <div className="dropdown language-option">
@@ -56,15 +57,15 @@ export default function Header() {
                     <span className="lang-name" />
                   </button>
                   <div className="dropdown-menu language-dropdown-menu">
-                    <a className="dropdown-item" href="#">
+                    <Link className="dropdown-item" href="#">
                       English
-                    </a>
-                    <a className="dropdown-item" href="#">
+                    </Link>
+                    <Link className="dropdown-item" href="#">
                       Arabic
-                    </a>
-                    <a className="dropdown-item" href="#">
+                    </Link>
+                    <Link className="dropdown-item" href="#">
                       French
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </li>
@@ -80,15 +81,15 @@ export default function Header() {
                     <span className="lang-name" />
                   </button>
                   <div className="dropdown-menu language-dropdown-menu">
-                    <a className="dropdown-item" href="#">
+                    <Link className="dropdown-item" href="#">
                       USD
-                    </a>
-                    <a className="dropdown-item" href="#">
+                    </Link>
+                    <Link className="dropdown-item" href="#">
                       BD
-                    </a>
-                    <a className="dropdown-item" href="#">
+                    </Link>
+                    <Link className="dropdown-item" href="#">
                       URO
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </li>
@@ -103,9 +104,9 @@ export default function Header() {
         <div className="container">
           <div className="main-responsive-menu">
             <div className="logo">
-              <a href="/">
+              <Link href="/">
                 <img src="assets/img/logo2.png" alt="logo" width={200}  />
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -113,45 +114,45 @@ export default function Header() {
       <div className="main-navbar">
         <div className="container">
           <nav className="navbar navbar-expand-md navbar-light">
-            <a className="navbar-brand" href="/">
+            <Link className="navbar-brand" href="/">
               <img src="assets/img/logo2.png" alt="logo" width={200} />
-            </a>
+            </Link>
             <div
               className="collapse navbar-collapse mean-menu"
               id="navbarSupportedContent"
             >
               <ul className="navbar-nav">
                 <li className="nav-item">
-                  <a href="/" className="nav-link active">
+                  <Link href="/" className="nav-link active">
                     Home
-                  </a>
+                  </Link>
                 </li>
                 <li className="nav-item">
-                  <a href="/About" className="nav-link">
+                  <Link href="/About" className="nav-link">
                     About Us
-                  </a>
+                  </Link>
                 </li>
                 <li className="nav-item">
-                  <a href="/Searchresult" className="nav-link">
+                  <Link href="/Searchresult" className="nav-link">
                     Flights
-                  </a>
+                  </Link>
                 </li>
                 <li className="nav-item">
-                  <a href="/Contact" className="nav-link">
+                  <Link href="/Contact" className="nav-link">
                     Contact
-                  </a>
+                  </Link>
                 </li>
               </ul>
               <div className="others-options d-flex align-items-center">
                 <div className="option-item">
-                  <a href="#" className="search-box">
+                  <Link href="#" className="search-box">
                     <i className="bi bi-search" />
-                  </a>
+                  </Link>
                 </div>
                 <div className="option-item">
-                  <a href="/becomevendor" className="btn  btn_navber">
+                  <Link href="/becomevendor" className="btn  btn_navber">
                     Become a partner
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -171,14 +172,14 @@ export default function Header() {
             <div className="option-inner">
               <div className="others-options d-flex align-items-center">
                 <div className="option-item">
-                  <a href="/flight-search-result" className="search-box">
+                  <Link href="/flight-search-result" className="search-box">
                     <i className="fas fa-search" />
-                  </a>
+                  </Link>
                 </div>
                 <div className="option-item">
-                  <a href="/contact" className="btn  btn_navber">
+                  <Link href="/contact" className="btn  btn_navber">
                     Get free quote
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>

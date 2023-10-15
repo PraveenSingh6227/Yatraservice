@@ -1,14 +1,102 @@
 import Head from 'next/head'
-import Image from 'next/image'
 import { Inter } from 'next/font/google'
-import styles from '@/styles/Home.module.css'
 import Header from '@/component/Header'
 import Footer from '@/component/Footer'
+import React, { useEffect, useState } from "react";
+import * as moment from 'moment'
+import {useRouter} from 'next/router'
+
 
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
+  const [oneWayFrom, setOneWayFrom] = useState("DEL");
+  const [oneWayTo, setOneWayTo] = useState("BOM");
+  const [oneWayTravelDate, setOneWayTravelDate] = useState("");
+  const [currentDate, setCurrentDate] = useState("");
+  const [oneWayTravelTotalPassenger, setOneWayTravelTotalPassenger] = useState(0);
+  const [oneWayTravelAdult, setOneWayTravelAdult] = useState(0);
+  const [oneWayTravelChildren, setOneWayTravelChildren] = useState(0);
+  const [oneWayTravelInfant, setOneWayTravelInfant] = useState(0);
+  const [oneWayTravelCabinClass, setOneWayTravelCabinClass] = useState("Economy");
+
+  const router = useRouter();
+
+  useEffect(()=>{
+    const date = moment(new Date()).format('YYYY-MM-DD')
+    setOneWayTravelDate(date)
+    setCurrentDate(date)
+    handlePassengerCount('adult','add')
+  },[])
+
+  const handlePassengerCount = (passengerType, operation) => {
+    if(passengerType==='adult' && operation==='add'){
+      let calculation=0
+      calculation=oneWayTravelAdult+1;
+      setOneWayTravelAdult(calculation);
+      setOneWayTravelTotalPassenger(calculation+oneWayTravelChildren+oneWayTravelInfant)
+    }
+    if(passengerType==='adult' && operation==='substract'){
+      let calculation=0;
+      calculation=oneWayTravelAdult-1
+      if(calculation>0){
+        setOneWayTravelAdult(calculation)
+        setOneWayTravelTotalPassenger(calculation+oneWayTravelChildren+oneWayTravelInfant)
+      }     
+    }
+
+    if(passengerType==='children' && operation==='add'){
+      let calculation=0;
+      calculation=oneWayTravelChildren+1
+      setOneWayTravelChildren(calculation)
+      setOneWayTravelTotalPassenger(oneWayTravelAdult+calculation+oneWayTravelInfant)
+    }
+    if(passengerType==='children' && operation==='substract'){
+      let calculation=0;
+      calculation=oneWayTravelChildren-1
+      if(calculation>-1){
+        setOneWayTravelChildren(calculation)
+        setOneWayTravelTotalPassenger(oneWayTravelAdult+calculation+oneWayTravelInfant)
+      }     
+    }
+
+    if(passengerType==='infant' && operation==='add'){
+      let calculation=0;
+      calculation=oneWayTravelInfant+1
+      setOneWayTravelInfant(calculation)
+      setOneWayTravelTotalPassenger(oneWayTravelAdult+oneWayTravelChildren+calculation)
+    }
+    if(passengerType==='infant' && operation==='substract'){
+      let calculation=0;
+      calculation=oneWayTravelInfant-1
+      if(calculation>-1){
+        setOneWayTravelInfant(calculation)
+        setOneWayTravelTotalPassenger(oneWayTravelAdult+oneWayTravelChildren+calculation)
+      }     
+    }
+  }
+
+  const handlePassengerClass = (passengerClass) => {
+    setOneWayTravelCabinClass(passengerClass)
+  }
+
+  const searchFlight =()=>{
+    router.push({
+        pathname: '/Searchresult',
+        query: { 
+          oneWayFrom: oneWayFrom,
+          oneWayTo: oneWayTo,
+          oneWayTravelDate: oneWayTravelDate,
+          oneWayTravelTotalPassenger: oneWayTravelTotalPassenger,
+          oneWayTravelAdult: oneWayTravelAdult,
+          oneWayTravelChildren: oneWayTravelChildren,
+          oneWayTravelInfant: oneWayTravelInfant,
+          oneWayTravelCabinClass: oneWayTravelCabinClass
+        }
+    }, '/Searchresult');
+  }
+
   return (
     <>
       <Head>
@@ -83,7 +171,7 @@ export default function Home() {
                     Flights
                   </button>
                 </li>
-                <li className="nav-item" role="presentation">
+                {/* <li className="nav-item" role="presentation">
                   <button
                     className="nav-link"
                     id="tours-tab"
@@ -126,7 +214,7 @@ export default function Home() {
                   >
                     <i className="fas fa-passport" /> Visa
                   </button>
-                </li>
+                </li> */}
               </ul>
             </div>
             <div className="tab-content" id="myTabContent">
@@ -201,9 +289,9 @@ export default function Home() {
                               <div className="col-lg-3 col-md-6 col-sm-12 col-12">
                                 <div className="flight_Search_boxed">
                                   <p>From</p>
-                                  <input type="text" defaultValue="New York" />
+                                  <input type="text" defaultValue={oneWayFrom} onChange={(event)=> setOneWayFrom(event.target.value)}/>
                                   <span>
-                                    JFK - John F. Kennedy International...
+                                    DEL -  Indira Gandhi International Airport, New Delhi
                                   </span>
                                   <div className="plan_icon_posation">
                                     <i className="fas fa-plane-departure" />
@@ -213,8 +301,8 @@ export default function Home() {
                               <div className="col-lg-3 col-md-6 col-sm-12 col-12">
                                 <div className="flight_Search_boxed">
                                   <p>To</p>
-                                  <input type="text" defaultValue="London " />
-                                  <span>LCY, London city airport </span>
+                                  <input type="text" defaultValue={oneWayTo} onChange={(event)=> setOneWayTo(event.target.value)} />
+                                  <span>BOM -  Chhatrapati Shivaji International Airport, Mumbai </span>
                                   <div className="plan_icon_posation">
                                     <i className="fas fa-plane-arrival" />
                                   </div>
@@ -230,7 +318,9 @@ export default function Home() {
                                       <p>Journey date</p>
                                       <input
                                         type="date"
-                                        defaultValue="2022-05-05"
+                                        defaultValue={oneWayTravelDate}
+                                        onChange={(event)=> setOneWayTravelDate(event.target.value)}
+                                        min={currentDate}
                                       />
                                       <span>Thursday</span>
                                     </div>
@@ -249,11 +339,10 @@ export default function Home() {
                                       data-bs-toggle="dropdown"
                                       aria-expanded="false"
                                     >
-                                      0 Passenger
+                                      {oneWayTravelTotalPassenger} Passenger
                                     </button>
                                     <div
                                       className="dropdown-menu dropdown_passenger_info"
-                                      aria-labelledby="dropdownMenuButton1"
                                     >
                                       <div className="traveller-calulate-persons">
                                         <div className="passengers">
@@ -262,7 +351,7 @@ export default function Home() {
                                             <div className="passengers-type">
                                               <div className="text">
                                                 <span className="count pcount">
-                                                  2
+                                                  {oneWayTravelAdult}
                                                 </span>
                                                 <div className="type-label">
                                                   <p>Adult</p>
@@ -273,12 +362,14 @@ export default function Home() {
                                                 <button
                                                   type="button"
                                                   className="btn-add"
+                                                  onClick={(event) =>{event.preventDefault(); event.stopPropagation(); handlePassengerCount('adult','add')}}
                                                 >
                                                   <i className="fas fa-plus" />
                                                 </button>
                                                 <button
                                                   type="button"
                                                   className="btn-subtract"
+                                                  onClick={() => {event.preventDefault(); event.stopPropagation(); handlePassengerCount('adult','substract')}}
                                                 >
                                                   <i className="fas fa-minus" />
                                                 </button>
@@ -287,7 +378,7 @@ export default function Home() {
                                             <div className="passengers-type">
                                               <div className="text">
                                                 <span className="count ccount">
-                                                  0
+                                                  {oneWayTravelChildren}
                                                 </span>
                                                 <div className="type-label">
                                                   <p className="fz14 mb-xs-0">
@@ -302,12 +393,14 @@ export default function Home() {
                                                 <button
                                                   type="button"
                                                   className="btn-add-c"
+                                                  onClick={() => {event.preventDefault(); event.stopPropagation(); handlePassengerCount('children','add')}}
                                                 >
                                                   <i className="fas fa-plus" />
                                                 </button>
                                                 <button
                                                   type="button"
                                                   className="btn-subtract-c"
+                                                  onClick={() =>{event.preventDefault(); event.stopPropagation(); handlePassengerCount('children','substract')}}
                                                 >
                                                   <i className="fas fa-minus" />
                                                 </button>
@@ -316,7 +409,7 @@ export default function Home() {
                                             <div className="passengers-type">
                                               <div className="text">
                                                 <span className="count incount">
-                                                  0
+                                                  {oneWayTravelInfant}
                                                 </span>
                                                 <div className="type-label">
                                                   <p className="fz14 mb-xs-0">
@@ -329,12 +422,14 @@ export default function Home() {
                                                 <button
                                                   type="button"
                                                   className="btn-add-in"
+                                                  onClick={() => {event.preventDefault(); event.stopPropagation();handlePassengerCount('infant','add')}}
                                                 >
                                                   <i className="fas fa-plus" />
                                                 </button>
                                                 <button
                                                   type="button"
                                                   className="btn-subtract-in"
+                                                  onClick={() => {event.preventDefault(); event.stopPropagation(); handlePassengerCount('infant','substract')}}
                                                 >
                                                   <i className="fas fa-minus" />
                                                 </button>
@@ -347,7 +442,8 @@ export default function Home() {
                                           <div className="cabin-list">
                                             <button
                                               type="button"
-                                              className="label-select-btn"
+                                              onClick={()=>{event.preventDefault(); event.stopPropagation();handlePassengerClass('Economy')}}
+                                              className={(oneWayTravelCabinClass==='Economy') ? 'label-select-btn active' : 'label-select-btn'}
                                             >
                                               <span className="muiButton-label">
                                                 Economy
@@ -355,7 +451,8 @@ export default function Home() {
                                             </button>
                                             <button
                                               type="button"
-                                              className="label-select-btn active"
+                                              onClick={()=>{event.preventDefault(); event.stopPropagation();handlePassengerClass('Business')}}
+                                              className={(oneWayTravelCabinClass==='Business') ? 'label-select-btn active' : 'label-select-btn'}
                                             >
                                               <span className="muiButton-label">
                                                 Business
@@ -363,10 +460,11 @@ export default function Home() {
                                             </button>
                                             <button
                                               type="button"
-                                              className="label-select-btn"
+                                              onClick={()=>{event.preventDefault(); event.stopPropagation();handlePassengerClass('First Class')}}
+                                              className={(oneWayTravelCabinClass==='First Class') ? 'label-select-btn active' : 'label-select-btn'}
                                             >
                                               <span className="MuiButton-label">
-                                                First Class{" "}
+                                                First Class
                                               </span>
                                             </button>
                                           </div>
@@ -374,16 +472,18 @@ export default function Home() {
                                       </div>
                                     </div>
                                   </div>
-                                  <span>Business</span>
+                                  <span>{oneWayTravelCabinClass}</span>
                                 </div>
                               </div>
                               <div className="top_form_search_button">
-                                <a
-                                  href="/Searchresult"
+                                <button
+                                  type="button"
+                                  // href="/Searchresult"
+                                  onClick={()=>searchFlight()}
                                   className="btn btn_theme btn_md"
                                 >
                                   Search
-                                </a>
+                                </button>
                               </div>
                             </div>
                           </form>
