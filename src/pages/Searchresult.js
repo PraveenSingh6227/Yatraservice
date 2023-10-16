@@ -25,10 +25,10 @@ export default function Searchresult() {
   const [bookingKey, setBookingKey] = useState("");
 
   //filter
-  const [priceSlider, setPriceSlider] = useState(10000);
+  const [priceSlider, setPriceSlider] = useState(80000);
   const [airStops, setAirStops] = useState([]);
-  const [airlines, setAirlines] = useState("");
-  const [refundable, setRefundable] = useState(false);
+  const [airlines, setAirlines] = useState([]);
+  const [refundable, setRefundable] = useState([]);
 
   useEffect(() => {
     const date = moment(new Date()).format('YYYY-MM-DD')
@@ -51,6 +51,10 @@ export default function Searchresult() {
       setOneWayTravelCabinClass(router.query.oneWayTravelCabinClass)
     }
   }, [router.query]);
+
+  useEffect(()=>{
+    handleFilter()
+  },[priceSlider,airStops,airlines,refundable])
 
   const handlePassengerCount = (passengerType, operation) => {
     if (passengerType === 'adult' && operation === 'add') {
@@ -204,62 +208,79 @@ export default function Searchresult() {
 
   const handlePriceSlider = (event)=>{
     setPriceSlider(event.target.value)
-    handleFilter('price')
   }
 
   const handleStopFilter = (event)=>{
-    // setAirStops(event.target.value)
+    let data = []
     if (event.target.checked) {
-      if(setAirStops([...airStops, event.target.value])){
-        handleFilter('airStops')
-      }
+      data = [...airStops, parseInt(event.target.value)]
+      setAirStops(data)
     } else {
-      if(setAirStops(
-        airStops.filter((filterTag) => filterTag !== event.target.value)
-      )){
-        handleFilter('airStops')
-      }
+      data = airStops.filter((filterTag) => filterTag !== parseInt(event.target.value))
+      setAirStops(data)
     }
     
   }
 
   const handleAirlinesFilter = (event)=>{
-    setAirlines(event.target.value)
-    handleFilter('airlines')
+    let data = []
+    if (event.target.checked) {
+      data = [...airlines, event.target.value]
+      setAirlines(data)
+    } else {
+      data = airlines.filter((filterTag) => filterTag !== event.target.value)
+      setAirlines(data)
+    }
+    
   }
 
   const handleRefundable = (event)=>{
-    setRefundable(event.target.value)
-    handleFilter('refundable')
+    let data = []
+    if (event.target.checked) {
+      data = [...refundable, event.target.value]
+      setRefundable(data)
+    } else {
+      data = refundable.filter((filterTag) => filterTag !== event.target.value)
+      setRefundable(data)
+    }
+    
   }
 
-  const handleFilter = (filterType)=>{
+  const handleFilter = ()=>{
     let filter=[]
-    filter = totalContract.filter((item) =>  item.AirlineFare.BaseFare <= priceSlider);
-    // if(airStops!==""){
-    //   filter = filter.filter((item) =>  item.AirSegments[0].NumberofStops === airStops);
-    // }
-    // filter = Contracts.filter((item) =>  console.log(item.AirlineFare.BaseFare));
-    // filter = filter.filter((item) =>  item.AirSegments[0].NumberofStops === airStops);
-    // filter = filter.filter((item) =>  console.log(item.AirSegments[0].NumberofStops));
-    // filter = filter.filter((item) =>  item.Refundable === refundable);
-    // filter = filter.filter((item) =>  console.log(item.Refundable));
-    console.log('filter--->',filter,Contracts,priceSlider,airStops,refundable)
-    // setContracts(filter);
-    // if(filterType==='airStops'){
-    //   let filter = Contracts.filter((item) =>  item.AirSegments[0].NumberofStops === airStops);
-    //   setContracts(filter);
-    // }
-    // if(filterType==='airlines' && airlines!==""){
-    //   let filter = Contracts.filter((item) =>  item.AirlineCode === airlines);
-    //   setContracts(filter);
-    // }
-    // if(filterType==='refundable'){
-    //   let filter = Contracts.filter((item) =>  item.Refundable === refundable);
-    //   setContracts(filter);
-    // }
-    // const filter = totalContract.filter((item) =>  item.category === type);
-    // setContracts(filter);
+    if(totalContract!==null && totalContract.length>0){
+      filter = totalContract.filter((item) =>  item.AirlineFare.BaseFare <= priceSlider);
+    }
+
+    if(airStops.length>0 && filter.length>0){
+      filter = filter.filter(item => {
+        return airStops.includes(item.AirSegments.length);
+      });
+    }else if(airStops.length>0 && filter.length===0 && totalContract!==null && totalContract.length>0){
+      filter = totalContract.filter(item => {
+        return airStops.includes(item.AirSegments.length);
+      });
+    }  
+
+    if(airlines.length>0 && filter.length>0){
+      filter = filter.filter(item => {
+        return airlines.includes(item.AirSegments[0].AirlineCode);
+      });
+    }else if(airlines.length>0 && filter.length===0 && totalContract!==null && totalContract.length>0){
+      filter = totalContract.filter(item => {
+        return airStops.includes(item.AirSegments[0].AirlineCode);
+      });
+    } 
+    if(refundable.length>0 && filter.length>0){
+      filter = filter.filter(item => {
+        return refundable.includes(String(item.Refundable));
+      });
+    }else if(refundable.length>0 && filter.length===0 && totalContract!==null && totalContract.length>0){
+      filter = totalContract.filter(item => {
+        return airStops.includes(String(item.Refundable));
+      });
+    } 
+    setContracts(filter);
   }
 
   return (
@@ -1279,7 +1300,7 @@ export default function Searchresult() {
                           type="checkbox"
                           defaultValue=""
                           id="flexCheckDefaultf1"
-                          value={1}
+                          value={2}
                           onChange={(event)=>{handleStopFilter(event)}}
                         />
                         <label
@@ -1298,7 +1319,7 @@ export default function Searchresult() {
                           type="checkbox"
                           defaultValue=""
                           id="flexCheckDefaultf2"
-                          value={2}
+                          value={3}
                           onChange={(event)=>{handleStopFilter(event)}}
                         />
                         <label
@@ -1317,7 +1338,7 @@ export default function Searchresult() {
                           type="checkbox"
                           defaultValue=""
                           id="flexCheckDefaultf4"
-                          value={0}
+                          value={1}
                           onChange={(event)=>{handleStopFilter(event)}}
                         />
                         <label
@@ -1491,11 +1512,10 @@ export default function Searchresult() {
                       <div className="form-check">
                         <input
                           className="form-check-input"
-                          type="radio"
+                          type="checkbox"
                           defaultValue=""
-                          name="refundable"
                           id="flexCheckDefaultp1"
-                          value={true}
+                          value={"true"}
                           onChange={(event)=>{handleRefundable(event)}}
                         />
                         <label
@@ -1511,11 +1531,10 @@ export default function Searchresult() {
                       <div className="form-check">
                         <input
                           className="form-check-input"
-                          type="radio"
+                          type="checkbox"
                           defaultValue=""
-                          name="refundable"
                           id="flexCheckDefaultp2"
-                          value={false}
+                          value={"false"}
                           onChange={(event)=>{handleRefundable(event)}}
                         />
                         <label
