@@ -4,17 +4,23 @@ import { useEffect, useState } from 'react'
 import * as moment from 'moment'
 import { useRouter } from 'next/router'
 import LoadingSpinner from "../component/Loader";
+import { useToasts } from 'react-toast-notifications';
+import { ReactSearchAutocomplete } from 'react-search-autocomplete'
+
 
 
 export default function Searchresult() {
   const router = useRouter();
+  const { addToast } = useToasts();
   const [Contracts, setContracts] = useState([]);
   const [totalContract, setTotalContracts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
 
   const [oneWayFrom, setOneWayFrom] = useState("DEL");
+  const [oneWayFromData, setOneWayFromData] = useState("");
   const [oneWayTo, setOneWayTo] = useState("BOM");
+  const [oneWayToData, setOneWayToData] = useState("");
   const [oneWayTravelDate, setOneWayTravelDate] = useState(moment(new Date()).format('YYYY-MM-DD'));
   const [currentDate, setCurrentDate] = useState("");
   const [oneWayTravelTotalPassenger, setOneWayTravelTotalPassenger] = useState(0);
@@ -23,6 +29,8 @@ export default function Searchresult() {
   const [oneWayTravelInfant, setOneWayTravelInfant] = useState(0);
   const [oneWayTravelCabinClass, setOneWayTravelCabinClass] = useState("Economy");
   const [bookingKey, setBookingKey] = useState("");
+  const [airportData, setAirportData] = useState([]);
+  const [oneWayTravelDay, setOneWayTravelDay] = useState("");
 
   //filter
   const [priceSlider, setPriceSlider] = useState(80000);
@@ -33,8 +41,10 @@ export default function Searchresult() {
   useEffect(() => {
     const date = moment(new Date()).format('YYYY-MM-DD')
     setOneWayTravelDate(date)
+    setOneWayTravelDay(moment(new Date()).format('dddd'))
     setCurrentDate(date)
     handlePassengerCount('adult', 'add')
+    fetchAirports()
     if(router.query){
       searchNewFlights(router.query)
     }
@@ -42,8 +52,11 @@ export default function Searchresult() {
   useEffect(() => {
     if(Object.keys(router.query).length > 0){
       setOneWayFrom(router.query.oneWayFrom)
+      setOneWayFromData(router.query.oneWayFromData)
       setOneWayTo(router.query.oneWayTo)
+      setOneWayToData(router.query.oneWayToData)
       setOneWayTravelDate(router.query.oneWayTravelDate)
+      setOneWayTravelDay(moment(router.query.oneWayTravelDate).format('dddd'))
       setOneWayTravelTotalPassenger(router.query.oneWayTravelTotalPassenger)
       setOneWayTravelAdult(router.query.oneWayTravelAdult)
       setOneWayTravelChildren(router.query.oneWayTravelChildren)
@@ -55,6 +68,19 @@ export default function Searchresult() {
   useEffect(()=>{
     handleFilter()
   },[priceSlider,airStops,airlines,refundable])
+
+  const fetchAirports = async () => {
+    let bodyFormData = new FormData();
+    bodyFormData.append("action", "get_airport");
+    await fetch("https://vrcwebsolutions.com/yatra/api/api.php", {
+      method: 'POST',
+      body: bodyFormData
+    }).then((response) => response.json()).then((response) => {
+      if (response !== null) {
+        setAirportData(response.data)
+      }
+    })
+  }
 
   const handlePassengerCount = (passengerType, operation) => {
     if (passengerType === 'adult' && operation === 'add') {
@@ -110,6 +136,14 @@ export default function Searchresult() {
 
   async function searchFlights() {
     setIsLoading(true)
+    if (oneWayFrom === '') {
+      addToast("Please enter the source airport name", { appearance: 'error' });
+      return
+    }
+    if (oneWayTo === '') {
+      addToast("Please enter the destination airport name", { appearance: 'error' });
+      return
+    }
     let bodyFormData = new FormData();
     let travelClass = 0;
     if(oneWayTravelCabinClass==='Economy'){
@@ -184,9 +218,14 @@ export default function Searchresult() {
           method: 'POST',
           body: bodyFormData
         }).then((response) => response.json()).then((response) => {
-          setContracts(response.Contracts)
-          setTotalContracts(response.Contracts)
-          setIsLoading(false)
+          if(response===null){
+            addToast("Facing some communication error, please try again later.", { appearance: 'error' });
+            setIsLoading(false)
+          }else{
+            setContracts(response.Contracts)
+            setTotalContracts(response.Contracts)
+            setIsLoading(false)
+          }
         })
       }
       )
@@ -281,6 +320,62 @@ export default function Searchresult() {
       });
     } 
     setContracts(filter);
+  }
+
+  const handleOnSearchOneWayFrom = (string, results) => {
+    // onSearch will have as the first callback parameter
+    // the string searched and for the second the results.
+    setOneWayFrom(string)
+    console.log(string, results)
+  }
+
+  const handleOnSearchOneWayTo = (string, results) => {
+    // onSearch will have as the first callback parameter
+    // the string searched and for the second the results.
+    setOneWayTo(string)
+    console.log(string, results)
+  }
+
+  const handleOnHover = (result) => {
+    // the item hovered
+    console.log(result)
+  }
+
+  const handleOnSelectOneWayFrom = (item) => {
+    // the item selected
+    setOneWayFrom(item.code)
+    setOneWayFromData(item.name)
+    console.log(item)
+  }
+
+  const handleOnSelectOneWayTo = (item) => {
+    // the item selected
+    setOneWayTo(item.code)
+    setOneWayToData(item.name)
+    console.log(item)
+  }
+
+  const handleOnFocus = () => {
+    console.log('Focused')
+  }
+
+  const formatResult = (item) => {
+    return (
+      <>
+        {/* <span style={{ display: 'block', textAlign: 'left' }}>id: {item.id}</span> */}
+        <span style={{ display: 'block', textAlign: 'left' }}>{item.name}</span>
+      </>
+    )
+  }
+
+  const clearOnewayFromResult = (item) => {
+    setOneWayFrom("")
+    setOneWayFromData("")
+  }
+
+  const clearOnewayToResult = (item) => {
+    setOneWayTo("")
+    setOneWayToData("")
   }
 
   return (
@@ -416,10 +511,23 @@ export default function Searchresult() {
                                     <div className="col-lg-3 col-md-6 col-sm-12 col-12">
                                       <div className="flight_Search_boxed">
                                         <p>From</p>
-                                        <input type="text" defaultValue={oneWayFrom} onChange={(event)=> setOneWayFrom(event.target.value)} />
-                                        <span>
-                                          DEL -  Indira Gandhi International Airport, New Delhi
-                                        </span>
+                                        {/* <input type="text" defaultValue={oneWayFrom} onChange={(event)=> setOneWayFrom(event.target.value)} /> */}
+                                        <div style={{ width: '80%', backgroundColor: '#f4ecff' }}>
+                                            {<ReactSearchAutocomplete
+                                              items={airportData}
+                                              onSearch={handleOnSearchOneWayFrom}
+                                              onHover={handleOnHover}
+                                              onSelect={handleOnSelectOneWayFrom}
+                                              onFocus={handleOnFocus}
+                                              autoFocus
+                                              formatResult={formatResult}
+                                              onClear={clearOnewayFromResult}
+                                            // styling={{borderRadius:'0',border:'none'}}
+                                            />}
+                                          </div>
+                                          <span>
+                                            {oneWayFromData}
+                                          </span>
                                         <div className="plan_icon_posation">
                                           <i className="fas fa-plane-departure" />
                                         </div>
@@ -428,8 +536,21 @@ export default function Searchresult() {
                                     <div className="col-lg-3 col-md-6 col-sm-12 col-12">
                                       <div className="flight_Search_boxed">
                                         <p>To</p>
-                                        <input type="text" onChange={(event)=> setOneWayTo(event.target.value)} defaultValue={oneWayTo} />
-                                        <span>BOM -  Chhatrapati Shivaji International Airport, Mumbai </span>
+                                        {/* <input type="text" onChange={(event)=> setOneWayTo(event.target.value)} defaultValue={oneWayTo} /> */}
+                                        <div style={{ width: '80%', backgroundColor: '#f4ecff' }}>
+                                            {<ReactSearchAutocomplete
+                                              items={airportData}
+                                              onSearch={handleOnSearchOneWayTo}
+                                              onHover={handleOnHover}
+                                              onSelect={handleOnSelectOneWayTo}
+                                              onFocus={handleOnFocus}
+                                              autoFocus
+                                              formatResult={formatResult}
+                                              onClear={clearOnewayToResult}
+                                              styling={{zIndex:'10000000'}}
+                                            />}
+                                          </div>
+                                          <span>{oneWayToData}</span>
                                         <div className="plan_icon_posation">
                                           <i className="fas fa-plane-arrival" />
                                         </div>
@@ -449,7 +570,7 @@ export default function Searchresult() {
                                               onChange={(event)=> setOneWayTravelDate(event.target.value)}
                                               min={currentDate}
                                             />
-                                            <span>Thursday</span>
+                                            <span>{oneWayTravelDay}</span>
                                           </div>
                                         </div>
                                       </div>
@@ -1584,14 +1705,15 @@ export default function Searchresult() {
                                       alt="icon"
                                     /> */}
                                       <img src="assets/img/icon/right_arrow.png" alt="icon" />
-                                      <h6>{item.AirSegments[0].NumberofStops === 0 ? 'Non-stop' : item.AirSegments[0].NumberofStops+' Stop'}</h6>
-                                      <p>{item.AirSegments[0].Duration} </p>
-                                      <p>{moment(new Date(item.AirSegments[0].DepartureDateTime)).format('h:mm a')}-{moment(new Date(item.AirSegments[0].ArrivalDateTime)).format('h:mm a')}</p>
+                                      <h6>{item.AirSegments.length === 1 ? 'Non-stop' : (item.AirSegments.length-1)+' Stop(s)'}</h6>
+                                      {/* <p>{item.AirSegments[0].Duration} </p> */}
+                                      <p>{moment(new Date(item.AirSegments[0].DepartureDateTime)).format('h:mm a')}-{moment(new Date(item.AirSegments[item.AirSegments.length-1].ArrivalDateTime)).format('h:mm a')}</p>
+                                      {item.AirSegments.length > 1 &&( <p>{item.AirSegments.length > 1 && 'via '+item.AirSegments[0].destinationAirportName}</p>)}
                                     </div>
                                     <div className="flight_search_destination">
                                       <p>To</p>
-                                      <h3>{item.AirSegments[0].Destination}</h3>
-                                      <h6>{item.AirSegments[0].Destination} - {item.AirSegments[0].destinationAirportName}</h6>
+                                      <h3>{item.AirSegments[item.AirSegments.length-1].Destination}</h3>
+                                      <h6>{item.AirSegments[item.AirSegments.length-1].Destination} - {item.AirSegments[item.AirSegments.length-1].destinationAirportName}</h6>
                                     </div>
                                   </div>
                                 </div>
