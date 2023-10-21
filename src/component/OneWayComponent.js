@@ -3,7 +3,7 @@ import * as moment from 'moment'
 import { useRouter } from 'next/router'
 import { ReactSearchAutocomplete } from 'react-search-autocomplete'
 import { useToasts } from 'react-toast-notifications';
-export default function OneWayComponent (){
+export default function OneWayComponent ({airlinesData}){
     const { addToast } = useToasts();
     const [oneWayFrom, setOneWayFrom] = useState("");
     const [oneWayFromData, setOneWayFromData] = useState("");
@@ -17,7 +17,7 @@ export default function OneWayComponent (){
     const [oneWayTravelChildren, setOneWayTravelChildren] = useState(0);
     const [oneWayTravelInfant, setOneWayTravelInfant] = useState(0);
     const [oneWayTravelCabinClass, setOneWayTravelCabinClass] = useState("Economy");
-    const [airportData, setAirportData] = useState([]);
+    const [airportData, setAirportData] = useState(airlinesData);
   
     const router = useRouter();
   
@@ -27,21 +27,8 @@ export default function OneWayComponent (){
       setCurrentDate(date)
       setOneWayTravelDay(moment(new Date()).format('dddd'))
       handlePassengerCount('adult', 'add')
-      fetchAirports()
     }, [])
-  
-    const fetchAirports = async () => {
-      let bodyFormData = new FormData();
-      bodyFormData.append("action", "get_airport");
-      await fetch("https://vrcwebsolutions.com/yatra/api/api.php", {
-        method: 'POST',
-        body: bodyFormData
-      }).then((response) => response.json()).then((response) => {
-        if (response !== null) {
-          setAirportData(response.data)
-        }
-      })
-    }
+ 
   
     const handlePassengerCount = (passengerType, operation) => {
       if (passengerType === 'adult' && operation === 'add') {
@@ -115,7 +102,8 @@ export default function OneWayComponent (){
           oneWayTravelAdult: oneWayTravelAdult,
           oneWayTravelChildren: oneWayTravelChildren,
           oneWayTravelInfant: oneWayTravelInfant,
-          oneWayTravelCabinClass: oneWayTravelCabinClass
+          oneWayTravelCabinClass: oneWayTravelCabinClass,
+          tripType: '0'
         }
       }, '/Searchresult');
     }
@@ -125,37 +113,32 @@ export default function OneWayComponent (){
       // onSearch will have as the first callback parameter
       // the string searched and for the second the results.
       setOneWayFrom(string)
-      console.log(string, results)
     }
   
     const handleOnSearchOneWayTo = (string, results) => {
       // onSearch will have as the first callback parameter
       // the string searched and for the second the results.
       setOneWayTo(string)
-      console.log(string, results)
     }
   
     const handleOnHover = (result) => {
       // the item hovered
-      console.log(result)
     }
   
     const handleOnSelectOneWayFrom = (item) => {
       // the item selected
       setOneWayFrom(item.code)
       setOneWayFromData(item.name)
-      console.log(item)
     }
   
     const handleOnSelectOneWayTo = (item) => {
       // the item selected
       setOneWayTo(item.code)
       setOneWayToData(item.name)
-      console.log(item)
     }
   
     const handleOnFocus = () => {
-      console.log('Focused')
+    //   console.log('Focused')
     }
   
     const formatResult = (item) => {

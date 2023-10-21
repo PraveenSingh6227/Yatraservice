@@ -1,16 +1,19 @@
 import Footer from '@/component/Footer'
 import Header from '@/component/Header'
-import { useEffect, useState } from 'react'
+import React,{ useEffect, useState } from 'react'
 import * as moment from 'moment'
 import { useRouter } from 'next/router'
 import LoadingSpinner from "../component/Loader";
+import { useToasts } from 'react-toast-notifications';
 
 
 export default function bookingPage() {
     const router = useRouter();
+    const { addToast } = useToasts();
     const [Contracts, setContracts] = useState({});
     const [isLoading, setIsLoading] = useState(false);
-    const [formData, setFormData] = useState([{ first_name: "", last_name: "", email: "", mobile: "", address: "", state: "", country: "" }]); 
+    const [userDetails, setUserDetails] = useState({});
+    const [formData, setFormData] = useState([{ Title: "Mr", FirstName: "", LastName: "", ContactNo: "", Email: "", State: "", Country: "" }]);
     const [agencyKey, setAgencyKey] = useState("81854E61-DB4D-4BC1-87BC-D30DAC649886");
 
 
@@ -30,80 +33,169 @@ export default function bookingPage() {
         if (Object.keys(router.query).length === 0) {
             router.push('/');
         }
+        if (
+            localStorage.getItem('userDetails') &&
+            localStorage.getItem('userDetails') !== undefined
+          ) {
+            setUserDetails(JSON.parse(localStorage.getItem('userDetails')));
+          }
     }, [])
 
-    const handleFieldChange = (e, i) => { 
-        const field = e.target.name; 
-        console.log('field->',e.target.value)
-        const newFormData = [...formData]; 
-        newFormData[i-1][field] = e.target.value; 
-        setFormData(newFormData); 
-    }; 
+    const handleFieldChange = (e, i) => {
+        const field = e.target.name;
+        const newFormData = [...formData];
+        newFormData[i - 1][field] = e.target.value;
+        setFormData(newFormData);
+    };
 
     useEffect(() => {
         if (Object.keys(router.query).length > 0) {
             setBookingKey(router.query.bookingKey)
             setContracts(JSON.parse(router.query.contractData))
             const travelForm = []
-            const contractData = JSON.parse(router.query.contractData)
-            for (let i = 1; i <= contractData.TotalSeats; i++) {
-                travelForm.push( <>
-                <h4 class="heading_theme">Traveller {i}</h4>
-                <div class="row">
-                    <div class="col-lg-6">
-                        <div class="form-group">
-                            <input name='first_name' type="text" onChange={(e) => handleFieldChange(e, i)} class="form-control bg_input"
-                                placeholder="First name*" />
+            for (let i = 1; i <= (parseInt(router.query.adultCount) + parseInt(router.query.childCount) + parseInt(router.query.InfantCount)); i++) {
+                travelForm.push(<>
+                    <h4 class="heading_theme">Traveller {i}</h4>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <select name='Title' onChange={(e) => handleFieldChange(e, i)} class="form-control form-select bg_input">
+                                    <option value="Mr">Mr</option>
+                                    <option value="Ms">Ms</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <input name='FirstName' type="text" onChange={(e) => handleFieldChange(e, i)} class="form-control bg_input"
+                                    placeholder="First name*" />
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <input type="text" name='LastName' onChange={(e) => handleFieldChange(e, i)} class="form-control bg_input"
+                                    placeholder="Last name*" />
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <input type="date" name='DateOfBirth' onChange={(e) => handleFieldChange(e, i)} class="form-control bg_input"
+                                    placeholder="Last name*" />
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <input type="text" name='Email' onChange={(e) => handleFieldChange(e, i)} class="form-control bg_input"
+                                    placeholder="Email address" />
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <input type="text" name='ContactNo' onChange={(e) => handleFieldChange(e, i)} class="form-control bg_input"
+                                    placeholder="Mobile number*" />
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <input type="text" name='address' onChange={(e) => handleFieldChange(e, i)} class="form-control bg_input"
+                                    placeholder="Your address" />
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <input type="text" name='state' onChange={(e) => handleFieldChange(e, i)} class="form-control bg_input"
+                                    placeholder="State" />
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <input type="text" name='country' onChange={(e) => handleFieldChange(e, i)} class="form-control bg_input"
+                                    placeholder="Country" />
+                            </div>
                         </div>
                     </div>
-                    <div class="col-lg-6">
-                        <div class="form-group">
-                            <input type="text" name='last_name' onChange={(e) => handleFieldChange(e, i)} class="form-control bg_input"
-                                placeholder="Last name*" />
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="form-group">
-                            <input type="text" name='email' onChange={(e) => handleFieldChange(e, i)} class="form-control bg_input"
-                                placeholder="Email address" />
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="form-group">
-                            <input type="text" name='mobile' onChange={(e) => handleFieldChange(e, i)} class="form-control bg_input"
-                                placeholder="Mobile number*" />
-                        </div>
-                    </div>
-                    <div class="col-lg-12">
-                        <div class="form-group">
-                            <input type="text" name='address' onChange={(e) => handleFieldChange(e, i)} class="form-control bg_input"
-                                placeholder="Your address" />
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="form-group">
-                            <input type="text" name='state' onChange={(e) => handleFieldChange(e, i)} class="form-control bg_input"
-                                placeholder="State" />
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="form-group">
-                            <input type="text" name='country' onChange={(e) => handleFieldChange(e, i)} class="form-control bg_input"
-                                placeholder="Country" />
-                        </div>
-                    </div>
-                </div>
                 </>);
             }
             setOneWayTotalTravellers(travelForm)
         }
     }, [router.query]);
 
-    const handleSubmit = (event) => { 
-        event.preventDefault(); 
-        console.log('formData--->',formData); 
-        // setTodos([]); 
-      }; 
+    const handleSubmit = async () => {
+        setIsLoading(true)
+        let bodyFormData = new FormData();
+        let ApiToken = ""
+        bodyFormData.append("action", "pax_details");
+        bodyFormData.append("BookingKey", bookingKey);
+        bodyFormData.append("ContractId", Contracts.ContractId);
+        await fetch("https://vrcwebsolutions.com/yatra/api/generateToken.php", {
+            method: 'GET',
+        })
+            .then((response) => response.json())
+            .then(async (response) => {
+                if(response.ApiToken){
+                    bodyFormData.append("APIToken", response.ApiToken);
+                    ApiToken = response.ApiToken;
+                    await fetch("https://vrcwebsolutions.com/yatra/api/api.php", {
+                        method: 'POST',
+                        body: bodyFormData
+                    }).then((response) => response.json()).then(async (response) => {
+                        if(response.Sell!==null){
+                            let bookingFormData = new FormData();
+                            bookingFormData.append("action", "book_flight");
+                            bookingFormData.append("BookingKey", bookingKey);
+                            bookingFormData.append("ContractId", Contracts.ContractId);
+                            bookingFormData.append("APIToken", ApiToken);
+                            bookingFormData.append("user_id", userDetails.id);
+                            bookingFormData.append("TotalPrice", Contracts.AirlineFare.NetFare);
+                            for (let i = 0; i < formData.length; i++) {
+                                formData[i].PaxFare = response.Sell.Contracts[0].PexFareDetails[i];
+                                formData[i].Gender = null;
+                                formData[i].PaxType = response.Sell.Contracts[0].PexFareDetails[i].PaxType;
+                                formData[i].DateOfBirth = moment(formData[i].DateOfBirth).format('DD-MM-YYYY');
+                                formData[i].PassportNo = null;
+                                formData[i].PassportExpiry = null;
+                                formData[i].IsLeadPax = true;
+                                formData[i].MealCode = "";
+                                formData[i].BaggageCode = "";
+                                formData[i].SeatCode = "";
+                                formData[i].TicketNumber = null;
+                            }
+                            bookingFormData.append("Flightpassenger", JSON.stringify(formData));
+                            await fetch("https://vrcwebsolutions.com/yatra/api/api.php", {
+                                method: 'POST',
+                                body: bookingFormData
+                            }).then((response) => response.json()).then((response) => {
+                                if (response !== null) {
+                                    if (response.Status === 0) {
+                                        addToast("Fly24 API response : " + response.Error.ErrorDesc, { appearance: 'error' });
+                                    } else {
+                                        router.push({
+                                            pathname: '/bookingConfirmation',
+                                            query: {
+                                              contractData: JSON.stringify(Contracts),
+                                              adultCount: router.query.adultCount,
+                                              childCount: router.query.childCount,
+                                              InfantCount: router.query.InfantCount,
+                                              formData: JSON.stringify(formData),
+                                              bookingId: response.BookingId
+                                            }
+                                          }, '/bookingConfirmation');
+                                    }
+                                }
+                                setIsLoading(false)
+                            })
+                        }else{
+                            setIsLoading(false)
+                            addToast("Something went wrong, please try again later", { appearance: 'error' });
+                        }
+                    })
+                }else{
+                    setIsLoading(false)
+                    addToast("Something went wrong, please try again later", { appearance: 'error' });
+                }
+            }
+            )
+    };
 
 
     return (
@@ -161,11 +253,11 @@ export default function bookingPage() {
                                                 <h3 class="heading_theme">Passenger information</h3>
                                                 <div class="tour_booking_form_box">
                                                     <form id="tour_bookking_form_item">
-                                                    { (Contracts!==null && Object.keys(Contracts).length > 0) && (
-                                                       <>
-                                                       {oneWayTotalTravellers}
-                                                       </>
-                                                    )}
+                                                        {(Contracts !== null && Object.keys(Contracts).length > 0) && (
+                                                            <>
+                                                                {oneWayTotalTravellers}
+                                                            </>
+                                                        )}
                                                     </form>
                                                 </div>
                                             </div>
@@ -314,7 +406,7 @@ export default function bookingPage() {
                                                         <h5>Price</h5>
                                                         <div class="tour_package_bar_price">
                                                             {/* <h6><del> 35,500 Rs</del></h6> */}
-                                                            <h3> {(Contracts !== null && Object.keys(Contracts).length > 0) ? "Rs. " + Contracts.AirlineFare.BaseFare : ""}<sub> / Seats X {(Contracts !== null && Object.keys(Contracts).length > 0) ? Contracts.TotalSeats : 0}</sub> </h3>
+                                                            <h3> {(Contracts !== null && Object.keys(Contracts).length > 0) ? "Rs. " + Contracts.AirlineFare.BaseFare : ""}<sub> / Seats X {(Contracts !== null && Object.keys(Contracts).length > 0) ? parseInt(router.query.adultCount) + parseInt(router.query.childCount) + parseInt(router.query.InfantCount) : 0}</sub> </h3>
                                                         </div>
                                                     </div>
                                                 </div>

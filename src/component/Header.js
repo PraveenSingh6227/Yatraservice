@@ -1,7 +1,17 @@
-import React from 'react'
+import React,{ useEffect, useState } from 'react'
 import Link from 'next/link';
 
 export default function Header() {
+  const [userDetails, setUserDetails] = useState({});
+  useEffect(() => {
+    if (
+      localStorage.getItem('userDetails') &&
+      localStorage.getItem('userDetails') !== undefined
+    ) {
+      setUserDetails(JSON.parse(localStorage.getItem('userDetails')));
+    }
+  },[]);
+
   return (
     <>
     <header className="main_header_arae">
@@ -37,15 +47,36 @@ export default function Header() {
               </li>
             </ul>
           </div>
-          <div className="col-lg-6 col-md-6">
+          <div className="col-lg-6 col-md-6" dropdown>
             <ul className="topbar-others-options">
+            {Object.keys(userDetails).length > 0 ? (
               <li>
-                <Link href="/login">Login</Link>
+                <div className="dropdown language-option">
+                  <button
+                    className="dropdown-toggle"
+                    type="button"
+                    data-bs-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
+                    <span className="lang-name"> Hello, {userDetails.name}</span>
+                  </button>
+                  <div className="dropdown-menu language-dropdown-menu">
+                    <Link className="dropdown-item" href="/UserDashboard">
+                      My Dashboard
+                    </Link>
+                    {/* <a className="dropdown-item" onClick={signOut()} href="javascript:void(0)">
+                      Logout
+                    </a> */}
+                  </div>
+                </div>
               </li>
+              ) : (
               <li>
-                <Link href="/becomevendor">Sign up</Link>
+                <Link href="/Login">Login</Link>
               </li>
-              <li>
+              )}
+              {/* <li>
                 <div className="dropdown language-option">
                   <button
                     className="dropdown-toggle"
@@ -92,7 +123,7 @@ export default function Header() {
                     </Link>
                   </div>
                 </div>
-              </li>
+              </li> */}
             </ul>
           </div>
         </div>

@@ -3,7 +3,7 @@ import * as moment from 'moment'
 import { useRouter } from 'next/router'
 import { ReactSearchAutocomplete } from 'react-search-autocomplete'
 import { useToasts } from 'react-toast-notifications';
-export default function RoundTripComponent (){
+export default function RoundTripComponent ({airlinesData}){
     const { addToast } = useToasts();
     const [roundTripFrom, setRoundTripFrom] = useState("");
     const [roundTripFromData, setRoundTripFromData] = useState("");
@@ -19,7 +19,7 @@ export default function RoundTripComponent (){
     const [roundTripTravelChildren, setRoundTripTravelChildren] = useState(0);
     const [roundTripTravelInfant, setRoundTripTravelInfant] = useState(0);
     const [roundTripTravelCabinClass, setRoundTripTravelCabinClass] = useState("Economy");
-    const [airportData, setAirportData] = useState([]);
+    const [airportData, setAirportData] = useState(airlinesData);
   
     const router = useRouter();
   
@@ -32,21 +32,7 @@ export default function RoundTripComponent (){
       setRoundTripTravelDay(moment(new Date()).format('dddd'))
       setRoundTripReturnDay(moment(new Date()).add(1, 'day').format('dddd'))
       handlePassengerCount('adult', 'add')
-      fetchAirports()
     }, [])
-  
-    const fetchAirports = async () => {
-      let bodyFormData = new FormData();
-      bodyFormData.append("action", "get_airport");
-      await fetch("https://vrcwebsolutions.com/yatra/api/api.php", {
-        method: 'POST',
-        body: bodyFormData
-      }).then((response) => response.json()).then((response) => {
-        if (response !== null) {
-          setAirportData(response.data)
-        }
-      })
-    }
   
     const handlePassengerCount = (passengerType, operation) => {
       if (passengerType === 'adult' && operation === 'add') {
@@ -111,16 +97,18 @@ export default function RoundTripComponent (){
       router.push({
         pathname: '/Searchresult',
         query: {
-          roundTripFrom: roundTripFrom,
-          roundTripFromData: roundTripFromData,
-          roundTripTo: roundTripTo,
-          roundTripToData: roundTripToData,
-          roundTripTravelDate: roundTripTravelDate,
-          roundTripTravelTotalPassenger: roundTripTravelTotalPassenger,
-          roundTripTravelAdult: roundTripTravelAdult,
-          roundTripTravelChildren: roundTripTravelChildren,
-          roundTripTravelInfant: roundTripTravelInfant,
-          roundTripTravelCabinClass: roundTripTravelCabinClass
+            oneWayFrom: roundTripFrom,
+            oneWayFromData: roundTripFromData,
+            oneWayTo: roundTripTo,
+            oneWayToData: roundTripToData,
+            oneWayTravelDate: roundTripTravelDate,
+            oneWayReturnDate: roundTripReturnDate,
+            oneWayTravelTotalPassenger: roundTripTravelTotalPassenger,
+            oneWayTravelAdult: roundTripTravelAdult,
+            oneWayTravelChildren: roundTripTravelChildren,
+            oneWayTravelInfant: roundTripTravelInfant,
+            oneWayTravelCabinClass: roundTripTravelCabinClass,
+            tripType: '1'
         }
       }, '/Searchresult');
     }
@@ -130,37 +118,35 @@ export default function RoundTripComponent (){
       // onSearch will have as the first callback parameter
       // the string searched and for the second the results.
       setRoundTripFrom(string)
-      console.log(string, results)
     }
   
     const handleOnSearchroundTripTo = (string, results) => {
       // onSearch will have as the first callback parameter
       // the string searched and for the second the results.
       setRoundTripTo(string)
-      console.log(string, results)
     }
   
     const handleOnHover = (result) => {
       // the item hovered
-      console.log(result)
+    //   console.log(result)
     }
   
     const handleOnSelectroundTripFrom = (item) => {
       // the item selected
       setRoundTripFrom(item.code)
       setRoundTripFromData(item.name)
-      console.log(item)
+    //   console.log(item)
     }
   
     const handleOnSelectroundTripTo = (item) => {
       // the item selected
       setRoundTripTo(item.code)
       setRoundTripToData(item.name)
-      console.log(item)
+    //   console.log(item)
     }
   
     const handleOnFocus = () => {
-      console.log('Focused')
+    //   console.log('Focused')
     }
   
     const formatResult = (item) => {
