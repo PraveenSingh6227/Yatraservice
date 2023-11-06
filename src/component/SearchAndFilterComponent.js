@@ -6,6 +6,7 @@ import { useToasts } from 'react-toast-notifications';
 export default function SearchAndFilterComponent({ contractData, totalContractData, bookingKey, adultCount, childCount, InfantCount }) {
   const router = useRouter();
   const { addToast } = useToasts();
+  const [fareRule, setFareRule] = useState("")
   const [Contracts, setContracts] = useState(contractData)
   const [totalContract, setTotalContracts] = useState(totalContractData);
   const [selectedContract, setSelectedContract] = useState({})
@@ -18,8 +19,40 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
   useEffect(() => {
     handleFilter()
   }, [priceSlider, airStops, airlines, refundable])
+
+  const getFareRule = async () => {
+    if (Object.keys(selectedContract).length == 0) {
+      addToast("Please select the price to know your fare rule", { appearance: 'error' });
+      return
+    }
+    await fetch("https://vrcwebsolutions.com/yatra/api/generateToken.php", {
+      method: 'GET',
+    })
+      .then((response) => response.json())
+      .then(async (response) => {
+        let bodyFormData = new FormData();
+        bodyFormData.append("action", "get_fare_rule");
+        bodyFormData.append("BookingKey", bookingKey);
+        bodyFormData.append("APIToken", response.ApiToken);
+        bodyFormData.append("ContractId", selectedContract.ContractId);
+        await fetch("https://vrcwebsolutions.com/yatra/api/api.php", {
+          method: 'POST',
+          body: bodyFormData
+        }).then((response) => response.json()).then((response) => {
+          if (response !== null) {
+            if (response.Status === 0) {
+              addToast("Fly24 API response : " + response.Error.ErrorDesc, { appearance: 'error' });
+            } else {
+              setFareRule(response.FareRule)
+            }
+          }
+        })
+      }
+      )
+  }
+
   const goToBooking = () => {
-    if(Object.keys(selectedContract).length==0){
+    if (Object.keys(selectedContract).length == 0) {
       addToast("Please select the price", { appearance: 'error' });
       return
     }
@@ -41,10 +74,6 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
     } else {
       addToast("Please login in order to proceed with flight booking", { appearance: 'error' });
     }
-  }
-
-  const findContract = () =>{
-
   }
 
   const handlePriceSlider = (event) => {
@@ -263,7 +292,7 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
         <div className="row">
           <div className="col-lg-3">
             <div className="left_side_search_area">
-            <div className="left_side_search_boxed">
+              <div className="left_side_search_boxed">
                 <div className="left_side_search_heading">
                   <h5>NetFare</h5>
                 </div>
@@ -275,7 +304,7 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
                       defaultValue=""
                       id="flexCheckDefaultf1"
                       value={2}
-                      onChange={(event) => { showNetFare==true ? setShowNetFare(false) : setShowNetFare(true) }}
+                      onChange={(event) => { showNetFare == true ? setShowNetFare(false) : setShowNetFare(true) }}
                     />
                     <label
                       className="form-check-label"
@@ -567,7 +596,7 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
           <div className="col-lg-9">
             <div className="row">
               {(Contracts !== null && Object.keys(Contracts).length > 0) && Object.keys(Contracts).map((item, index) => {
-                console.log('item--->',item,Contracts[item])
+                console.log('item--->', item, Contracts[item])
                 const selectedContracts = {}
                 return (
                   <div className="col-lg-12">
@@ -620,45 +649,46 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
                               </div>
                             </div>
                           </div>
-                          <div className="flight_multis_area_wrapper" style={{paddingBottom: '2%'}}>
+                          <div className="flight_multis_area_wrapper" style={{ paddingBottom: '2%' }}>
                             <div class="tour_search_type">
-                            {Contracts[item].map((item3, index3) => {
-                              return (
-                                <>
-                                {showNetFare ? (
-                                 <div class="form-check">
-                                    <input 
-                                      class="form-check-input" 
-                                      type="radio" 
-                                      name={`radio_${index}`} 
-                                      value={`${item3.ContractId}`} 
-                                      onClick={(e) => setSelectedContract(item3)}
-                                    />
-                                      <label class="form-check-label">
-                                        <span class="area_flex_one">
-                                          <span style={{textTransform:'uppercase'}}>({item3.FareType}) Rs. {item3.AirlineFare.NetFare}</span>
-                                        </span>
-                                      </label>
-                                  </div>
-                                ) : (
-                                  <div class="form-check">
-                                    <input 
-                                      class="form-check-input" 
-                                      type="radio" 
-                                      name={`radio_${index}`} 
-                                      value={`${item3.ContractId}`} 
-                                      onClick={(e) => setSelectedContract(item3)}
-                                    />
-                                      <label class="form-check-label">
-                                        <span class="area_flex_one">
-                                          <span style={{textTransform:'uppercase'}}>({item3.FareType}) Rs. {item3.AirlineFare.BaseFare}</span>
-                                        </span>
-                                      </label>
-                                  </div>
-                                )}
-                                </>
-                             
-                            )})}
+                              {Contracts[item].map((item3, index3) => {
+                                return (
+                                  <>
+                                    {showNetFare ? (
+                                      <div class="form-check">
+                                        <input
+                                          class="form-check-input"
+                                          type="radio"
+                                          name={`radio_${index}`}
+                                          value={`${item3.ContractId}`}
+                                          onClick={(e) => setSelectedContract(item3)}
+                                        />
+                                        <label class="form-check-label">
+                                          <span class="area_flex_one">
+                                            <span style={{ textTransform: 'uppercase' }}>({item3.FareType}) Rs. {item3.AirlineFare.NetFare}</span>
+                                          </span>
+                                        </label>
+                                      </div>
+                                    ) : (
+                                      <div class="form-check">
+                                        <input
+                                          class="form-check-input"
+                                          type="radio"
+                                          name={`radio_${index}`}
+                                          value={`${item3.ContractId}`}
+                                          onClick={(e) => setSelectedContract(item3)}
+                                        />
+                                        <label class="form-check-label">
+                                          <span class="area_flex_one">
+                                            <span style={{ textTransform: 'uppercase' }}>({item3.FareType}) Rs. {item3.AirlineFare.BaseFare}</span>
+                                          </span>
+                                        </label>
+                                      </div>
+                                    )}
+                                  </>
+
+                                )
+                              })}
                             </div>
                           </div>
                           <div className="flight_search_right">
@@ -683,6 +713,7 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
                               data-bs-target={`#collapseExample_${index}`}
                               aria-expanded="false"
                               aria-controls={`collapseExample_${index}`}
+                            // onClick={() => getFareRule()}
                             >
                               Show more <i className="fas fa-chevron-down" />
                             </h6>
@@ -740,29 +771,37 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
                                   </div>
                                 </div>
                                 <div className="flight_refund_policy">
-                                  <div className="TabPanelInner flex_widht_less">
-                                    <h4>Total Fare Breakups</h4>
-                                    <p className="fz12">
-                                      1. Refund and Date Change are done as per the
-                                      following policies.
-                                    </p>
-                                    <p className="fz12">
-                                      2. Refund Amount= Refund Charge (as per airline
-                                      policy + ShareTrip Convenience Fee).{" "}
-                                    </p>
-                                    <p className="fz12">
-                                      3. Date Change Amount= Date Change Fee (as per
-                                      Airline Policy + ShareTrip Convenience Fee).
-                                    </p>
+                                  <div className="TabPanelInner flex_widht_less col-6" style={{paddingBottom:'5%'}}>
+                                    <h4>Fare Breakups</h4>
+                                    <div class="tour_booking_amount_area">
+                                      <ul>
+                                        <li>Base Fare <span>{ "Rs. " + Contracts[item][0].AirlineFare.BaseFare }</span></li>
+                                        <li>Tax Fare<span>{"Rs. " + Contracts[item][0].AirlineFare.TaxFare}</span></li>
+                                        <li>Service Charge <span>{"Rs. " + Contracts[item][0].AirlineFare.ServiceCharge }</span></li>
+                                      </ul>
+                                      <div class="tour_bokking_subtotal_area">
+                                        <h6>Subtotal <span>{"Rs. " + (Contracts[item][0].AirlineFare.BaseFare + Contracts[item][0].AirlineFare.TaxFare + Contracts[item][0].AirlineFare.ServiceCharge)}</span></h6>
+                                      </div>
+                                      <div class="coupon_add_area">
+                                        <h6>Commission
+                                          <span>{" - Rs. " + Contracts[item][0].AirlineFare.Commission}</span>
+                                        </h6>
+                                      </div>
+                                      <div class="total_subtotal_booking">
+                                        <h6>Total Amount <span>{"Rs. " + Contracts[item][0].AirlineFare.NetFare}</span> </h6>
+                                      </div>
+                                    </div>
                                   </div>
-                                  <div className="TabPanelInner">
-                                    <h4>Baggage</h4>
-                                    <div className="flight_info_taable">
-                                      <h3>{item2.Origen}-{Contracts[item][0].AirSegments[Contracts[item][0].AirSegments.length - 1].Destination}</h3>
-                                      <p>
-                                        <span>Checkin : {item2.BaggageAllowed.CheckInBaggage} /</span> person<br />
-                                        <span>Hand  : {item2.BaggageAllowed.HandBaggage && item2.BaggageAllowed.HandBaggage ? item2.BaggageAllowed.HandBaggage : 'N/A'} {item2.BaggageAllowed.HandBaggage && "/"}</span> {item2.BaggageAllowed.HandBaggage && "Person"}
-                                      </p>
+                                  <div className="TabPanelInner col-7">
+                                    <div style={{float: 'right'}}>
+                                      <h4>Baggage</h4>
+                                      <div className="flight_info_taable">
+                                        <h3>{item2.Origen}-{Contracts[item][0].AirSegments[Contracts[item][0].AirSegments.length - 1].Destination}</h3>
+                                        <p>
+                                          <span>Checkin : {item2.BaggageAllowed.CheckInBaggage} /</span> person<br />
+                                          <span>Hand  : {item2.BaggageAllowed.HandBaggage && item2.BaggageAllowed.HandBaggage ? item2.BaggageAllowed.HandBaggage : 'N/A'} {item2.BaggageAllowed.HandBaggage && "/"}</span> {item2.BaggageAllowed.HandBaggage && "Person"}
+                                        </p>
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
