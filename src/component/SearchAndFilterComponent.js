@@ -9,6 +9,7 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
   const [Contracts, setContracts] = useState(contractData)
   const [totalContract, setTotalContracts] = useState(totalContractData);
   const [selectedContract, setSelectedContract] = useState({})
+  const [showNetFare, setShowNetFare] = useState(false)
   //filter
   const [priceSlider, setPriceSlider] = useState(80000);
   const [airStops, setAirStops] = useState([]);
@@ -262,6 +263,32 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
         <div className="row">
           <div className="col-lg-3">
             <div className="left_side_search_area">
+            <div className="left_side_search_boxed">
+                <div className="left_side_search_heading">
+                  <h5>NetFare</h5>
+                </div>
+                <div className="tour_search_type">
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      defaultValue=""
+                      id="flexCheckDefaultf1"
+                      value={2}
+                      onChange={(event) => { showNetFare==true ? setShowNetFare(false) : setShowNetFare(true) }}
+                    />
+                    <label
+                      className="form-check-label"
+                      htmlFor="flexCheckDefaultf1"
+                    >
+                      <span className="area_flex_one">
+                        <span>Show NetFare</span>
+                        {/* <span>20</span> */}
+                      </span>
+                    </label>
+                  </div>
+                </div>
+              </div>
               <div className="left_side_search_boxed">
                 <div className="left_side_search_heading">
                   <h5>Filter by price</h5>
@@ -597,21 +624,40 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
                             <div class="tour_search_type">
                             {Contracts[item].map((item3, index3) => {
                               return (
-                              <div class="form-check">
-                                <input 
-                                  class="form-check-input" 
-                                  type="radio" 
-                                  name={`radio_${index}`} 
-                                  value={`${item3.ContractId}`} 
-                                  onClick={(e) => setSelectedContract(item3)}
-                                  // checked={Contracts[item][0].ContractId == item3.ContractId ? "true" : "false"} 
-                                />
-                                  <label class="form-check-label">
-                                    <span class="area_flex_one">
-                                      <span style={{textTransform:'uppercase'}}>({item3.FareType}) Rs. {item3.AirlineFare.BaseFare}</span>
-                                    </span>
-                                  </label>
-                              </div>
+                                <>
+                                {showNetFare ? (
+                                 <div class="form-check">
+                                    <input 
+                                      class="form-check-input" 
+                                      type="radio" 
+                                      name={`radio_${index}`} 
+                                      value={`${item3.ContractId}`} 
+                                      onClick={(e) => setSelectedContract(item3)}
+                                    />
+                                      <label class="form-check-label">
+                                        <span class="area_flex_one">
+                                          <span style={{textTransform:'uppercase'}}>({item3.FareType}) Rs. {item3.AirlineFare.NetFare}</span>
+                                        </span>
+                                      </label>
+                                  </div>
+                                ) : (
+                                  <div class="form-check">
+                                    <input 
+                                      class="form-check-input" 
+                                      type="radio" 
+                                      name={`radio_${index}`} 
+                                      value={`${item3.ContractId}`} 
+                                      onClick={(e) => setSelectedContract(item3)}
+                                    />
+                                      <label class="form-check-label">
+                                        <span class="area_flex_one">
+                                          <span style={{textTransform:'uppercase'}}>({item3.FareType}) Rs. {item3.AirlineFare.BaseFare}</span>
+                                        </span>
+                                      </label>
+                                  </div>
+                                )}
+                                </>
+                             
                             )})}
                             </div>
                           </div>
