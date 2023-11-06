@@ -8,7 +8,7 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
   const { addToast } = useToasts();
   const [Contracts, setContracts] = useState(contractData)
   const [totalContract, setTotalContracts] = useState(totalContractData);
-  const [selectedContracts, setSelectedContracts] = useState({})
+  const [selectedContract, setSelectedContract] = useState({})
   //filter
   const [priceSlider, setPriceSlider] = useState(80000);
   const [airStops, setAirStops] = useState([]);
@@ -17,7 +17,12 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
   useEffect(() => {
     handleFilter()
   }, [priceSlider, airStops, airlines, refundable])
-  const goToBooking = (contractData) => {
+  const goToBooking = () => {
+    if(Object.keys(selectedContract).length==0){
+      addToast("Please select the price", { appearance: 'error' });
+      return
+    }
+
     if (
       localStorage.getItem('userDetails') &&
       localStorage.getItem('userDetails') !== undefined
@@ -25,7 +30,7 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
       router.push({
         pathname: '/bookingPage',
         query: {
-          contractData: JSON.stringify(contractData),
+          contractData: JSON.stringify(selectedContract),
           bookingKey: bookingKey,
           adultCount: adultCount,
           childCount: childCount,
@@ -35,6 +40,10 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
     } else {
       addToast("Please login in order to proceed with flight booking", { appearance: 'error' });
     }
+  }
+
+  const findContract = () =>{
+
   }
 
   const handlePriceSlider = (event) => {
@@ -594,7 +603,8 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
                                   type="radio" 
                                   name={`radio_${index}`} 
                                   value={`${item3.ContractId}`} 
-                                  checked={Contracts[item][0].ContractId == item3.ContractId ? "true" : "false"} 
+                                  onClick={(e) => setSelectedContract(item3)}
+                                  // checked={Contracts[item][0].ContractId == item3.ContractId ? "true" : "false"} 
                                 />
                                   <label class="form-check-label">
                                     <span class="area_flex_one">
@@ -612,11 +622,11 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
                             {/* <h2>
                                   {item.AirlineFare.BaseFare} Rs.<sup>*20% OFF</sup>
                                 </h2> */}
-                            <h3>
+                            {/* <h3>
                               Rs. {Contracts[item][0].AirlineFare.BaseFare}
-                            </h3>
+                            </h3> */}
                             <button
-                              onClick={() => goToBooking(Contracts[index])}
+                              onClick={() => goToBooking()}
                               className="btn btn_theme btn_sm"
                             >
                               Book now

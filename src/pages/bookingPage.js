@@ -191,7 +191,7 @@ export default function bookingPage() {
                     })
                 }else{
                     setIsLoading(false)
-                    addToast("Something went wrong, please try again later", { appearance: 'error' });
+                    addToast(`Error : ${response.Error.ErrorDesc} Something went wrong, please try again later`, { appearance: 'error' });
                 }
             }
             )
