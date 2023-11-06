@@ -47,7 +47,7 @@ export default function Header() {
               </li>
             </ul>
           </div>
-          <div className="col-lg-6 col-md-6" dropdown>
+          <div className="col-lg-6 col-md-6">
             <ul className="topbar-others-options">
             {Object.keys(userDetails).length > 0 ? (
               <li>

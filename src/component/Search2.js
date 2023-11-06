@@ -8,7 +8,6 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
   const { addToast } = useToasts();
   const [Contracts, setContracts] = useState(contractData)
   const [totalContract, setTotalContracts] = useState(totalContractData);
-  const [selectedContracts, setSelectedContracts] = useState({})
   //filter
   const [priceSlider, setPriceSlider] = useState(80000);
   const [airStops, setAirStops] = useState([]);
@@ -79,145 +78,38 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
 
   const handleFilter = () => {
     let filter = []
-    let finalPriceFilter = []
-    let finalAirStopsFilter = []
-    let finalAirlinesFilter = []
-    let finalRefundableFilter = []
-    if (totalContract !== null) {
-      // filter = totalContract.filter((item) =>  item.AirlineFare.BaseFare <= priceSlider);
-      // filter = Object.keys(totalContract)
-      // .map((item) => console.log('tina---->',totalContract[item][0].AirlineFare.BaseFare))
-      // .filter((item) => totalContract[item][0].AirlineFare.BaseFare <= priceSlider)
-      Object.keys(totalContract)
-        .filter((item) => {
-          totalContract[item].filter(items => {
-            if (items.AirlineFare.BaseFare <= priceSlider) {
-              finalPriceFilter.push(item)
-            }
-          })
-        })
-      filter = Object.keys(totalContract)
-        .filter(key => [...new Set(finalPriceFilter)].includes(key))
-        .reduce((obj, key) => {
-          obj[key] = totalContract[key];
-          return obj;
-        }, {});
+    if (totalContract !== null && totalContract.length > 0) {
+      filter = totalContract.filter((item) => item.AirlineFare.BaseFare <= priceSlider);
     }
 
-    if (airStops.length > 0 && Object.keys(filter).length > 0) {
-      // filter = filter.filter(item => {
-      //   return airStops.includes(item.AirSegments.length);
-      // });
-
-      Object.keys(filter)
-        .filter((item) => {
-          filter[item].filter(items => {
-            if (airStops.includes(items.AirSegments.length)) {
-              finalAirStopsFilter.push(item)
-            }
-          })
-        })
-      filter = Object.keys(filter)
-        .filter(key => [...new Set(finalAirStopsFilter)].includes(key))
-        .reduce((obj, key) => {
-          obj[key] = totalContract[key];
-          return obj;
-        }, {});
-
-    } else if (airStops.length > 0 && Object.keys(filter).length === 0 && totalContract !== null && Object.keys(totalContract).length > 0) {
-      // filter = totalContract.filter(item => {
-      //   return airStops.includes(item.AirSegments.length);
-      // });
-      Object.keys(totalContract)
-        .filter((item) => {
-          totalContract[item].filter(items => {
-            if (airStops.includes(items.AirSegments.length)) {
-              finalAirStopsFilter.push(item)
-            }
-          })
-        })
-      filter = Object.keys(totalContract)
-        .filter(key => [...new Set(finalAirStopsFilter)].includes(key))
-        .reduce((obj, key) => {
-          obj[key] = totalContract[key];
-          return obj;
-        }, {});
+    if (airStops.length > 0 && filter.length > 0) {
+      filter = filter.filter(item => {
+        return airStops.includes(item.AirSegments.length);
+      });
+    } else if (airStops.length > 0 && filter.length === 0 && totalContract !== null && totalContract.length > 0) {
+      filter = totalContract.filter(item => {
+        return airStops.includes(item.AirSegments.length);
+      });
     }
 
-    if (airlines.length > 0 && Object.keys(filter).length > 0) {
-      // filter = filter.filter(item => {
-      //   return airlines.includes(item.AirSegments[0].AirlineCode);
-      // });
-      Object.keys(filter)
-        .filter((item) => {
-          filter[item].filter(items => {
-            if (airlines.includes(items.AirSegments[0].AirlineCode)) {
-              finalAirlinesFilter.push(item)
-            }
-          })
-        })
-      filter = Object.keys(filter)
-        .filter(key => [...new Set(finalAirlinesFilter)].includes(key))
-        .reduce((obj, key) => {
-          obj[key] = totalContract[key];
-          return obj;
-        }, {});
-    } else if (airlines.length > 0 && Object.keys(filter).length === 0 && totalContract !== null && Object.keys(totalContract).length > 0) {
-      Object.keys(totalContract)
-        .filter((item) => {
-          totalContract[item].filter(items => {
-            if (airlines.includes(items.AirSegments[0].AirlineCode)) {
-              finalAirlinesFilter.push(item)
-            }
-          })
-        })
-      filter = Object.keys(totalContract)
-        .filter(key => [...new Set(finalAirlinesFilter)].includes(key))
-        .reduce((obj, key) => {
-          obj[key] = totalContract[key];
-          return obj;
-        }, {});
+    if (airlines.length > 0 && filter.length > 0) {
+      filter = filter.filter(item => {
+        return airlines.includes(item.AirSegments[0].AirlineCode);
+      });
+    } else if (airlines.length > 0 && filter.length === 0 && totalContract !== null && totalContract.length > 0) {
+      filter = totalContract.filter(item => {
+        return airStops.includes(item.AirSegments[0].AirlineCode);
+      });
     }
-
-    if (refundable.length > 0 && Object.keys(filter).length > 0) {
-      // filter = filter.filter(item => {
-      //   return refundable.includes(String(item.Refundable));
-      // });
-      Object.keys(filter)
-        .filter((item) => {
-          filter[item].filter(items => {
-            if (refundable.includes(String(items.Refundable))) {
-              finalRefundableFilter.push(item)
-            }
-          })
-        })
-      filter = Object.keys(filter)
-        .filter(key => [...new Set(finalRefundableFilter)].includes(key))
-        .reduce((obj, key) => {
-          obj[key] = totalContract[key];
-          return obj;
-        }, {});
-    } else if (refundable.length > 0 && Object.keys(filter).length === 0 && totalContract !== null && Object.keys(totalContract).length > 0) {
-      // filter = totalContract.filter(item => {
-      //   return airStops.includes(String(item.Refundable));
-      // });
-      Object.keys(totalContract)
-        .filter((item) => {
-          filter[item].filter(items => {
-            if (refundable.includes(String(items.Refundable))) {
-              finalRefundableFilter.push(item)
-            }
-          })
-        })
-      filter = Object.keys(totalContract)
-        .filter(key => [...new Set(finalRefundableFilter)].includes(key))
-        .reduce((obj, key) => {
-          obj[key] = totalContract[key];
-          return obj;
-        }, {});
+    if (refundable.length > 0 && filter.length > 0) {
+      filter = filter.filter(item => {
+        return refundable.includes(String(item.Refundable));
+      });
+    } else if (refundable.length > 0 && filter.length === 0 && totalContract !== null && totalContract.length > 0) {
+      filter = totalContract.filter(item => {
+        return airStops.includes(String(item.Refundable));
+      });
     }
-    // console.log('finalFilter--->',[...new Set(finalFilter)])
-    console.log('filter--->', filter)
     setContracts(filter);
   }
 
@@ -531,8 +423,6 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
           <div className="col-lg-9">
             <div className="row">
               {(Contracts !== null && Object.keys(Contracts).length > 0) && Object.keys(Contracts).map((item, index) => {
-                console.log('item--->',item,Contracts[item])
-                const selectedContracts = {}
                 return (
                   <div className="col-lg-12">
                     <div className="flight_search_result_wrapper">
@@ -543,24 +433,17 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
                             <div className="flight_multis_area_wrapper">
                               <div className="flight_search_left">
                                 <div className="flight_logo">
-                                  {/* <span className="airlineName fw-500">
-                                    {Contracts[item][0].AirSegments[0].AirlineCode}{Contracts[item][0].AirSegments[0].FlightNumber}
-                                  </span> */}
                                   {/* <img
                                       src="assets/img/common/biman_bangla.png"
                                       alt="img"
                                     /> */}
-                                  {Contracts[item][0].AirSegments[0].AirlineName}<br />
-                                  {/* {Contracts[item][0].AirSegments[0].AirlineCode}{Contracts[item][0].AirSegments[0].FlightNumber} */}
-                                  <span className="airlineName fw-500">
-                                    {Contracts[item][0].AirSegments[0].AirlineCode}{Contracts[item][0].AirSegments[0].FlightNumber}
-                                  </span>
+                                  {item.AirSegments[0].AirlineName}
 
                                 </div>
                                 <div className="flight_search_destination">
                                   <p>From</p>
-                                  <h3>{Contracts[item][0].AirSegments[0].Origen}</h3>
-                                  <h6>{Contracts[item][0].AirSegments[0].Origen} - {Contracts[item][0].AirSegments[0].sourceAirportName}</h6>
+                                  <h3>{item.AirSegments[0].Origen}</h3>
+                                  <h6>{item.AirSegments[0].Origen} - {item.AirSegments[0].sourceAirportName}</h6>
                                 </div>
                               </div>
                               <div className="flight_search_middel">
@@ -570,39 +453,17 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
                                       alt="icon"
                                     /> */}
                                   <img src="assets/img/icon/right_arrow.png" alt="icon" />
-                                  <h6>{Contracts[item][0].AirSegments.length === 1 ? 'Non-stop' : (Contracts[item][0].AirSegments.length - 1) + ' Stop(s)'}</h6>
-                                  {/* <p>{Contracts[item][0].AirSegments[0].Duration} </p> */}
-                                  {/* <p>{moment(new Date(Contracts[item][0].AirSegments[0].DepartureDateTime)).format('h:mm a')}-{moment(new Date(Contracts[item][0].AirSegments[Contracts[item][0].AirSegments.length - 1].ArrivalDateTime)).format('h:mm a')}</p> */}
-                                  <p>{timeDiff(new Date(Contracts[item][0].AirSegments[0].DepartureDateTime), new Date(Contracts[item][0].AirSegments[Contracts[item][0].AirSegments.length - 1].ArrivalDateTime))}</p>
-                                  {/* {Contracts[item][0].AirSegments.length > 1 && (<p>{Contracts[item][0].AirSegments.length > 1 && 'via ' + Contracts[item][0].AirSegments[0].destinationAirportName}</p>)} */}
+                                  <h6>{item.AirSegments.length === 1 ? 'Non-stop' : (item.AirSegments.length - 1) + ' Stop(s)'}</h6>
+                                  {/* <p>{item.AirSegments[0].Duration} </p> */}
+                                  <p>{item.AirSegments[0].Duration}</p>
+                                  {item.AirSegments.length > 1 && (<p>{item.AirSegments.length > 1 && 'via ' + item.AirSegments[0].destinationAirportName}</p>)}
                                 </div>
                                 <div className="flight_search_destination">
                                   <p>To</p>
-                                  <h3>{Contracts[item][0].AirSegments[Contracts[item][0].AirSegments.length - 1].Destination}</h3>
-                                  <h6>{Contracts[item][0].AirSegments[Contracts[item][0].AirSegments.length - 1].Destination} - {Contracts[item][0].AirSegments[Contracts[item][0].AirSegments.length - 1].destinationAirportName}</h6>
+                                  <h3>{item.AirSegments[item.AirSegments.length - 1].Destination}</h3>
+                                  <h6>{item.AirSegments[item.AirSegments.length - 1].Destination} - {item.AirSegments[item.AirSegments.length - 1].destinationAirportName}</h6>
                                 </div>
                               </div>
-                            </div>
-                          </div>
-                          <div className="flight_multis_area_wrapper" style={{paddingBottom: '2%'}}>
-                            <div class="tour_search_type">
-                            {Contracts[item].map((item3, index3) => {
-                              return (
-                              <div class="form-check">
-                                <input 
-                                  class="form-check-input" 
-                                  type="radio" 
-                                  name={`radio_${index}`} 
-                                  value={`${item3.ContractId}`} 
-                                  checked={Contracts[item][0].ContractId == item3.ContractId ? "true" : "false"} 
-                                />
-                                  <label class="form-check-label">
-                                    <span class="area_flex_one">
-                                      <span style={{textTransform:'uppercase'}}>({item3.FareType}) Rs. {item3.AirlineFare.BaseFare}</span>
-                                    </span>
-                                  </label>
-                              </div>
-                            )})}
                             </div>
                           </div>
                           <div className="flight_search_right">
@@ -613,7 +474,7 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
                                   {item.AirlineFare.BaseFare} Rs.<sup>*20% OFF</sup>
                                 </h2> */}
                             <h3>
-                              Rs. {Contracts[item][0].AirlineFare.BaseFare}
+                              Rs. {item.AirlineFare.BaseFare}
                             </h3>
                             <button
                               onClick={() => goToBooking(Contracts[index])}
@@ -636,81 +497,81 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
                           className="flight_policy_refund collapse"
                           id={`collapseExample_${index}`}
                         >
-                          {Contracts[item][0].AirSegments.map((item2, index2) => {
+                          {console.log('item.AirSegments--->',item.AirSegments)}
+                          {item.AirSegments.map((item2, index2) => {
                             return (
-                              <div className="flight_show_down_wrapper">
-                                <div className="flight-shoe_dow_item">
-                                  <div className="airline-details">
-                                    {/* <div className="img">
+                            <div className="flight_show_down_wrapper">
+                              <div className="flight-shoe_dow_item">
+                                <div className="airline-details">
+                                  <div className="img">
                                     <img src="assets/img/icon/bg.png" alt="img" />
-                                  </div> */}
-                                    {/* {console.log('item2--->', item2)} */}
-                                    <span className="airlineName fw-500">
-                                      {item2.AirlineName} &nbsp;  {item2.AirlineCode}{item2.FlightNumber}
-                                    </span>
-                                    {/* <span className="flightNumber">
+                                  </div>
+                                  <span className="airlineName fw-500">
+                                    {item2.AirlineName} &nbsp;  {item2.AirlineCode}{item2.FlightNumber}
+                                  </span>
+                                  {/* <span className="flightNumber">
                                     BOEING 737-800 - 738
                                   </span> */}
-                                  </div>
-                                  <div className="flight_inner_show_component">
-                                    <div className="flight_det_wrapper">
-                                      <div className="flight_det">
-                                        <div className="code_time">
-                                          <span className="code">{item2.Origen}</span>
-                                          <span className="time">{moment(new Date(item2.DepartureDateTime)).format('h:mm a')}</span>
-                                        </div>
-                                        <p className="airport">
-                                          {item2.sourceAirportName}
-                                        </p>
-                                        <p className="date">{moment(new Date(item2.DepartureDateTime)).format("Do MMM YYYY")}</p>
-                                      </div>
-                                    </div>
-                                    <div className="flight_duration">
-                                      <div className="arrow_right" />
-                                      <span>{timeDiff(new Date(item2.DepartureDateTime), new Date(item2.ArrivalDateTime))}</span>
-                                    </div>
-                                    <div className="flight_det_wrapper">
-                                      <div className="flight_det">
-                                        <div className="code_time">
-                                          <span className="code">{item2.Destination}</span>
-                                          <span className="time">{moment(new Date(item2.ArrivalDateTime)).format('h:mm a')}</span>
-                                        </div>
-                                        <p className="airport">
-                                          {item2.destinationAirportName}
-                                        </p>
-                                        <p className="date">{moment(new Date(item2.ArrivalDateTime)).format('Do MMM YYYY')}</p>
-                                      </div>
-                                    </div>
-                                  </div>
                                 </div>
-                                <div className="flight_refund_policy">
-                                  <div className="TabPanelInner flex_widht_less">
-                                    <h4>Total Fare Breakups</h4>
-                                    <p className="fz12">
-                                      1. Refund and Date Change are done as per the
-                                      following policies.
-                                    </p>
-                                    <p className="fz12">
-                                      2. Refund Amount= Refund Charge (as per airline
-                                      policy + ShareTrip Convenience Fee).{" "}
-                                    </p>
-                                    <p className="fz12">
-                                      3. Date Change Amount= Date Change Fee (as per
-                                      Airline Policy + ShareTrip Convenience Fee).
-                                    </p>
-                                  </div>
-                                  <div className="TabPanelInner">
-                                    <h4>Baggage</h4>
-                                    <div className="flight_info_taable">
-                                      <h3>{item2.Origen}-{Contracts[item][0].AirSegments[Contracts[item][0].AirSegments.length - 1].Destination}</h3>
-                                      <p>
-                                        <span>Checkin : {item2.BaggageAllowed.CheckInBaggage} /</span> person<br />
-                                        <span>Hand  : {item2.BaggageAllowed.HandBaggage && item2.BaggageAllowed.HandBaggage ? item2.BaggageAllowed.HandBaggage : 'N/A'} {item2.BaggageAllowed.HandBaggage && "/"}</span> {item2.BaggageAllowed.HandBaggage && "Person"}
+                                <div className="flight_inner_show_component">
+                                  <div className="flight_det_wrapper">
+                                    <div className="flight_det">
+                                      <div className="code_time">
+                                        <span className="code">{item2.Origen}</span>
+                                        <span className="time">{moment(new Date(item2.DepartureDateTime)).format("h:mm a")}</span>
+                                      </div>
+                                      <p className="airport">
+                                        {item2.sourceAirportName}
                                       </p>
+                                      <p className="date">{moment(new Date(item2.DepartureDateTime)).format("Do MMM YYYY")}</p>
+                                    </div>
+                                  </div>
+                                  <div className="flight_duration">
+                                    <div className="arrow_right" />
+                                    {/* <span>{item2.Duration}</span> */}
+                                  </div>
+                                  <div className="flight_det_wrapper">
+                                    <div className="flight_det">
+                                      <div className="code_time">
+                                        <span className="code">{item2.Destination}</span>
+                                        <span className="time">{moment(new Date(item2.ArrivalDateTime)).format("h:mm a")}</span>
+                                      </div>
+                                      <p className="airport">
+                                        {item2.destinationAirportName}
+                                      </p>
+                                      <p className="date">{moment(new Date(item2.ArrivalDateTime)).format("Do MMM YYYY")}</p>
                                     </div>
                                   </div>
                                 </div>
                               </div>
+                              <div className="flight_refund_policy">
+                                <div className="TabPanelInner flex_widht_less">
+                                  <h4>Refund Policy</h4>
+                                  <p className="fz12">
+                                    1. Refund and Date Change are done as per the
+                                    following policies.
+                                  </p>
+                                  <p className="fz12">
+                                    2. Refund Amount= Refund Charge (as per airline
+                                    policy + ShareTrip Convenience Fee).{" "}
+                                  </p>
+                                  <p className="fz12">
+                                    3. Date Change Amount= Date Change Fee (as per
+                                    Airline Policy + ShareTrip Convenience Fee).
+                                  </p>
+                                </div>
+                                <div className="TabPanelInner">
+                                  <h4>Baggage</h4>
+                                  <div className="flight_info_taable">
+                                    <h3>{item2.Origen}-{item2.Destination}</h3>
+                                    <p>
+                                      <span>Chekin : {item2.BaggageAllowed.CheckInBaggage} /</span> person<br/>
+                                      <span>Hand : {item2.BaggageAllowed.HandBaggage ? item2.BaggageAllowed.HandBaggage : 'N/A'} /</span> person
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
                             )
                           })}
                           {/* <div className="flight_show_down_wrapper">

@@ -181,8 +181,28 @@ export default function Searchresult() {
             if(response.Status===0){
               addToast("Fly24 API response : "+response.Error.ErrorDesc, { appearance: 'error' });
             }else{
-              setContracts(response.Contracts)
-              setTotalContracts(response.Contracts)
+              let result = response.Contracts.reduce(function (r, a) {
+                r[a.AirSegments[0].FlightNumber] = r[a.AirSegments[0].FlightNumber] || [];
+                r[a.AirSegments[0].FlightNumber].push(a);
+                return r;
+            }, Object.create(null));
+
+            console.log('response--->',response)
+
+            // const mapped = {};
+            // response.Contracts.map(function (item, index){
+            //   if (items.FlightNumber in mapped) return mapped[items.FlightNumber].push(item);           
+            //   mapped[items.FlightNumber] = [item];
+            //   item.AirSegments.forEach(items => {
+            //     if (items.FlightNumber in mapped) return mapped[items.FlightNumber].push(item);
+              
+            //     mapped[items.FlightNumber] = [item];
+            //   });
+            // })
+
+            console.log('mapped--->',result)
+              setContracts(result)
+              setTotalContracts(result)
               setBookingKey(response.BookingKey)
             }
           }
@@ -235,8 +255,14 @@ export default function Searchresult() {
             if(response.Status===0){
               addToast("Fly24 API response : "+response.Error.ErrorDesc, { appearance: 'error' });
             }else{
-              setContracts(response.Contracts)
-              setTotalContracts(response.Contracts)
+              let result = response.Contracts.reduce(function (r, a) {
+                r[a.AirSegments[0].FlightNumber] = r[a.AirSegments[0].FlightNumber] || [];
+                r[a.AirSegments[0].FlightNumber].push(a);
+                return r;
+            }, Object.create(null));
+            console.log(result)
+              setContracts(result)
+              setTotalContracts(result)
               setBookingKey(response.BookingKey)
               setIsLoading(false)
             }   
