@@ -13,7 +13,7 @@ export default function bookingPage() {
     const [Contracts, setContracts] = useState({});
     const [isLoading, setIsLoading] = useState(false);
     const [userDetails, setUserDetails] = useState({});
-    const [formData, setFormData] = useState([{ Title: "Mr", FirstName: "", LastName: "", ContactNo: "", Email: "", State: "", Country: "" }]);
+    const [formData, setFormData] = useState([]);
     const [agencyKey, setAgencyKey] = useState("81854E61-DB4D-4BC1-87BC-D30DAC649886");
 
 
@@ -54,6 +54,7 @@ export default function bookingPage() {
             setContracts(JSON.parse(router.query.contractData))
             const travelForm = []
             for (let i = 1; i <= (parseInt(router.query.adultCount) + parseInt(router.query.childCount) + parseInt(router.query.InfantCount)); i++) {
+                formData[i-1] = { Title: "Mr", FirstName: "", LastName: "", ContactNo: "", Email: "", State: "", Country: "" }
                 travelForm.push(<>
                     <h4 class="heading_theme">Traveller {i}</h4>
                     <div class="row">
@@ -148,9 +149,9 @@ export default function bookingPage() {
                             bookingFormData.append("user_id", userDetails.id);
                             bookingFormData.append("TotalPrice", Contracts.AirlineFare.NetFare);
                             for (let i = 0; i < formData.length; i++) {
-                                formData[i].PaxFare = response.Sell.Contracts[0].PexFareDetails[i];
+                                formData[i].PaxFare = response.Sell.Contracts[0].PexFareDetails[0];
                                 formData[i].Gender = null;
-                                formData[i].PaxType = response.Sell.Contracts[0].PexFareDetails[i].PaxType;
+                                formData[i].PaxType = response.Sell.Contracts[0].PexFareDetails[0].PaxType;
                                 formData[i].DateOfBirth = moment(formData[i].DateOfBirth).format('DD-MM-YYYY');
                                 formData[i].PassportNo = null;
                                 formData[i].PassportExpiry = null;
