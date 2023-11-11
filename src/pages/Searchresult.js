@@ -87,46 +87,46 @@ export default function Searchresult() {
   const handlePassengerCount = (passengerType, operation) => {
     if (passengerType === 'adult' && operation === 'add') {
       let calculation = 0
-      calculation = oneWayTravelAdult + 1;
+      calculation = parseInt(oneWayTravelAdult) + 1;
       setOneWayTravelAdult(calculation);
-      setOneWayTravelTotalPassenger(calculation + oneWayTravelChildren + oneWayTravelInfant)
+      setOneWayTravelTotalPassenger(calculation + parseInt(oneWayTravelChildren) + parseInt(oneWayTravelInfant))
     }
     if (passengerType === 'adult' && operation === 'substract') {
       let calculation = 0;
-      calculation = oneWayTravelAdult - 1
+      calculation = parseInt(oneWayTravelAdult) - 1
       if (calculation > -1) {
         setOneWayTravelAdult(calculation)
-        setOneWayTravelTotalPassenger(calculation + oneWayTravelChildren + oneWayTravelInfant)
+        setOneWayTravelTotalPassenger(calculation + parseInt(oneWayTravelChildren) + parseInt(oneWayTravelInfant))
       }
     }
 
     if (passengerType === 'children' && operation === 'add') {
       let calculation = 0;
-      calculation = oneWayTravelChildren + 1
+      calculation = parseInt(oneWayTravelChildren) + 1
       setOneWayTravelChildren(calculation)
-      setOneWayTravelTotalPassenger(oneWayTravelAdult + calculation + oneWayTravelInfant)
+      setOneWayTravelTotalPassenger(parseInt(oneWayTravelAdult) + calculation + parseInt(oneWayTravelInfant))
     }
     if (passengerType === 'children' && operation === 'substract') {
       let calculation = 0;
-      calculation = oneWayTravelChildren - 1
+      calculation = parseInt(oneWayTravelChildren) - 1
       if (calculation > -1) {
         setOneWayTravelChildren(calculation)
-        setOneWayTravelTotalPassenger(oneWayTravelAdult + calculation + oneWayTravelInfant)
+        setOneWayTravelTotalPassenger(parseInt(oneWayTravelAdult) + calculation + parseInt(oneWayTravelInfant))
       }
     }
 
     if (passengerType === 'infant' && operation === 'add') {
       let calculation = 0;
-      calculation = oneWayTravelInfant + 1
+      calculation = parseInt(oneWayTravelInfant) + 1
       setOneWayTravelInfant(calculation)
-      setOneWayTravelTotalPassenger(oneWayTravelAdult + oneWayTravelChildren + calculation)
+      setOneWayTravelTotalPassenger(parseInt(oneWayTravelAdult) + parseInt(oneWayTravelChildren) + calculation)
     }
     if (passengerType === 'infant' && operation === 'substract') {
       let calculation = 0;
-      calculation = oneWayTravelInfant - 1
+      calculation = parseInt(oneWayTravelInfant) - 1
       if (calculation > -1) {
         setOneWayTravelInfant(calculation)
-        setOneWayTravelTotalPassenger(oneWayTravelAdult + oneWayTravelChildren + calculation)
+        setOneWayTravelTotalPassenger(parseInt(oneWayTravelAdult) + parseInt(oneWayTravelChildren) + calculation)
       }
     }
   }
