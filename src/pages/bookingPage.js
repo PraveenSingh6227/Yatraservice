@@ -137,6 +137,7 @@ export default function bookingPage() {
                             bookingFormData.append("action", "book_flight");
                             bookingFormData.append("BookingKey", bookingKey);
                             bookingFormData.append("ContractId", Contracts.ContractId);
+                            bookingFormData.append("Contracts", JSON.stringify(Contracts));
                             bookingFormData.append("APIToken", ApiToken);
                             bookingFormData.append("user_id", userDetails.id);
                             bookingFormData.append("TotalPrice", Contracts.AirlineFare.NetFare);

@@ -145,7 +145,7 @@ export default function bookingConfirmation() {
                                                             <li>Booking ID: <span>{Object.keys(router.query).length > 0 && '#' + BookingId}</span></li>
                                                             <li>Booking date: <span>{router.query !== null && Object.keys(router.query).length > 0 && moment(new Date()).format('DD-MM-YYYY')}</span></li>
                                                             {/* <li>Payment method: <span>Bank transfer</span></li> */}
-                                                            <li>Booking status: <span>Success</span></li>
+                                                            <li>Booking status: <span>{responseCode == -1 ? 'Pending' : 'Success' }</span></li>
                                                         </ul>
                                                         <ul>
                                                             <li>Traveller Price x {Contracts !== null && Object.keys(router.query).length > 0 && oneWayTotalTravellers} <span>{Object.keys(router.query).length > 0 && "Rs. " + Contracts.AirlineFare.BaseFare}</span></li>
