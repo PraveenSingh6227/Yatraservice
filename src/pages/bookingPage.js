@@ -56,7 +56,7 @@ export default function bookingPage() {
             for (let i = 1; i <= (parseInt(router.query.adultCount) + parseInt(router.query.childCount) + parseInt(router.query.InfantCount)); i++) {
                 formData[i-1] = { Title: "Mr", FirstName: "", LastName: "", ContactNo: "", Email: "", State: "", Country: "" }
                 travelForm.push(<>
-                    {i<=parseInt(router.query.adultCount) && (
+                    {/* {i<=parseInt(router.query.adultCount) && (
                     <h4 class="heading_theme">Adult {i}</h4>
                     )}
                     {i>parseInt(router.query.adultCount) && i<parseInt(router.query.childCount) && (
@@ -64,7 +64,8 @@ export default function bookingPage() {
                     )}
                     {i>parseInt(router.query.adultCount) && i<parseInt(router.query.childCount) && (
                     <h4 class="heading_theme">Infant {i}</h4>
-                    )}
+                    )} */}
+                    <h4 class="heading_theme">Traveller {i}</h4>
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="form-group">
