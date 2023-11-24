@@ -56,11 +56,19 @@ export default function bookingPage() {
             for (let i = 1; i <= (parseInt(router.query.adultCount) + parseInt(router.query.childCount) + parseInt(router.query.InfantCount)); i++) {
                 formData[i-1] = { Title: "Mr", FirstName: "", LastName: "", ContactNo: "", Email: "", State: "", Country: "" }
                 travelForm.push(<>
-                    <h4 class="heading_theme">Traveller {i}</h4>
+                    {i<=parseInt(router.query.adultCount) && (
+                    <h4 class="heading_theme">Adult {i}</h4>
+                    )}
+                    {i>parseInt(router.query.adultCount) && i<parseInt(router.query.childCount) && (
+                    <h4 class="heading_theme">Children {i}</h4>
+                    )}
+                    {i>parseInt(router.query.adultCount) && i<parseInt(router.query.childCount) && (
+                    <h4 class="heading_theme">Infant {i}</h4>
+                    )}
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="form-group">
-                                <select name='Title' onChange={(e) => handleFieldChange(e, i)} class="form-control form-select bg_input">
+                                <select name='Title' onChange={(e) => handleFieldChange(e, i)} class="form-control form-select bg_input" required>
                                     <option value="Mr">Mr</option>
                                     <option value="Ms">Ms</option>
                                 </select>
@@ -69,51 +77,34 @@ export default function bookingPage() {
                         <div class="col-lg-6">
                             <div class="form-group">
                                 <input name='FirstName' type="text" onChange={(e) => handleFieldChange(e, i)} class="form-control bg_input"
-                                    placeholder="First name*" />
+                                    placeholder="First name*" required />
                             </div>
                         </div>
                         <div class="col-lg-6">
                             <div class="form-group">
                                 <input type="text" name='LastName' onChange={(e) => handleFieldChange(e, i)} class="form-control bg_input"
-                                    placeholder="Last name*" />
+                                    placeholder="Last name*" required />
                             </div>
                         </div>
                         <div class="col-lg-6">
                             <div class="form-group">
                                 <input type="date" name='DateOfBirth' onChange={(e) => handleFieldChange(e, i)} class="form-control bg_input"
-                                    placeholder="Last name*" />
+                                    placeholder="DOB*" required />
                             </div>
                         </div>
                         <div class="col-lg-6">
                             <div class="form-group">
                                 <input type="text" name='Email' onChange={(e) => handleFieldChange(e, i)} class="form-control bg_input"
-                                    placeholder="Email address" />
+                                    placeholder="Email address" required />
                             </div>
                         </div>
                         <div class="col-lg-6">
                             <div class="form-group">
                                 <input type="text" name='ContactNo' onChange={(e) => handleFieldChange(e, i)} class="form-control bg_input"
-                                    placeholder="Mobile number*" />
+                                    placeholder="Mobile number*" required />
                             </div>
                         </div>
-                        <div class="col-lg-12">
-                            <div class="form-group">
-                                <input type="text" name='address' onChange={(e) => handleFieldChange(e, i)} class="form-control bg_input"
-                                    placeholder="Your address" />
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <input type="text" name='state' onChange={(e) => handleFieldChange(e, i)} class="form-control bg_input"
-                                    placeholder="State" />
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <input type="text" name='country' onChange={(e) => handleFieldChange(e, i)} class="form-control bg_input"
-                                    placeholder="Country" />
-                            </div>
-                        </div>
+
                     </div>
                 </>);
             }
@@ -178,7 +169,8 @@ export default function bookingPage() {
                                               childCount: router.query.childCount,
                                               InfantCount: router.query.InfantCount,
                                               formData: JSON.stringify(formData),
-                                              bookingId: response.BookingId
+                                              bookingId: response.BookingId,
+                                              responseStatus: response.Error.ErrorCode
                                             }
                                           }, '/bookingConfirmation');
                                     }

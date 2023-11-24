@@ -14,18 +14,19 @@ export default function bookingConfirmation() {
     const [isLoading, setIsLoading] = useState(true);
     const [BookingId, setBookingId] = useState("");
     const [userDetails, setUserDetails] = useState({});
+    const [responseCode, setResponseCode] = useState("");
 
 
-     useEffect(() => {
+    useEffect(() => {
         if (Object.keys(router.query).length === 0) {
             router.push('/');
         }
         if (
             localStorage.getItem('userDetails') &&
             localStorage.getItem('userDetails') !== undefined
-          ) {
+        ) {
             setUserDetails(JSON.parse(localStorage.getItem('userDetails')));
-          }
+        }
     }, [])
 
     useEffect(() => {
@@ -33,6 +34,8 @@ export default function bookingConfirmation() {
             setContracts(JSON.parse(router.query.contractData))
             setFormData(JSON.parse(router.query.formData))
             setBookingId(router.query.bookingId)
+            console.log('router.query.responseStatus--->',router.query.responseStatus)
+            setResponseCode(router.query.responseStatus)
             setOneWayTotalTravellers(parseInt(router.query.adultCount) + parseInt(router.query.childCount) + parseInt(router.query.InfantCount))
         }
         setIsLoading(false)
@@ -90,13 +93,27 @@ export default function bookingConfirmation() {
                                         <div class="tou_booking_form_Wrapper">
                                             <div class="tour_booking_form_box mb-4">
                                                 <div class="booking_success_arae">
-                                                    <div class="booking_success_img">
-                                                        <img src="assets/img/icon/right.png" alt="img" />
-                                                    </div>
-                                                    <div class="booking_success_text">
-                                                        <h3>{userDetails.name}, your order was submitted successfully!</h3>
-                                                        <h6>Your booking details has been sent to: {userDetails.email}</h6>
-                                                    </div>
+                                                    {responseCode == -1 ? (
+                                                        <>
+                                                            <div class="booking_success_img" style={{width:'10%'}}>
+                                                                <img src="assets/img/icon/pending-icon.png" alt="img" />
+                                                            </div>
+                                                            <div class="booking_success_text">
+                                                                <h3>{userDetails.name}, your booking is pending with us!</h3>
+                                                                <h6>If the airline confirms your booking then details will be been sent to: {userDetails.email}</h6>
+                                                            </div>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <div class="booking_success_img">
+                                                                <img src="assets/img/icon/right.png" alt="img" />
+                                                            </div>
+                                                            <div class="booking_success_text">
+                                                                <h3>{userDetails.name}, your order was submitted successfully!</h3>
+                                                                <h6>Your booking details has been sent to: {userDetails.email}</h6>
+                                                            </div>
+                                                        </>
+                                                    )}
                                                 </div>
                                             </div>
                                             <div class="booking_tour_form">
@@ -110,11 +127,6 @@ export default function bookingConfirmation() {
                                                                 class="last_name">{router.query !== null && Object.keys(router.query).length > 0 && formData.length > 0 && formData[0].LastName}</span></li>
                                                             <li><span class="name_first">Email address:</span> <span
                                                                 class="last_name">{router.query !== null && Object.keys(router.query).length > 0 && formData.length > 0 && formData[0].Email}</span></li>
-                                                            <li><span class="name_first">Address:</span> <span class="last_name">{router.query !== null && Object.keys(router.query).length > 0 && formData.length > 0 && formData[0].address}</span></li>
-                                                            <li><span class="name_first">State:</span> <span class="last_name">{router.query !== null && Object.keys(router.query).length > 0 && formData.length > 0 && formData[0].state}</span>
-                                                            </li>
-                                                            <li><span class="name_first">Country:</span> <span class="last_name">{router.query !== null && Object.keys(router.query).length > 0 && formData.length > 0 && formData[0].country}</span>
-                                                            </li>
                                                         </ul>
                                                     </div>
                                                 </div>

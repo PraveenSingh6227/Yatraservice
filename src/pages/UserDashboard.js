@@ -18,6 +18,8 @@ export default function UserDashboard() {
     const [userDetails, setUserDetails] = useState({});
     const [isLoading, setIsLoading] = useState(false);
     const [myBookings, setMyBookings] = useState([]);
+    const [confirmBooking, setConfirmBooking] = useState([]);
+    const [pendingBooking, setPendingBooking] = useState([]);
 
     useEffect(() => {
         if (
@@ -44,6 +46,8 @@ export default function UserDashboard() {
           setIsLoading(false)
           if (response !== null) {
             setMyBookings(response.booking)
+            setConfirmBooking(response.completeBooking)
+            setPendingBooking(response.pendingBooking)
           }
         })
       }
@@ -163,8 +167,8 @@ export default function UserDashboard() {
                                                             <i class="fas fa-shopping-bag"></i>
                                                         </div>
                                                         <div class="dashboard_top_text">
-                                                            <h3>Total bookings</h3>
-                                                            <h1>{myBookings.length}</h1>
+                                                            <h3>Confirmed bookings</h3>
+                                                            <h1>{confirmBooking}</h1>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -175,7 +179,7 @@ export default function UserDashboard() {
                                                         </div>
                                                         <div class="dashboard_top_text">
                                                             <h3>Pending bookings</h3>
-                                                            <h1>0</h1>
+                                                            <h1>{pendingBooking}</h1>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -200,16 +204,30 @@ export default function UserDashboard() {
                                                     {myBookings.map((item, i) => (
                                                         <tr>
                                                             <td>{i+1}</td>
-                                                            <td>{JSON.parse(item.booking_response).BookingId}</td>
+                                                            {/* <td>{JSON.parse(item.booking_response).BookingId}</td> */}
+                                                            <td>{item.booking_id}</td>
                                                             <td>Flight</td>
                                                             <td>{'Rs. '+item.total_price}</td>
-                                                            <td class="complete">Completed</td>
+                                                            {/* <td class="complete">{JSON.parse(item.booking_response).BookingId ? 'Completed' : 'Pending'}</td> */}
+                                                            <td>
+                                                            {JSON.parse(item.booking_response).BookingId ? (
+                                                                <p style={{color:'#21be1d'}}>Confirmed</p>
+                                                            ):(
+                                                                <p style={{color:'#f3ae0b'}}>Pending</p>
+                                                            )}
+                                                            </td>
                                                             <td>{moment(new Date(item.created_at)).format('DD-MM-YYYY h:mm a')}</td>
-                                                            <td><Link 
+                                                            <td>
+                                                            {JSON.parse(item.booking_response).BookingId ? (
+                                                                <Link 
                                                             // href={`downloadTicket/${item.id}`} 
                                                             href="/[id]"
                                                             as={`ticket/${item.id}`}
-                                                            target='_bank'><i class="fas fa-print"></i></Link></td>
+                                                            target='_bank'><i class="fas fa-print"></i></Link>
+                                                            ) : (
+                                                                <p>N/A</p>
+                                                            )}
+                                                            </td>
                                                         </tr>
                                                     ))}
                                                         {/* <tr>
