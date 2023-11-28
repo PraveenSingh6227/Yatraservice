@@ -59,6 +59,7 @@ export default function Searchresult() {
       setOneWayTo(router.query.oneWayTo)
       setOneWayToData(router.query.oneWayToData)
       setOneWayTravelDate(router.query.oneWayTravelDate)
+      setRoundTripReturnDate(router.query.oneWayReturnDate)
       setOneWayTravelDay(moment(router.query.oneWayTravelDate).format('dddd'))
       setRoundTripReturnDay(moment(router.query.returnTravelDate).add(1,'day').format('dddd'))
       setOneWayTravelTotalPassenger(router.query.oneWayTravelTotalPassenger)
@@ -406,7 +407,7 @@ export default function Searchresult() {
                             <ul className="nav nav-tabs" role="tablist">
                               <li className="nav-item" role="presentation">
                                 <button
-                                  className="nav-link active"
+                                  className={`nav-link ${router.query.oneWayReturnDate ? '' : 'active'}`}
                                   id="oneway-tab"
                                   data-bs-toggle="tab"
                                   data-bs-target="#oneway_flight"
@@ -421,7 +422,7 @@ export default function Searchresult() {
                               </li>
                               <li className="nav-item" role="presentation">
                                 <button
-                                  className="nav-link"
+                                  className={`nav-link ${router.query.oneWayReturnDate ? 'active' : ''}`}
                                   id="roundtrip-tab"
                                   data-bs-toggle="tab"
                                   data-bs-target="#roundtrip"
@@ -454,7 +455,7 @@ export default function Searchresult() {
                       </div>
                       <div className="tab-content" id="myTabContent1">
                         <div
-                          className="tab-pane fade show active"
+                          className={`tab-pane fade show ${router.query.oneWayReturnDate ? '' : 'active'}`}
                           id="oneway_flight"
                           role="tabpanel"
                           aria-labelledby="oneway-tab"
@@ -695,7 +696,7 @@ export default function Searchresult() {
                           </div>
                         </div>
                         <div
-                          className="tab-pane fade"
+                          className={`tab-pane fade show ${router.query.oneWayReturnDate ? 'active' : ''}`}
                           id="roundtrip"
                           role="tabpanel"
                           aria-labelledby="roundtrip-tab"
