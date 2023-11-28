@@ -210,7 +210,7 @@ export default function UserDashboard() {
                                                             <td>{'Rs. '+item.total_price}</td>
                                                             {/* <td class="complete">{JSON.parse(item.booking_response).BookingId ? 'Completed' : 'Pending'}</td> */}
                                                             <td>
-                                                            {JSON.parse(item.booking_response).BookingId ? (
+                                                            {Object.keys(item.booking_response).length > 0 && JSON.parse(item.booking_response).BookingId ? (
                                                                 <p style={{color:'#21be1d'}}>Confirmed</p>
                                                             ):(
                                                                 <p style={{color:'#f3ae0b'}}>Pending</p>
@@ -218,7 +218,7 @@ export default function UserDashboard() {
                                                             </td>
                                                             <td>{moment(new Date(item.created_at)).format('DD-MM-YYYY h:mm a')}</td>
                                                             <td>
-                                                            {JSON.parse(item.booking_response).BookingId ? (
+                                                            {Object.keys(item.booking_response).length > 0 && JSON.parse(item.booking_response).BookingId ? (
                                                                 <Link 
                                                             // href={`downloadTicket/${item.id}`} 
                                                             href="/[id]"

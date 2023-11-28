@@ -93,7 +93,7 @@ export default function bookingConfirmation() {
                                         <div class="tou_booking_form_Wrapper">
                                             <div class="tour_booking_form_box mb-4">
                                                 <div class="booking_success_arae">
-                                                    {responseCode == -1 ? (
+                                                    {responseCode == -1 || responseCode == null ? (
                                                         <>
                                                             <div class="booking_success_img" style={{width:'10%'}}>
                                                                 <img src="assets/img/icon/pending-icon.png" alt="img" />

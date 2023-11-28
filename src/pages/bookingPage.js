@@ -309,22 +309,34 @@ export default function bookingPage() {
                                 body: bookingFormData
                             }).then((response) => response.json()).then((response) => {
                                 if (response !== null) {
-                                    if (response.Status === 0) {
-                                        addToast("Fly24 API response : " + response.Error.ErrorDesc, { appearance: 'error' });
-                                    } else {
-                                        router.push({
-                                            pathname: '/bookingConfirmation',
-                                            query: {
-                                              contractData: JSON.stringify(Contracts),
-                                              adultCount: router.query.adultCount,
-                                              childCount: router.query.childCount,
-                                              InfantCount: router.query.InfantCount,
-                                              formData: JSON.stringify(combinedFormData),
-                                              bookingId: response.BookingId,
-                                              responseStatus: response.Error.ErrorCode
-                                            }
-                                          }, '/bookingConfirmation');
-                                    }
+                                    // if (response.Status === 0) {
+                                    //     addToast("Fly24 API response : " + response.Error.ErrorDesc, { appearance: 'error' });
+                                    // } else {
+                                    //     router.push({
+                                    //         pathname: '/bookingConfirmation',
+                                    //         query: {
+                                    //           contractData: JSON.stringify(Contracts),
+                                    //           adultCount: router.query.adultCount,
+                                    //           childCount: router.query.childCount,
+                                    //           InfantCount: router.query.InfantCount,
+                                    //           formData: JSON.stringify(combinedFormData),
+                                    //           bookingId: response.BookingId,
+                                    //           responseStatus: response.Error.ErrorCode
+                                    //         }
+                                    //       }, '/bookingConfirmation');
+                                    // }
+                                    router.push({
+                                        pathname: '/bookingConfirmation',
+                                        query: {
+                                          contractData: JSON.stringify(Contracts),
+                                          adultCount: router.query.adultCount,
+                                          childCount: router.query.childCount,
+                                          InfantCount: router.query.InfantCount,
+                                          formData: JSON.stringify(combinedFormData),
+                                          bookingId: response.BookingId,
+                                          responseStatus: response.Error.ErrorCode
+                                        }
+                                      }, '/bookingConfirmation');
                                 }
                                 setIsLoading(false)
                             })
