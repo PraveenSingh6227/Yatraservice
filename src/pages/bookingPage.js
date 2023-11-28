@@ -13,7 +13,11 @@ export default function bookingPage() {
     const [Contracts, setContracts] = useState({});
     const [isLoading, setIsLoading] = useState(false);
     const [userDetails, setUserDetails] = useState({});
-    const [formData, setFormData] = useState([]);
+    const [contactData, setContactData] = useState("");
+    const [emailData, setEmailData] = useState("");
+    const [formAdultData, setAdultFormData] = useState([]);
+    const [formChildrenData, setChildrenFormData] = useState([]);
+    const [formInfantData, setInfantFormData] = useState([]);
     const [agencyKey, setAgencyKey] = useState("81854E61-DB4D-4BC1-87BC-D30DAC649886");
 
 
@@ -25,6 +29,9 @@ export default function bookingPage() {
     const [oneWayTravelAdult, setOneWayTravelAdult] = useState(0);
     const [oneWayTravelChildren, setOneWayTravelChildren] = useState(0);
     const [oneWayTravelInfant, setOneWayTravelInfant] = useState(0);
+    const [formMergeAdultData, setFormMergeAdultData] = useState([]);
+    const [formMergeChildrenData, setFormMergeChildrenData] = useState([]);
+    const [formMergeInfantData, setFormMergeInfantData] = useState([]);
     const [oneWayTravelCabinClass, setOneWayTravelCabinClass] = useState("Economy");
     const [bookingKey, setBookingKey] = useState("");
     const [oneWayTotalTravellers, setOneWayTotalTravellers] = useState([]);
@@ -41,35 +48,40 @@ export default function bookingPage() {
           }
     }, [])
 
-    const handleFieldChange = (e, i) => {
+    const handleFieldChangeAdult = (e, i) => {
         const field = e.target.name;
-        const newFormData = [...formData];
+        const newFormData = [...formAdultData];
         newFormData[i - 1][field] = e.target.value;
-        setFormData(newFormData);
+        setFormMergeAdultData(newFormData);
+    };
+    const handleFieldChangeChildren = (e, i) => {
+        const field = e.target.name;
+        const newFormData = [...formChildrenData];
+        newFormData[i - 1][field] = e.target.value;
+        setFormMergeChildrenData(newFormData);
+    };
+    const handleFieldChangeInfant = (e, i) => {
+        const field = e.target.name;
+        const newFormData = [...formInfantData];
+        newFormData[i - 1][field] = e.target.value;
+        setFormMergeInfantData(newFormData);
     };
 
     useEffect(() => {
         if (Object.keys(router.query).length > 0) {
             setBookingKey(router.query.bookingKey)
             setContracts(JSON.parse(router.query.contractData))
-            const travelForm = []
-            for (let i = 1; i <= (parseInt(router.query.adultCount) + parseInt(router.query.childCount) + parseInt(router.query.InfantCount)); i++) {
-                formData[i-1] = { Title: "Mr", FirstName: "", LastName: "", ContactNo: "", Email: "", State: "", Country: "" }
-                travelForm.push(<>
-                    {/* {i<=parseInt(router.query.adultCount) && (
+            const adultForm = []
+            const childrenForm = []
+            const infantForm = []
+            for (let i = 1; i <= parseInt(router.query.adultCount); i++) {
+                formAdultData[i-1] = { Title: "Mr", FirstName: "", LastName: "", ContactNo: "", Email: "", State: "", Country: "" }
+                adultForm.push(<>
                     <h4 class="heading_theme">Adult {i}</h4>
-                    )}
-                    {i>parseInt(router.query.adultCount) && i<parseInt(router.query.childCount) && (
-                    <h4 class="heading_theme">Children {i}</h4>
-                    )}
-                    {i>parseInt(router.query.adultCount) && i<parseInt(router.query.childCount) && (
-                    <h4 class="heading_theme">Infant {i}</h4>
-                    )} */}
-                    <h4 class="heading_theme">Traveller {i}</h4>
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="form-group">
-                                <select name='Title' onChange={(e) => handleFieldChange(e, i)} class="form-control form-select bg_input" required>
+                                <select name='Title' onChange={(e) => handleFieldChangeAdult(e, i)} class="form-control form-select bg_input" required>
                                     <option value="Mr">Mr</option>
                                     <option value="Ms">Ms</option>
                                 </select>
@@ -77,39 +89,99 @@ export default function bookingPage() {
                         </div>
                         <div class="col-lg-6">
                             <div class="form-group">
-                                <input name='FirstName' type="text" onChange={(e) => handleFieldChange(e, i)} class="form-control bg_input"
+                                <input name='FirstName' type="text" onChange={(e) => handleFieldChangeAdult(e, i)} class="form-control bg_input"
                                     placeholder="First name*" required />
                             </div>
                         </div>
                         <div class="col-lg-6">
                             <div class="form-group">
-                                <input type="text" name='LastName' onChange={(e) => handleFieldChange(e, i)} class="form-control bg_input"
+                                <input type="text" name='LastName' onChange={(e) => handleFieldChangeAdult(e, i)} class="form-control bg_input"
                                     placeholder="Last name*" required />
                             </div>
                         </div>
                         <div class="col-lg-6">
                             <div class="form-group">
-                                <input type="date" name='DateOfBirth' onChange={(e) => handleFieldChange(e, i)} class="form-control bg_input"
+                                <input type="date" name='DateOfBirth' max={moment(new Date('2013-12-31')).format('YYYY-MM-DD')} onChange={(e) => handleFieldChangeAdult(e, i)} class="form-control bg_input"
                                     placeholder="DOB*" required />
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <input type="text" name='Email' onChange={(e) => handleFieldChange(e, i)} class="form-control bg_input"
-                                    placeholder="Email address" required />
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <input type="text" name='ContactNo' onChange={(e) => handleFieldChange(e, i)} class="form-control bg_input"
-                                    placeholder="Mobile number*" required />
                             </div>
                         </div>
 
                     </div>
                 </>);
             }
-            setOneWayTotalTravellers(travelForm)
+            for (let i = 1; i <=  parseInt(router.query.childCount); i++) {
+                formChildrenData[i-1] = { Title: "Mr", FirstName: "", LastName: "", ContactNo: "", Email: "", State: "", Country: "" }
+                childrenForm.push(<>
+                    <h4 class="heading_theme">Children {i}</h4>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <select name='Title' onChange={(e) => handleFieldChangeChildren(e, i)} class="form-control form-select bg_input" required>
+                                    <option value="Mr">Mr</option>
+                                    <option value="Ms">Ms</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <input name='FirstName' type="text" onChange={(e) => handleFieldChangeChildren(e, i)} class="form-control bg_input"
+                                    placeholder="First name*" required />
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <input type="text" name='LastName' onChange={(e) => handleFieldChangeChildren(e, i)} class="form-control bg_input"
+                                    placeholder="Last name*" required />
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <input type="date" name='DateOfBirth' min={moment(new Date('2011-01-01')).format('YYYY-MM-DD')} max={moment(new Date('2021-12-31')).format('YYYY-MM-DD')} onChange={(e) => handleFieldChangeChildren(e, i)} class="form-control bg_input"
+                                    placeholder="DOB*" required />
+                            </div>
+                        </div>
+
+                    </div>
+                </>);
+            }
+            for (let i = 1; i <= parseInt(router.query.InfantCount); i++) {
+                formInfantData[i-1] = { Title: "Mr", FirstName: "", LastName: "", ContactNo: "", Email: "", State: "", Country: "" }
+                infantForm.push(<>
+                    <h4 class="heading_theme">Infant {i}</h4>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <select name='Title' onChange={(e) => handleFieldChangeInfant(e, i)} class="form-control form-select bg_input" required>
+                                    <option value="Mr">Mr</option>
+                                    <option value="Ms">Ms</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <input name='FirstName' type="text" onChange={(e) => handleFieldChangeInfant(e, i)} class="form-control bg_input"
+                                    placeholder="First name*" required />
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <input type="text" name='LastName' onChange={(e) => handleFieldChangeInfant(e, i)} class="form-control bg_input"
+                                    placeholder="Last name*" required />
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <input type="date" name='DateOfBirth'  min={moment(new Date('2021-01-01')).format('YYYY-MM-DD')} max={moment(new Date()).format('YYYY-MM-DD')} onChange={(e) => handleFieldChangeInfant(e, i)} class="form-control bg_input"
+                                    placeholder="DOB*" required />
+                            </div>
+                        </div>
+
+                    </div>
+                </>);
+            }
+            setAdultFormData(adultForm)
+            setChildrenFormData(childrenForm)
+            setInfantFormData(infantForm)
         }
     }, [router.query]);
 
@@ -131,8 +203,8 @@ export default function bookingPage() {
                     await fetch("https://vrcwebsolutions.com/yatra/api/api.php", {
                         method: 'POST',
                         body: bodyFormData
-                    }).then((response) => response.json()).then(async (response) => {
-                        if(response.Sell!==null){
+                    }).then((response) => response.json()).then(async (responseSell) => {
+                        if(responseSell.Sell!==null){
                             let bookingFormData = new FormData();
                             bookingFormData.append("action", "book_flight");
                             bookingFormData.append("BookingKey", bookingKey);
@@ -141,20 +213,97 @@ export default function bookingPage() {
                             bookingFormData.append("APIToken", ApiToken);
                             bookingFormData.append("user_id", userDetails.id);
                             bookingFormData.append("TotalPrice", Contracts.AirlineFare.NetFare);
-                            for (let i = 0; i < formData.length; i++) {
-                                formData[i].PaxFare = response.Sell.Contracts[0].PexFareDetails[0];
-                                formData[i].Gender = null;
-                                formData[i].PaxType = response.Sell.Contracts[0].PexFareDetails[0].PaxType;
-                                formData[i].DateOfBirth = moment(formData[i].DateOfBirth).format('DD-MM-YYYY');
-                                formData[i].PassportNo = null;
-                                formData[i].PassportExpiry = null;
-                                formData[i].IsLeadPax = true;
-                                formData[i].MealCode = "";
-                                formData[i].BaggageCode = "";
-                                formData[i].SeatCode = "";
-                                formData[i].TicketNumber = null;
+                            let adultPexFare = responseSell.Sell.Contracts[0].PexFareDetails.filter((el) => el.PaxType == 1)
+                            console.log('responseSell.Sell.Contracts[0].PexFareDetails--->',responseSell.Sell.Contracts[0].PexFareDetails)
+                            if(adultPexFare.length>0){
+                                adultPexFare[0].PaxType = 1;
+                                adultPexFare[0].BaseFare = (adultPexFare[0].BaseFare)/adultPexFare[0].TotPax;
+                                adultPexFare[0].TaxFare = (adultPexFare[0].TaxFare)/adultPexFare[0].TotPax;
+                                adultPexFare[0].YQTax = (adultPexFare[0].YQTax)/adultPexFare[0].TotPax;
+                                adultPexFare[0].GrossFare =(adultPexFare[0].GrossFare)/adultPexFare[0].TotPax;
+                                adultPexFare[0].NetFare = (adultPexFare[0].NetFare)/adultPexFare[0].TotPax;
+                                adultPexFare[0].ServiceCharge = (adultPexFare[0].ServiceCharge)/adultPexFare[0].TotPax;
+                                adultPexFare[0].TotPax = 1;
                             }
-                            bookingFormData.append("Flightpassenger", JSON.stringify(formData));
+                           
+                            console.log('adultPexFare--->',adultPexFare)
+                            let childrenPexFare = responseSell.Sell.Contracts[0].PexFareDetails.filter((el) => el.PaxType == 2)
+
+                            if(childrenPexFare.length>0){
+                                childrenPexFare[0].PaxType = 2;
+                                childrenPexFare[0].BaseFare = (childrenPexFare[0].BaseFare)/childrenPexFare[0].TotPax;
+                                childrenPexFare[0].TaxFare = (childrenPexFare[0].TaxFare)/childrenPexFare[0].TotPax;
+                                childrenPexFare[0].YQTax = (childrenPexFare[0].YQTax)/childrenPexFare[0].TotPax;
+                                childrenPexFare[0].GrossFare =(childrenPexFare[0].GrossFare)/childrenPexFare[0].TotPax;
+                                childrenPexFare[0].NetFare = (childrenPexFare[0].NetFare)/childrenPexFare[0].TotPax;
+                                childrenPexFare[0].ServiceCharge = (childrenPexFare[0].ServiceCharge)/childrenPexFare[0].TotPax;
+                                childrenPexFare[0].TotPax = 1;
+                            }    
+                            console.log('childrenPexFare--->',childrenPexFare)
+
+                            let infantPexFare = responseSell.Sell.Contracts[0].PexFareDetails.filter((el) => el.PaxType == 3)
+
+                            if(infantPexFare.length>0){
+                                infantPexFare[0].PaxType = 3;
+                                infantPexFare[0].BaseFare = (infantPexFare[0].BaseFare)/infantPexFare[0].TotPax;
+                                infantPexFare[0].TaxFare = (infantPexFare[0].TaxFare)/infantPexFare[0].TotPax;
+                                infantPexFare[0].YQTax = (infantPexFare[0].YQTax)/infantPexFare[0].TotPax;
+                                infantPexFare[0].GrossFare =(infantPexFare[0].GrossFare)/infantPexFare[0].TotPax;
+                                infantPexFare[0].NetFare = (infantPexFare[0].NetFare)/infantPexFare[0].TotPax;
+                                infantPexFare[0].ServiceCharge = (infantPexFare[0].ServiceCharge)/infantPexFare[0].TotPax;
+                                infantPexFare[0].TotPax = 1;
+                            }
+                            console.log('infantPexFare--->',infantPexFare)
+
+                            for (let i = 0; i < formMergeAdultData.length; i++) {
+                                formMergeAdultData[i].PaxFare = adultPexFare[0];
+                                formMergeAdultData[i].Gender = null;
+                                formMergeAdultData[i].PaxType = 1;
+                                formMergeAdultData[i].DateOfBirth = moment(formMergeAdultData[i].DateOfBirth).format('DD-MM-YYYY');
+                                formMergeAdultData[i].PassportNo = null;
+                                formMergeAdultData[i].ContactNo = contactData;
+                                formMergeAdultData[i].Email = emailData;
+                                formMergeAdultData[i].PassportExpiry = null;
+                                formMergeAdultData[i].IsLeadPax = true;
+                                formMergeAdultData[i].MealCode = "";
+                                formMergeAdultData[i].BaggageCode = "";
+                                formMergeAdultData[i].SeatCode = "";
+                                formMergeAdultData[i].TicketNumber = null;
+                            }
+
+                            for (let i = 0; i < formMergeChildrenData.length; i++) {
+                                formMergeChildrenData[i].PaxFare = childrenPexFare[0];
+                                formMergeChildrenData[i].Gender = null;
+                                formMergeChildrenData[i].PaxType = 2;
+                                formMergeChildrenData[i].DateOfBirth = moment(formMergeChildrenData[i].DateOfBirth).format('DD-MM-YYYY');
+                                formMergeChildrenData[i].PassportNo = null;
+                                formMergeChildrenData[i].ContactNo = contactData;
+                                formMergeChildrenData[i].Email = emailData;
+                                formMergeChildrenData[i].PassportExpiry = null;
+                                formMergeChildrenData[i].IsLeadPax = true;
+                                formMergeChildrenData[i].MealCode = "";
+                                formMergeChildrenData[i].BaggageCode = "";
+                                formMergeChildrenData[i].SeatCode = "";
+                                formMergeChildrenData[i].TicketNumber = null;
+                            }
+
+                            for (let i = 0; i < formMergeInfantData.length; i++) {
+                                formMergeInfantData[i].PaxFare = infantPexFare[0];
+                                formMergeInfantData[i].Gender = null;
+                                formMergeInfantData[i].PaxType = 3;
+                                formMergeInfantData[i].DateOfBirth = moment(formMergeInfantData[i].DateOfBirth).format('DD-MM-YYYY');
+                                formMergeInfantData[i].PassportNo = null;
+                                formMergeInfantData[i].ContactNo = contactData;
+                                formMergeInfantData[i].Email = emailData;
+                                formMergeInfantData[i].PassportExpiry = null;
+                                formMergeInfantData[i].IsLeadPax = true;
+                                formMergeInfantData[i].MealCode = "";
+                                formMergeInfantData[i].BaggageCode = "";
+                                formMergeInfantData[i].SeatCode = "";
+                                formMergeInfantData[i].TicketNumber = null;
+                            }
+                            let combinedFormData = [...formMergeAdultData,...formMergeChildrenData,...formMergeInfantData]
+                            bookingFormData.append("Flightpassenger", JSON.stringify(combinedFormData));
                             await fetch("https://vrcwebsolutions.com/yatra/api/api.php", {
                                 method: 'POST',
                                 body: bookingFormData
@@ -170,7 +319,7 @@ export default function bookingPage() {
                                               adultCount: router.query.adultCount,
                                               childCount: router.query.childCount,
                                               InfantCount: router.query.InfantCount,
-                                              formData: JSON.stringify(formData),
+                                              formData: JSON.stringify(combinedFormData),
                                               bookingId: response.BookingId,
                                               responseStatus: response.Error.ErrorCode
                                             }
@@ -250,7 +399,26 @@ export default function bookingPage() {
                                                     <form id="tour_bookking_form_item">
                                                         {(Contracts !== null && Object.keys(Contracts).length > 0) && (
                                                             <>
-                                                                {oneWayTotalTravellers}
+                                                                {formAdultData}
+                                                                {formChildrenData}
+                                                                {formInfantData}
+                                                                    <div class="row">
+                                                                        <div class="col-lg-12">
+                                                                            <h4 class="heading_theme">Contact Details</h4>
+                                                                        </div>
+                                                                        <div class="col-lg-6">
+                                                                            <div class="form-group">
+                                                                                <input type="text" name='Email' onChange={(e) => setEmailData(e.target.value)} class="form-control bg_input"
+                                                                                    placeholder="Email address" required />
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-lg-6">
+                                                                            <div class="form-group">
+                                                                                <input type="text" name='ContactNo' onChange={(e) => setContactData(e.target.value)} class="form-control bg_input"
+                                                                                    placeholder="Mobile number*" required />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
                                                             </>
                                                         )}
                                                     </form>
