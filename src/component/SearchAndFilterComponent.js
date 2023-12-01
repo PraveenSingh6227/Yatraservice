@@ -673,20 +673,20 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
                                 return (
                                   <>
                                     {showNetFare ? (
-                                      <div class="form-check">
-                                        <input
-                                          class="form-check-input"
-                                          type="radio"
-                                          name={`radio_${index}`}
-                                          value={`${item3.ContractId}`}
-                                          onClick={(e) => setSelectedContract(item3)}
-                                        />
-                                        <label class="form-check-label">
-                                          <span class="area_flex_one">
-                                            <span style={{ textTransform: 'uppercase' }}>({item3.FareType}) Rs. {item3.AirlineFare.NetFare}</span>
-                                          </span>
-                                        </label>
-                                      </div>
+                                    <div class="form-check">
+                                    <input
+                                      class="form-check-input"
+                                      type="radio"
+                                      name={`radio_${index}`}
+                                      value={`${item3.ContractId}`}
+                                      onClick={(e) => setSelectedContract(item3)}
+                                    />
+                                    <label class="form-check-label">
+                                      <span class="area_flex_one">
+                                        <span style={{ textTransform: 'uppercase' }}>({item3.FareType}) Rs. {item3.AirlineFare.BaseFare}</span>
+                                      </span>
+                                    </label>
+                                    </div>
                                     ) : (
                                       <div class="form-check">
                                         <input
@@ -698,7 +698,7 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
                                         />
                                         <label class="form-check-label">
                                           <span class="area_flex_one">
-                                            <span style={{ textTransform: 'uppercase' }}>({item3.FareType}) Rs. {item3.AirlineFare.BaseFare}</span>
+                                            <span style={{ textTransform: 'uppercase' }}>({item3.FareType}) Rs. {item3.AirlineFare.NetFare}</span>
                                           </span>
                                         </label>
                                       </div>
