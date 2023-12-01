@@ -185,8 +185,31 @@ export default function bookingPage() {
         }
     }, [router.query]);
 
+    const checkUser = async () => {
+        let bodyFormData = new FormData();
+        if (
+            localStorage.getItem('userDetails') &&
+            localStorage.getItem('userDetails') !== undefined
+          ) {
+            bodyFormData.append("action", "user_details");
+            bodyFormData.append("user_id", userDetails.id);
+            await fetch("https://vrcwebsolutions.com/yatra/api/api.php", {
+                method: 'POST',
+                body: bodyFormData
+            }).then((response) => response.json()).then(async (responseUser) => {
+                localStorage.setItem('userDetails', JSON.stringify(responseUser.user));
+            })  
+          }
+       
+    }    
+
     const handleSubmit = async () => {
         setIsLoading(true)
+        if(userDetails.wallet < Contracts.AirlineFare.NetFare){
+            setIsLoading(false)
+            addToast("Error : Your wallet balance is not enough to buy this ticket", { appearance: 'error' });
+            return
+        }
         let bodyFormData = new FormData();
         let ApiToken = ""
         bodyFormData.append("action", "pax_details");
@@ -208,6 +231,7 @@ export default function bookingPage() {
                             let bookingFormData = new FormData();
                             bookingFormData.append("action", "book_flight");
                             bookingFormData.append("BookingKey", bookingKey);
+                            bookingFormData.append("user_wallet", userDetails.wallet);
                             bookingFormData.append("ContractId", Contracts.ContractId);
                             bookingFormData.append("Contracts", JSON.stringify(Contracts));
                             bookingFormData.append("APIToken", ApiToken);
@@ -325,6 +349,7 @@ export default function bookingPage() {
                                     //         }
                                     //       }, '/bookingConfirmation');
                                     // }
+                                    checkUser()
                                     router.push({
                                         pathname: '/bookingConfirmation',
                                         query: {

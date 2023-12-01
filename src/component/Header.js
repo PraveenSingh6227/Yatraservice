@@ -1,8 +1,11 @@
 import React,{ useEffect, useState } from 'react'
 import Link from 'next/link';
+import { useRouter } from 'next/navigation'
+
 
 export default function Header() {
   const [userDetails, setUserDetails] = useState({});
+  const router = useRouter()
   useEffect(() => {
     if (
       localStorage.getItem('userDetails') &&
@@ -11,7 +14,11 @@ export default function Header() {
       setUserDetails(JSON.parse(localStorage.getItem('userDetails')));
     }
   },[]);
-
+  const signOut = () =>{
+    localStorage.removeItem('userDetails')
+    setUserDetails({})
+    router.push('/')
+  }
   return (
     <>
     <header className="main_header_arae">
@@ -50,6 +57,7 @@ export default function Header() {
           <div className="col-lg-6 col-md-6">
             <ul className="topbar-others-options">
             {Object.keys(userDetails).length > 0 ? (
+              <>
               <li>
                 <div className="dropdown language-option">
                   <button
@@ -65,12 +73,27 @@ export default function Header() {
                     <Link className="dropdown-item" href="/UserDashboard">
                       My Dashboard
                     </Link>
+                    <Link className="dropdown-item"
+                    onClick={()=>signOut()}
+                    href="javascript:void(0)">                   
+                      Logout
+                    </Link>
                     {/* <a className="dropdown-item" onClick={signOut()} href="javascript:void(0)">
                       Logout
                     </a> */}
                   </div>
                 </div>
               </li>
+              <li>
+                <Link href="javascript:void(0)">Wallet (INR {userDetails.wallet})</Link>
+              </li>
+              {/* <li>
+                <Link href="javascript:void(0)"
+                 onClick={signOut()}
+                >Logout</Link>
+              </li> */}
+              </>
+              
               ) : (
               <li>
                 <Link href="/Login">Login</Link>

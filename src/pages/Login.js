@@ -31,7 +31,7 @@ export default function Login() {
     bodyFormData.append("email", email);
     bodyFormData.append("password", password);
     bodyFormData.append("action", "user_login");
-    const response = await fetch(
+    await fetch(
       "https://vrcwebsolutions.com/yatra/api/api.php",
       {
         method: "POST",
