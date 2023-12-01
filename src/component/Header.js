@@ -12,8 +12,30 @@ export default function Header() {
       localStorage.getItem('userDetails') !== undefined
     ) {
       setUserDetails(JSON.parse(localStorage.getItem('userDetails')));
+      checkUser()
     }
   },[]);
+
+  const checkUser = async () => {
+    const user = JSON.parse(localStorage.getItem('userDetails'));
+    let bodyFormData = new FormData();
+    if (
+        localStorage.getItem('userDetails') &&
+        localStorage.getItem('userDetails') !== undefined
+      ) {
+        bodyFormData.append("action", "user_details");
+        bodyFormData.append("user_id", user.id);
+        await fetch("https://vrcwebsolutions.com/yatra/api/api.php", {
+            method: 'POST',
+            body: bodyFormData
+        }).then((response) => response.json()).then(async (responseUser) => {
+          if(responseUser.status==200){
+            localStorage.setItem('userDetails', JSON.stringify(responseUser.user));
+          }
+        })  
+      }
+   
+} 
   const signOut = () =>{
     localStorage.removeItem('userDetails')
     setUserDetails({})

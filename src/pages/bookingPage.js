@@ -11,6 +11,7 @@ export default function bookingPage() {
     const router = useRouter();
     const { addToast } = useToasts();
     const [Contracts, setContracts] = useState({});
+    const [destinationCountry, setDestinationCountry] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [userDetails, setUserDetails] = useState({});
     const [contactData, setContactData] = useState("");
@@ -71,11 +72,14 @@ export default function bookingPage() {
         if (Object.keys(router.query).length > 0) {
             setBookingKey(router.query.bookingKey)
             setContracts(JSON.parse(router.query.contractData))
+            let destinationParts = JSON.parse(router.query.contractData).AirSegments[0].destinationAirportName.split(",");
+            destinationParts = destinationParts[destinationParts.length - 1];
+            setDestinationCountry(destinationParts)
             const adultForm = []
             const childrenForm = []
             const infantForm = []
             for (let i = 1; i <= parseInt(router.query.adultCount); i++) {
-                formAdultData[i-1] = { Title: "Mr", FirstName: "", LastName: "", ContactNo: "", Email: "", State: "", Country: "" }
+                formAdultData[i-1] = { Title: "Mr", FirstName: "", LastName: "", ContactNo: "", Email: "", State: "", Country: "", PassportNo: "" }
                 adultForm.push(<>
                     <h4 class="heading_theme">Adult {i}</h4>
                     <div class="row">
@@ -105,12 +109,19 @@ export default function bookingPage() {
                                     placeholder="DOB*" required />
                             </div>
                         </div>
-
+                        {destinationParts!='INDIA' && (
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <input type="text" name='PassportNo' onChange={(e) => handleFieldChangeAdult(e, i)} class="form-control bg_input"
+                                    placeholder="Passport No*" required />
+                            </div>
+                        </div>
+                        )}
                     </div>
                 </>);
             }
             for (let i = 1; i <=  parseInt(router.query.childCount); i++) {
-                formChildrenData[i-1] = { Title: "Mr", FirstName: "", LastName: "", ContactNo: "", Email: "", State: "", Country: "" }
+                formChildrenData[i-1] = { Title: "Mr", FirstName: "", LastName: "", ContactNo: "", Email: "", State: "", Country: "", PassportNo: "" }
                 childrenForm.push(<>
                     <h4 class="heading_theme">Children {i}</h4>
                     <div class="row">
@@ -140,12 +151,19 @@ export default function bookingPage() {
                                     placeholder="DOB*" required />
                             </div>
                         </div>
-
+                        {destinationParts!='INDIA' && (
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <input type="text" name='PassportNo' onChange={(e) => handleFieldChangeChildren(e, i)} class="form-control bg_input"
+                                    placeholder="Passport No*" required />
+                            </div>
+                        </div>
+                        )}
                     </div>
                 </>);
             }
             for (let i = 1; i <= parseInt(router.query.InfantCount); i++) {
-                formInfantData[i-1] = { Title: "Mr", FirstName: "", LastName: "", ContactNo: "", Email: "", State: "", Country: "" }
+                formInfantData[i-1] = { Title: "Mr", FirstName: "", LastName: "", ContactNo: "", Email: "", State: "", Country: "", PassportNo:"" }
                 infantForm.push(<>
                     <h4 class="heading_theme">Infant {i}</h4>
                     <div class="row">
@@ -175,7 +193,14 @@ export default function bookingPage() {
                                     placeholder="DOB*" required />
                             </div>
                         </div>
-
+                        {destinationParts!='INDIA' && (
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <input type="text" name='PassportNo' onChange={(e) => handleFieldChangeInfant(e, i)} class="form-control bg_input"
+                                    placeholder="Passport No*" required />
+                            </div>
+                        </div>
+                        )}
                     </div>
                 </>);
             }
@@ -197,7 +222,9 @@ export default function bookingPage() {
                 method: 'POST',
                 body: bodyFormData
             }).then((response) => response.json()).then(async (responseUser) => {
-                localStorage.setItem('userDetails', JSON.stringify(responseUser.user));
+                if(responseUser.status==200){
+                    localStorage.setItem('userDetails', JSON.stringify(responseUser.user));
+                  }
             })  
           }
        
@@ -284,7 +311,7 @@ export default function bookingPage() {
                                 formMergeAdultData[i].Gender = null;
                                 formMergeAdultData[i].PaxType = 1;
                                 formMergeAdultData[i].DateOfBirth = moment(formMergeAdultData[i].DateOfBirth).format('DD-MM-YYYY');
-                                formMergeAdultData[i].PassportNo = null;
+                                formMergeAdultData[i].PassportNo = formMergeAdultData[i].PassportNo;
                                 formMergeAdultData[i].ContactNo = contactData;
                                 formMergeAdultData[i].Email = emailData;
                                 formMergeAdultData[i].PassportExpiry = null;
@@ -300,7 +327,7 @@ export default function bookingPage() {
                                 formMergeChildrenData[i].Gender = null;
                                 formMergeChildrenData[i].PaxType = 2;
                                 formMergeChildrenData[i].DateOfBirth = moment(formMergeChildrenData[i].DateOfBirth).format('DD-MM-YYYY');
-                                formMergeChildrenData[i].PassportNo = null;
+                                formMergeChildrenData[i].PassportNo = formMergeChildrenData[i].PassportNo;
                                 formMergeChildrenData[i].ContactNo = contactData;
                                 formMergeChildrenData[i].Email = emailData;
                                 formMergeChildrenData[i].PassportExpiry = null;
@@ -316,7 +343,7 @@ export default function bookingPage() {
                                 formMergeInfantData[i].Gender = null;
                                 formMergeInfantData[i].PaxType = 3;
                                 formMergeInfantData[i].DateOfBirth = moment(formMergeInfantData[i].DateOfBirth).format('DD-MM-YYYY');
-                                formMergeInfantData[i].PassportNo = null;
+                                formMergeInfantData[i].PassportNo = formMergeInfantData[i].PassportNo;;
                                 formMergeInfantData[i].ContactNo = contactData;
                                 formMergeInfantData[i].Email = emailData;
                                 formMergeInfantData[i].PassportExpiry = null;
