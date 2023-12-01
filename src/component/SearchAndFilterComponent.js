@@ -2,11 +2,16 @@ import React, { useEffect, useState } from 'react'
 import * as moment from 'moment'
 import { useRouter } from 'next/router'
 import { useToasts } from 'react-toast-notifications';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import '../../node_modules/react-tabs/style/react-tabs.css';
+import LoadingSpinner from "../component/Loader";
+
 
 export default function SearchAndFilterComponent({ contractData, totalContractData, bookingKey, adultCount, childCount, InfantCount }) {
   const router = useRouter();
   const { addToast } = useToasts();
-  const [fareRule, setFareRule] = useState("")
+  const [isLoading, setIsLoading] = useState(false);
+  const [fareRule, setFareRule] = useState([])
   const [Contracts, setContracts] = useState(contractData)
   const [totalContract, setTotalContracts] = useState(totalContractData);
   const [selectedContract, setSelectedContract] = useState({})
@@ -20,11 +25,9 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
     handleFilter()
   }, [priceSlider, airStops, airlines, refundable])
 
-  const getFareRule = async () => {
-    if (Object.keys(selectedContract).length == 0) {
-      addToast("Please select the price to know your fare rule", { appearance: 'error' });
-      return
-    }
+  const getFareRule = async (contractIds) => {
+    // setIsLoading(true)
+    setFareRule([])
     await fetch("https://vrcwebsolutions.com/yatra/api/generateToken.php", {
       method: 'GET',
     })
@@ -34,7 +37,9 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
         bodyFormData.append("action", "get_fare_rule");
         bodyFormData.append("BookingKey", bookingKey);
         bodyFormData.append("APIToken", response.ApiToken);
-        bodyFormData.append("ContractId", selectedContract.ContractId);
+        for(let i=0; i<contractIds.length;i++){
+          bodyFormData.append("ContractId[]", contractIds[i]);
+        }
         await fetch("https://vrcwebsolutions.com/yatra/api/api.php", {
           method: 'POST',
           body: bodyFormData
@@ -43,12 +48,20 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
             if (response.Status === 0) {
               addToast("Fly24 API response : " + response.Error.ErrorDesc, { appearance: 'error' });
             } else {
-              setFareRule(response.FareRule)
+              setFareRule(response.fareRules)
             }
           }
+          // setIsLoading(false)
         })
       }
       )
+  }
+
+  const htmlDecode = (input) => {
+    if(!input) return
+    input = input.replace(/\\/g, '')
+    input = input.replace (/"/g, "")
+    return input
   }
 
   const goToBooking = () => {
@@ -279,6 +292,10 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
 
 
   return (
+    <>
+    {isLoading ? (
+      <LoadingSpinner />
+    ) : (
     <section id="explore_area" className="section_padding">
       <div className="container">
         {/* Section Heading */}
@@ -596,7 +613,7 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
           <div className="col-lg-9">
             <div className="row">
               {(Contracts !== null && Object.keys(Contracts).length > 0) && Object.keys(Contracts).map((item, index) => {
-                console.log('item--->', item, Contracts[item])
+                let contractIds = [];
                 const selectedContracts = {}
                 return (
                   <div className="col-lg-12">
@@ -652,6 +669,7 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
                           <div className="flight_multis_area_wrapper" style={{ paddingBottom: '2%' }}>
                             <div class="tour_search_type">
                               {Contracts[item].map((item3, index3) => {
+                                contractIds[index3] = item3.ContractId;
                                 return (
                                   <>
                                     {showNetFare ? (
@@ -713,7 +731,7 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
                               data-bs-target={`#collapseExample_${index}`}
                               aria-expanded="false"
                               aria-controls={`collapseExample_${index}`}
-                            // onClick={() => getFareRule()}
+                              // onClick={() => getFareRule(contractIds)}
                             >
                               Show more <i className="fas fa-chevron-down" />
                             </h6>
@@ -725,87 +743,104 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
                         >
                           {Contracts[item][0].AirSegments.map((item2, index2) => {
                             return (
-                              <div className="flight_show_down_wrapper">
-                                <div className="flight-shoe_dow_item">
-                                  <div className="airline-details">
-                                    {/* <div className="img">
+                              <Tabs>
+                                <TabList>
+                                  <Tab>Itenary</Tab>
+                                  <Tab
+                                   onClick={() => getFareRule(contractIds)}
+                                  >Fare Rules</Tab>
+                                </TabList>
+
+                                <TabPanel>
+                                  <div className="flight_show_down_wrapper">
+                                    <div className="flight-shoe_dow_item">
+                                      <div className="airline-details">
+                                        {/* <div className="img">
                                     <img src="assets/img/icon/bg.png" alt="img" />
                                   </div> */}
-                                    {/* {console.log('item2--->', item2)} */}
-                                    <span className="airlineName fw-500">
-                                      {item2.AirlineName} &nbsp;  {item2.AirlineCode}{item2.FlightNumber}
-                                    </span>
-                                    {/* <span className="flightNumber">
+                                        {/* {console.log('item2--->', item2)} */}
+                                        <span className="airlineName fw-500">
+                                          {item2.AirlineName} &nbsp;  {item2.AirlineCode}{item2.FlightNumber}
+                                        </span>
+                                        {/* <span className="flightNumber">
                                     BOEING 737-800 - 738
                                   </span> */}
-                                  </div>
-                                  <div className="flight_inner_show_component">
-                                    <div className="flight_det_wrapper">
-                                      <div className="flight_det">
-                                        <div className="code_time">
-                                          <span className="code">{item2.Origen}</span>
-                                          <span className="time">{moment(new Date(item2.DepartureDateTime)).format('h:mm a')}</span>
+                                      </div>
+                                      <div className="flight_inner_show_component">
+                                        <div className="flight_det_wrapper">
+                                          <div className="flight_det">
+                                            <div className="code_time">
+                                              <span className="code">{item2.Origen}</span>
+                                              <span className="time">{moment(new Date(item2.DepartureDateTime)).format('h:mm a')}</span>
+                                            </div>
+                                            <p className="airport">
+                                              {item2.sourceAirportName}
+                                            </p>
+                                            <p className="date">{moment(new Date(item2.DepartureDateTime)).format("Do MMM YYYY")}</p>
+                                          </div>
                                         </div>
-                                        <p className="airport">
-                                          {item2.sourceAirportName}
-                                        </p>
-                                        <p className="date">{moment(new Date(item2.DepartureDateTime)).format("Do MMM YYYY")}</p>
-                                      </div>
-                                    </div>
-                                    <div className="flight_duration">
-                                      <div className="arrow_right" />
-                                      <span>{timeDiff(new Date(item2.DepartureDateTime), new Date(item2.ArrivalDateTime))}</span>
-                                    </div>
-                                    <div className="flight_det_wrapper">
-                                      <div className="flight_det">
-                                        <div className="code_time">
-                                          <span className="code">{item2.Destination}</span>
-                                          <span className="time">{moment(new Date(item2.ArrivalDateTime)).format('h:mm a')}</span>
+                                        <div className="flight_duration">
+                                          <div className="arrow_right" />
+                                          <span>{timeDiff(new Date(item2.DepartureDateTime), new Date(item2.ArrivalDateTime))}</span>
                                         </div>
-                                        <p className="airport">
-                                          {item2.destinationAirportName}
-                                        </p>
-                                        <p className="date">{moment(new Date(item2.ArrivalDateTime)).format('Do MMM YYYY')}</p>
+                                        <div className="flight_det_wrapper">
+                                          <div className="flight_det">
+                                            <div className="code_time">
+                                              <span className="code">{item2.Destination}</span>
+                                              <span className="time">{moment(new Date(item2.ArrivalDateTime)).format('h:mm a')}</span>
+                                            </div>
+                                            <p className="airport">
+                                              {item2.destinationAirportName}
+                                            </p>
+                                            <p className="date">{moment(new Date(item2.ArrivalDateTime)).format('Do MMM YYYY')}</p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className="flight_refund_policy">
+                                      <div className="TabPanelInner flex_widht_less col-6" style={{ paddingBottom: '5%' }}>
+                                        <h4>Fare Breakups</h4>
+                                        <div class="tour_booking_amount_area">
+                                          <ul>
+                                            <li>Base Fare <span>{"Rs. " + Contracts[item][0].AirlineFare.BaseFare}</span></li>
+                                            <li>Tax Fare<span>{"Rs. " + Contracts[item][0].AirlineFare.TaxFare}</span></li>
+                                            <li>Service Charge <span>{"Rs. " + Contracts[item][0].AirlineFare.ServiceCharge}</span></li>
+                                          </ul>
+                                          <div class="tour_bokking_subtotal_area">
+                                            <h6>Subtotal <span>{"Rs. " + (Contracts[item][0].AirlineFare.BaseFare + Contracts[item][0].AirlineFare.TaxFare + Contracts[item][0].AirlineFare.ServiceCharge)}</span></h6>
+                                          </div>
+                                          <div class="coupon_add_area">
+                                            <h6>Commission
+                                              <span>{" - Rs. " + Contracts[item][0].AirlineFare.Commission}</span>
+                                            </h6>
+                                          </div>
+                                          <div class="total_subtotal_booking">
+                                            <h6>Total Amount <span>{"Rs. " + Contracts[item][0].AirlineFare.NetFare}</span> </h6>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div className="TabPanelInner col-7">
+                                        <div style={{ float: 'right' }}>
+                                          <h4>Baggage</h4>
+                                          <div className="flight_info_taable">
+                                            <h3>{item2.Origen}-{Contracts[item][0].AirSegments[Contracts[item][0].AirSegments.length - 1].Destination}</h3>
+                                            <p>
+                                              <span>Checkin : {item2.BaggageAllowed.CheckInBaggage} /</span> person<br />
+                                              <span>Hand  : {item2.BaggageAllowed.HandBaggage && item2.BaggageAllowed.HandBaggage ? item2.BaggageAllowed.HandBaggage : 'N/A'} {item2.BaggageAllowed.HandBaggage && "/"}</span> {item2.BaggageAllowed.HandBaggage && "Person"}
+                                            </p>
+                                          </div>
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
-                                </div>
-                                <div className="flight_refund_policy">
-                                  <div className="TabPanelInner flex_widht_less col-6" style={{paddingBottom:'5%'}}>
-                                    <h4>Fare Breakups</h4>
-                                    <div class="tour_booking_amount_area">
-                                      <ul>
-                                        <li>Base Fare <span>{ "Rs. " + Contracts[item][0].AirlineFare.BaseFare }</span></li>
-                                        <li>Tax Fare<span>{"Rs. " + Contracts[item][0].AirlineFare.TaxFare}</span></li>
-                                        <li>Service Charge <span>{"Rs. " + Contracts[item][0].AirlineFare.ServiceCharge }</span></li>
-                                      </ul>
-                                      <div class="tour_bokking_subtotal_area">
-                                        <h6>Subtotal <span>{"Rs. " + (Contracts[item][0].AirlineFare.BaseFare + Contracts[item][0].AirlineFare.TaxFare + Contracts[item][0].AirlineFare.ServiceCharge)}</span></h6>
-                                      </div>
-                                      <div class="coupon_add_area">
-                                        <h6>Commission
-                                          <span>{" - Rs. " + Contracts[item][0].AirlineFare.Commission}</span>
-                                        </h6>
-                                      </div>
-                                      <div class="total_subtotal_booking">
-                                        <h6>Total Amount <span>{"Rs. " + Contracts[item][0].AirlineFare.NetFare}</span> </h6>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div className="TabPanelInner col-7">
-                                    <div style={{float: 'right'}}>
-                                      <h4>Baggage</h4>
-                                      <div className="flight_info_taable">
-                                        <h3>{item2.Origen}-{Contracts[item][0].AirSegments[Contracts[item][0].AirSegments.length - 1].Destination}</h3>
-                                        <p>
-                                          <span>Checkin : {item2.BaggageAllowed.CheckInBaggage} /</span> person<br />
-                                          <span>Hand  : {item2.BaggageAllowed.HandBaggage && item2.BaggageAllowed.HandBaggage ? item2.BaggageAllowed.HandBaggage : 'N/A'} {item2.BaggageAllowed.HandBaggage && "/"}</span> {item2.BaggageAllowed.HandBaggage && "Person"}
-                                        </p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
+                                </TabPanel>
+                                <TabPanel>
+                                  {/* {fareRule.length > 0 && fareRule[index2]} */}
+                                  {fareRule.length > 0 && (
+                                    <div style={{padding:'2%'}} dangerouslySetInnerHTML={{ __html: htmlDecode(fareRule[index2]) }} />
+                                  )}
+                                </TabPanel>
+                              </Tabs>
                             )
                           })}
                           {/* <div className="flight_show_down_wrapper">
@@ -969,5 +1004,7 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
         </div>
       </div>
     </section>
+    )}
+    </>
   )
 }
