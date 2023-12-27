@@ -16,6 +16,7 @@ export default function Searchresult() {
   const [Contracts, setContracts] = useState([]);
   const [totalContract, setTotalContracts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [showPanel, setShowPanel] = useState(false);
 
 
   const [oneWayFrom, setOneWayFrom] = useState("DEL");
@@ -75,7 +76,7 @@ export default function Searchresult() {
   const fetchAirports = async () => {
     let bodyFormData = new FormData();
     bodyFormData.append("action", "get_airport");
-    await fetch("https://vrcwebsolutions.com/yatra/api/api.php", {
+    await fetch("https://yatriservice.com/admin/api/api.php", {
       method: 'POST',
       body: bodyFormData
     }).then((response) => response.json()).then((response) => {
@@ -168,13 +169,13 @@ export default function Searchresult() {
     bodyFormData.append("TripType", tripType);
     bodyFormData.append("TypeOfClass", travelClass);
 
-    await fetch("https://vrcwebsolutions.com/yatra/api/generateToken.php", {
+    await fetch("https://yatriservice.com/admin/api/generateToken.php", {
       method: 'GET',
     })
       .then((response) => response.json())
       .then(async (response) => {
         bodyFormData.append("APIToken", response.ApiToken);
-        await fetch("https://vrcwebsolutions.com/yatra/api/api.php", {
+        await fetch("https://yatriservice.com/admin/api/api.php", {
           method: 'POST',
           body: bodyFormData
         }).then((response) => response.json()).then((response) => {
@@ -239,13 +240,13 @@ export default function Searchresult() {
     bodyFormData.append("TripType", params.tripType);
     bodyFormData.append("TypeOfClass", travelClass);
 
-    await fetch("https://vrcwebsolutions.com/yatra/api/generateToken.php", {
+    await fetch("https://yatriservice.com/admin/api/generateToken.php", {
       method: 'GET',
     })
       .then((response) => response.json())
       .then(async (response) => {
         bodyFormData.append("APIToken", response.ApiToken);
-        await fetch("https://vrcwebsolutions.com/yatra/api/api.php", {
+        await fetch("https://yatriservice.com/admin/api/api.php", {
           method: 'POST',
           body: bodyFormData
         }).then((response) => response.json()).then((response) => {
@@ -391,6 +392,7 @@ export default function Searchresult() {
           </div>
         </section>
         {/* Form Area */}
+        {showPanel && (
         <section
           id="theme_search_form_tour"
           className="fligth_top_search_main_form_wrapper"
@@ -1383,6 +1385,61 @@ export default function Searchresult() {
             </div>
           </div>
         </section>
+        )}
+              <section style={{ padding: '2%', background: '#292929', color: '#fff' }}>
+                <div className='row' style={{marginLeft:'0%', marginRight:'0%'}}>
+                  <div className='col-md-3'>
+                    <strong>One Way Trip</strong>
+                  </div>
+                  <div className='col-md-2'>
+                    <strong>Departure</strong>
+                  </div>
+                  <div className='col-md-2'>
+
+                  </div>
+                  <div className='col-md-1'>
+                    <strong>Adult</strong>
+                  </div>
+                  <div className='col-md-1'>
+                    <strong>Child</strong>
+                  </div>
+                  <div className='col-md-1'>
+                    <strong>Infant</strong>
+                  </div>
+                  <div className='col-md-2'>
+                    <button className='btn  btn_navber' style={{float:'right'}} onClick={()=>{
+                      if(showPanel){
+                        setShowPanel(false)
+                      }else{
+                        setShowPanel(true)
+                      }
+                    }}>Modify</button>
+                  </div>
+                </div>
+                <div className='row' style={{marginLeft:'0%', marginRight:'0%'}}>
+                  <div className='col-md-3'>
+                    <p style={{color:'#fff'}}>{oneWayToData} </p>
+                  </div>
+                  <div className='col-md-2'>
+                    <p style={{color:'#fff'}}>{moment(new Date(oneWayTravelDate)).format('DD/MM/YYYY')}</p>
+
+                  </div>
+                  <div className='col-md-2'>
+                  </div>
+                  <div className='col-md-1'>
+                    <p style={{color:'#fff'}}>{oneWayTravelAdult}</p>
+
+                  </div>
+                  <div className='col-md-1'>
+                    <p style={{color:'#fff'}}> {oneWayTravelChildren}</p>
+
+                  </div>
+                  <div className='col-md-1'>
+                    <p style={{color:'#fff'}}>{oneWayTravelInfant}</p>
+
+                  </div>
+                </div>
+              </section>
         {/* Flight Search Areas */}
         <SearchAndFilterComponent contractData={Contracts} totalContractData={totalContract} bookingKey={bookingKey} adultCount={oneWayTravelAdult} childCount={oneWayTravelChildren} InfantCount={oneWayTravelInfant} />
         {/* Cta Area */}

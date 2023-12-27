@@ -42,7 +42,7 @@ export default function DownloadTicket(data) {
             let bodyFormData = new FormData();
             bodyFormData.append("action", "get_booking_details");
             bodyFormData.append("booking_id", data.id);
-            await fetch("https://vrcwebsolutions.com/yatra/api/api.php", {
+            await fetch("https://yatriservice.com/admin/api/api.php", {
               method: 'POST',
               body: bodyFormData
             }).then((response) => response.json()).then(async(response) => {
@@ -56,14 +56,14 @@ export default function DownloadTicket(data) {
                 newBodyFormData.append("BookingId", JSON.parse(response.booking.booking_response).BookingId);
                 newBodyFormData.append("BookingKey", response.booking.booking_key);
                 newBodyFormData.append("action", "get_flight_booking_details");
-                await fetch("https://vrcwebsolutions.com/yatra/api/generateToken.php", {
+                await fetch("https://yatriservice.com/admin/api/generateToken.php", {
                     method: 'GET',
                 })
                     .then((response) => response.json())
                     .then(async (response) => {
                         if(response.ApiToken){
                             newBodyFormData.append("APIToken", response.ApiToken);
-                            await fetch("https://vrcwebsolutions.com/yatra/api/api.php", {
+                            await fetch("https://yatriservice.com/admin/api/api.php", {
                                 method: 'POST',
                                 body: newBodyFormData
                             }).then((response) => response.json()).then((bookingResp) => {

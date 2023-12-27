@@ -39,7 +39,7 @@ export default function UserDashboard() {
         let bodyFormData = new FormData();
         bodyFormData.append("action", "get_my_bookings");
         bodyFormData.append("user_id", user_id);
-        await fetch("https://vrcwebsolutions.com/yatra/api/api.php", {
+        await fetch("https://yatriservice.com/admin/api/api.php", {
           method: 'POST',
           body: bodyFormData
         }).then((response) => response.json()).then((response) => {

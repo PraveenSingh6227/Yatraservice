@@ -25,7 +25,7 @@ export default function Header() {
       ) {
         bodyFormData.append("action", "user_details");
         bodyFormData.append("user_id", user.id);
-        await fetch("https://vrcwebsolutions.com/yatra/api/api.php", {
+        await fetch("https://yatriservice.com/admin/api/api.php", {
             method: 'POST',
             body: bodyFormData
         }).then((response) => response.json()).then(async (responseUser) => {
@@ -181,7 +181,7 @@ export default function Header() {
           <div className="main-responsive-menu">
             <div className="logo">
               <Link href="/">
-                <img src="assets/img/logo2.png" alt="logo" width={200}  />
+                <img src="https://yatriservice.com/assets/img/logo2.png" alt="logo" width={200}  />
               </Link>
             </div>
           </div>

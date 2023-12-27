@@ -32,7 +32,7 @@ export default function Login() {
     bodyFormData.append("password", password);
     bodyFormData.append("action", "user_login");
     await fetch(
-      "https://vrcwebsolutions.com/yatra/api/api.php",
+      "https://yatriservice.com/admin/api/api.php",
       {
         method: "POST",
         body: bodyFormData,

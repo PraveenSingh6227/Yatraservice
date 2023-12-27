@@ -23,6 +23,7 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
   const [airStops, setAirStops] = useState([]);
   const [airlines, setAirlines] = useState([]);
   const [refundable, setRefundable] = useState([]);
+  let [seatAvailable, setSeatAvailable] = useState({});
   useEffect(() => {
     handleFilter()
   }, [priceSlider, airStops, airlines, refundable])
@@ -34,7 +35,7 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
     }
     setIsLoading(true)
     setFareRule([])
-    await fetch("https://vrcwebsolutions.com/yatra/api/generateToken.php", {
+    await fetch("https://yatriservice.com/admin/api/generateToken.php", {
       method: 'GET',
     })
       .then((response) => response.json())
@@ -44,7 +45,7 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
         bodyFormData.append("BookingKey", bookingKey);
         bodyFormData.append("APIToken", response.ApiToken);
         bodyFormData.append("ContractId[]", selectedContract.ContractId);
-        await fetch("https://vrcwebsolutions.com/yatra/api/api.php", {
+        await fetch("https://yatriservice.com/admin/api/api.php", {
           method: 'POST',
           body: bodyFormData
         }).then((response) => response.json()).then((response) => {
@@ -623,7 +624,7 @@ const htmlDecode = (input) => {
                 return (
                   <div className="col-lg-12">
                     <div className="flight_search_result_wrapper">
-
+                  
                       <div className="flight_search_item_wrappper">
                         <div className="flight_search_items">
                           <div className="multi_city_flight_lists">
@@ -656,7 +657,7 @@ const htmlDecode = (input) => {
                                       src="assets/img/icon/right_arrow.png"
                                       alt="icon"
                                     /> */}
-                                  <img src="assets/img/icon/right_arrow.png" alt="icon" />
+                                  <img src="https://yatriservice.com/assets/img/icon/right_arrow.png" alt="icon" />
                                   <h6>{Contracts[item][0].AirSegments.length === 1 ? 'Non-stop' : (Contracts[item][0].AirSegments.length - 1) + ' Stop(s)'}</h6>
                                   {/* <p>{Contracts[item][0].AirSegments[0].Duration} </p> */}
                                   {/* <p>{moment(new Date(Contracts[item][0].AirSegments[0].DepartureDateTime)).format('h:mm a')}-{moment(new Date(Contracts[item][0].AirSegments[Contracts[item][0].AirSegments.length - 1].ArrivalDateTime)).format('h:mm a')}</p> */}
@@ -684,7 +685,14 @@ const htmlDecode = (input) => {
                                       type="radio"
                                       name={`radio_${index}`}
                                       value={`${item3.ContractId}`}
-                                      onClick={(e) => setSelectedContract(item3)}
+                                      onClick={(e) => {
+                                        setSelectedContract(item3)
+                                        setSeatAvailable(prev => ({
+                                          ...prev,
+                                          [Contracts[item][0].AirSegments[0].FlightNumber] : item3.TotalSeats
+                                        }))
+                                        // seatAvailable = item3.TotalSeats
+                                      }}
                                     />
                                     <label class="form-check-label">
                                       <span class="area_flex_one">
@@ -699,7 +707,13 @@ const htmlDecode = (input) => {
                                           type="radio"
                                           name={`radio_${index}`}
                                           value={`${item3.ContractId}`}
-                                          onClick={(e) => setSelectedContract(item3)}
+                                          onClick={(e) => {
+                                            setSelectedContract(item3)
+                                            setSeatAvailable(prev => ({
+                                              ...prev,
+                                              [Contracts[item][0].AirSegments[0].FlightNumber] : item3.TotalSeats
+                                            }))
+                                          }}
                                         />
                                         <label class="form-check-label">
                                           <span class="area_flex_one">
@@ -721,6 +735,9 @@ const htmlDecode = (input) => {
                             {/* <h2>
                                   {item.AirlineFare.BaseFare} Rs.<sup>*20% OFF</sup>
                                 </h2> */}
+                            {seatAvailable.hasOwnProperty(Contracts[item][0].AirSegments[0].FlightNumber) && (
+                            <p>{seatAvailable.hasOwnProperty(Contracts[item][0].AirSegments[0].FlightNumber) ? seatAvailable[Contracts[item][0].AirSegments[0].FlightNumber] : 0} Seat/s Left</p>    
+                            )}
                             <p 
                             style={{cursor:'pointer'}}
                             onClick={() => getFareRule()}

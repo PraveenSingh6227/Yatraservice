@@ -218,7 +218,7 @@ export default function bookingPage() {
           ) {
             bodyFormData.append("action", "user_details");
             bodyFormData.append("user_id", userDetails.id);
-            await fetch("https://vrcwebsolutions.com/yatra/api/api.php", {
+            await fetch("https://yatriservice.com/admin/api/api.php", {
                 method: 'POST',
                 body: bodyFormData
             }).then((response) => response.json()).then(async (responseUser) => {
@@ -242,7 +242,7 @@ export default function bookingPage() {
         bodyFormData.append("action", "pax_details");
         bodyFormData.append("BookingKey", bookingKey);
         bodyFormData.append("ContractId", Contracts.ContractId);
-        await fetch("https://vrcwebsolutions.com/yatra/api/generateToken.php", {
+        await fetch("https://yatriservice.com/admin/api/generateToken.php", {
             method: 'GET',
         })
             .then((response) => response.json())
@@ -250,7 +250,7 @@ export default function bookingPage() {
                 if(response.ApiToken){
                     bodyFormData.append("APIToken", response.ApiToken);
                     ApiToken = response.ApiToken;
-                    await fetch("https://vrcwebsolutions.com/yatra/api/api.php", {
+                    await fetch("https://yatriservice.com/admin/api/api.php", {
                         method: 'POST',
                         body: bodyFormData
                     }).then((response) => response.json()).then(async (responseSell) => {
@@ -355,7 +355,7 @@ export default function bookingPage() {
                             }
                             let combinedFormData = [...formMergeAdultData,...formMergeChildrenData,...formMergeInfantData]
                             bookingFormData.append("Flightpassenger", JSON.stringify(combinedFormData));
-                            await fetch("https://vrcwebsolutions.com/yatra/api/api.php", {
+                            await fetch("https://yatriservice.com/admin/api/api.php", {
                                 method: 'POST',
                                 body: bookingFormData
                             }).then((response) => response.json()).then((response) => {
@@ -615,7 +615,7 @@ export default function bookingPage() {
                                                         </div>
                                                         <div class="flight_search_middel_sidebar">
                                                             <div class="flight_right_arrow_sidebar">
-                                                                <img src="assets/img/icon/right_arrow.png" alt="icon" />
+                                                                <img src="https://yatriservice.com/assets/img/icon/right_arrow.png" alt="icon" />
                                                                 <h6>{(Contracts !== null && Object.keys(Contracts).length > 0) ? Contracts.AirSegments[0].NumberofStops === 0 ? 'Non-stop' : Contracts.AirSegments[0].NumberofStops + ' Stop' : ""}</h6>
                                                                 <p>{(Contracts !== null && Object.keys(Contracts).length > 0) ? moment(new Date(Contracts.AirSegments[0].DepartureDateTime)).format('h:mm a') : ""}-{(Contracts !== null && Object.keys(Contracts).length > 0) ? moment(new Date(Contracts.AirSegments[0].ArrivalDateTime)).format('h:mm a') : ""}</p>
                                                             </div>
@@ -644,7 +644,7 @@ export default function bookingPage() {
                                                         <h5>Price</h5>
                                                         <div class="tour_package_bar_price">
                                                             {/* <h6><del> 35,500 Rs</del></h6> */}
-                                                            <h3> {(Contracts !== null && Object.keys(Contracts).length > 0) ? "Rs. " + Contracts.AirlineFare.BaseFare : ""}<sub> / Seats X {(Contracts !== null && Object.keys(Contracts).length > 0) ? parseInt(router.query.adultCount) + parseInt(router.query.childCount) + parseInt(router.query.InfantCount) : 0}</sub> </h3>
+                                                            <h3> {(Contracts !== null && Object.keys(Contracts).length > 0) ? "Rs. " + Contracts.AirlineFare.NetFare : ""}<sub> / Seats X {(Contracts !== null && Object.keys(Contracts).length > 0) ? parseInt(router.query.adultCount) + parseInt(router.query.childCount) + parseInt(router.query.InfantCount) : 0}</sub> </h3>
                                                         </div>
                                                     </div>
                                                 </div>

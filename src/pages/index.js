@@ -25,7 +25,7 @@ export default function Home() {
     setIsLoading(true)
     let bodyFormData = new FormData();
     bodyFormData.append("action", "get_airport");
-    await fetch("https://vrcwebsolutions.com/yatra/api/api.php", {
+    await fetch("https://yatriservice.com/admin/api/api.php", {
       method: 'POST',
       body: bodyFormData
     }).then((response) => response.json()).then((response) => {
