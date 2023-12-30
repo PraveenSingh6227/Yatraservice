@@ -113,7 +113,7 @@ export default function UserDashboard() {
                                     <div class="col-lg-4">
                                         <div class="dashboard_sidebar">
                                             <div class="dashboard_sidebar_user">
-                                                <img src="assets/img/common/how-3.png" alt="img" />
+                                                <img src="https://yatriservice.com/assets/img/common/how-3.png" alt="img" />
                                                 <h3>{userDetails.name}</h3>
                                                 <p><a href={`tel:${userDetails.name}`}>{userDetails.mobile}</a></p>
                                                 <p><a href="mailto:sherlyn@domain.com">{userDetails.email}</a></p>
@@ -220,10 +220,11 @@ export default function UserDashboard() {
                                                             <td>
                                                             {Object.keys(item.booking_response).length > 0 && JSON.parse(item.booking_response).BookingId ? (
                                                                 <Link 
-                                                            // href={`downloadTicket/${item.id}`} 
-                                                            href="/[id]"
-                                                            as={`ticket/${item.id}`}
-                                                            target='_bank'><i class="fas fa-print"></i></Link>
+                                                            href={`/downloadTicket?ticket=${item.id}`} 
+                                                            // href={"/downloadTicket/"}
+                                                            // href="/[id]"
+                                                            // as={`ticket/${item.id}`}
+                                                            ><i class="fas fa-print"></i></Link>
                                                             ) : (
                                                                 <p>N/A</p>
                                                             )}

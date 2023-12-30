@@ -660,7 +660,7 @@ const htmlDecode = (input) => {
                                   <img src="https://yatriservice.com/assets/img/icon/right_arrow.png" alt="icon" />
                                   <h6>{Contracts[item][0].AirSegments.length === 1 ? 'Non-stop' : (Contracts[item][0].AirSegments.length - 1) + ' Stop(s)'}</h6>
                                   {/* <p>{Contracts[item][0].AirSegments[0].Duration} </p> */}
-                                  {/* <p>{moment(new Date(Contracts[item][0].AirSegments[0].DepartureDateTime)).format('h:mm a')}-{moment(new Date(Contracts[item][0].AirSegments[Contracts[item][0].AirSegments.length - 1].ArrivalDateTime)).format('h:mm a')}</p> */}
+                                  <p>{moment(new Date(Contracts[item][0].AirSegments[0].DepartureDateTime)).format('h:mm a')}-{moment(new Date(Contracts[item][0].AirSegments[Contracts[item][0].AirSegments.length - 1].ArrivalDateTime)).format('h:mm a')}</p>
                                   <p>{timeDiff(new Date(Contracts[item][0].AirSegments[0].DepartureDateTime), new Date(Contracts[item][0].AirSegments[Contracts[item][0].AirSegments.length - 1].ArrivalDateTime))}</p>
                                   {/* {Contracts[item][0].AirSegments.length > 1 && (<p>{Contracts[item][0].AirSegments.length > 1 && 'via ' + Contracts[item][0].AirSegments[0].destinationAirportName}</p>)} */}
                                 </div>

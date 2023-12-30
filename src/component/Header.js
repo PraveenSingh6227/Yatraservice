@@ -191,7 +191,7 @@ export default function Header() {
         <div className="container">
           <nav className="navbar navbar-expand-md navbar-light">
             <Link className="navbar-brand" href="/">
-              <img src="assets/img/logo2.png" alt="logo" width={200} />
+              <img src="https://yatriservice.com/assets/img/logo2.png" alt="logo" width={200} />
             </Link>
             <div
               className="collapse navbar-collapse mean-menu"

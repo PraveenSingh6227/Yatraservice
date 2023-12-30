@@ -1,6 +1,7 @@
 import Footer from '@/component/Footer'
 import Header from '@/component/Header'
 import React, { useEffect, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import * as moment from 'moment'
 import { useRouter } from 'next/router'
 import { useToasts } from 'react-toast-notifications';
@@ -10,7 +11,10 @@ import LoadingSpinner from "../component/Loader";
 
 
 
-export default function DownloadTicket(data) {
+export default function DownloadTicket() {
+    const router = useRouter()
+    const searchParams = useSearchParams()
+    const ticketId = searchParams.get('ticket')
     const [myBookings, setMyBookings] = useState({});
     const [travellers, setTravellers] = useState([]);
     const [bookingResponse, setBookingResponse] = useState({});
@@ -19,7 +23,7 @@ export default function DownloadTicket(data) {
 
 
     const handlePrint = () => {
-        let w = window.open(`/ticket/${data.id}`);
+        let w = window.open(`/downloadTicket?ticket=${ticketId}`);
         w.document.write($('#printArea').html());
         w.print();
         w.close();
@@ -34,14 +38,14 @@ export default function DownloadTicket(data) {
         }else{
             router.push('/')
         }
-      },[data.id!=undefined]);
+      },[ticketId!=undefined]);
 
       const getMyBookings = async () => {
-        if(data.id!==undefined){
+        if(ticketId!==undefined){
             setIsLoading(true)
             let bodyFormData = new FormData();
             bodyFormData.append("action", "get_booking_details");
-            bodyFormData.append("booking_id", data.id);
+            bodyFormData.append("booking_id", ticketId);
             await fetch("https://yatriservice.com/admin/api/api.php", {
               method: 'POST',
               body: bodyFormData
@@ -94,10 +98,10 @@ export default function DownloadTicket(data) {
                 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
                 {console.log('travellers--->',travellers)}
                     <div class="row">
-                        <div class="col-sm-2">
-                            <img src="img/download.jpg" class="img-fluid" style={{ height: '125px' }} />
+                        <div class="col-sm-3">
+                            <img src="https://yatriservice.com/assets/img/logo2.png" class="img-fluid" style={{ height: '125px' }} />
                         </div>
-                        <div class="col-sm-10">
+                        <div class="col-sm-9">
                             <p class="text-end">TRAVELS D K</p>
                             <p class="text-end">S/O : RAMESH CHANDRA, ASAINAPUR, ASAINA, KANPUR. DEHAT ASIANAPUR,</p>
                             <p class="text-end">UTTAR PRADESH-209301,</p>
