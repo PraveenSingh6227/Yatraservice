@@ -19,6 +19,8 @@ export default function DownloadTicket() {
     const [travellers, setTravellers] = useState([]);
     const [bookingResponse, setBookingResponse] = useState({});
     const [contract, setContract] = useState([]);
+    const [contractOld, setContractOld] = useState([]);
+    const [flightPassenger, setFlightPassenger] = useState({});
     const [isLoading, setIsLoading] = useState(false);
 
 
@@ -54,8 +56,9 @@ export default function DownloadTicket() {
               if (response !== null) {
                 setMyBookings(response.booking)
                 setBookingResponse(JSON.parse(response.booking.booking_response))
-                setTravellers(JSON.parse(response.booking.customer_data))
-                console.log('response--->',response,response.booking.booking_key,JSON.parse(response.booking.booking_response).BookingId)              
+                setContractOld(JSON.parse(response.booking.Contracts))
+                // setTravellers(JSON.parse(response.booking.customer_data))
+                // console.log('response--->',response,response.booking.booking_key,JSON.parse(response.booking.booking_response).BookingId)              
                 let newBodyFormData = new FormData();
                 newBodyFormData.append("BookingId", JSON.parse(response.booking.booking_response).BookingId);
                 newBodyFormData.append("BookingKey", response.booking.booking_key);
@@ -71,6 +74,8 @@ export default function DownloadTicket() {
                                 method: 'POST',
                                 body: newBodyFormData
                             }).then((response) => response.json()).then((bookingResp) => {
+                                // console.log('bookingResp--->',bookingResp)
+                                setTravellers(bookingResp.Flightpassenger)
                                 setContract(bookingResp.Contracts)
                             })  
                         }
@@ -96,18 +101,18 @@ export default function DownloadTicket() {
                  </div>
                 <div class="container" id='printArea' style={{ border: '1px solid #000' }}>
                 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
-                {console.log('travellers--->',travellers)}
+                {/* {console.log('travellers--->',travellers)} */}
                     <div class="row">
                         <div class="col-sm-3">
                             <img src="https://yatriservice.com/assets/img/logo2.png" class="img-fluid" style={{ height: '125px' }} />
                         </div>
                         <div class="col-sm-9">
-                            <p class="text-end">TRAVELS D K</p>
+                            <p class="text-end">{myBookings.name}</p>
                             <p class="text-end">S/O : RAMESH CHANDRA, ASAINAPUR, ASAINA, KANPUR. DEHAT ASIANAPUR,</p>
                             <p class="text-end">UTTAR PRADESH-209301,</p>
                             <p class="text-end">Kanpur,</p>
-                            <p class="text-end">INDIA, Phone : 9818877541</p>
-                            <p class="text-end">Email Id : traveldk286@gmail.com</p>
+                            <p class="text-end">INDIA, Phone : {myBookings.mobile}</p>
+                            <p class="text-end">Email Id : {myBookings.email}</p>
                         </div>
 
                     </div>
@@ -141,13 +146,15 @@ export default function DownloadTicket() {
                             </tr>
                         </thead>
                         <tbody>
-                            {console.log('contract===',contract)}
+                            {/* {console.log('contract===',contract)} */}
+                            {/* {console.log('contractOld===',contractOld,contractOld.AirSegments[0].DepartureDateTime)} */}
+                            {/* {console.log('contract[0].AirSegments[0].DepartureDateTime--->',contract[0].AirSegments[0].DepartureDateTime,'--->',moment(new Date(contract[0].AirSegments[0].DepartureDateTime)).format('DD MMM YYYY'))} */}
                             <tr>
                                 <td>
                                     <p>{contract.length > 0 ? contract[0].AirSegments[0].sourceAirportName+'('+contract[0].AirSegments[0].Origen+')' : ''}</p>
-                                    <p>{contract.length > 0 &&  moment(new Date(contract[0].AirSegments[0].DepartureDateTime)).format('Do MMM YYYY h:mm:a')}</p></td>
+                                    <p>{Object.keys(contractOld).length > 0 &&  moment(new Date(contractOld.AirSegments[0].DepartureDateTime)).format('Do MMM YYYY h:mm:a')}</p></td>
                                 <td><p>{contract.length > 0 &&  contract[0].AirSegments[contract[0].AirSegments.length - 1].destinationAirportName +'('+ contract[0].AirSegments[contract[0].AirSegments.length - 1].Destination+')' }</p>
-                                    <p>{contract.length > 0 &&  moment(new Date(contract[0].AirSegments[contract[0].AirSegments.length - 1].ArrivalDateTime)).format('Do MMM YYYY h:mm:a') } </p></td>
+                                    <p>{Object.keys(contractOld).length > 0 &&  moment(new Date(contractOld.AirSegments[contractOld.AirSegments.length - 1].ArrivalDateTime)).format('Do MMM YYYY h:mm:a') } </p></td>
                                 <td>{contract.length > 0 && contract[0].AirSegments[0].AirlineCode}-{contract.length > 0 && contract[0].AirSegments[0].FlightNumber}</td>
                                 <td>BT </td>
                                 <td>{bookingResponse.AirlinePnr}</td>
