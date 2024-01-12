@@ -390,7 +390,7 @@ export default function bookingPage() {
                                         }
                                       }, '/bookingConfirmation');
                                 }else{
-                                    addToast("Fly24 API response : 3rd party server error, please try again later.", { appearance: 'error' });
+                                    addToast(" Server error, please try again later.", { appearance: 'error' });
                                     setTimeout(()=>{
                                         router.push('/');
                                     },3000)
@@ -399,7 +399,7 @@ export default function bookingPage() {
                             })
                         }else{
                             setIsLoading(false)
-                            addToast("Fly24 API response : 3rd party server error, please try again later.", { appearance: 'error' });
+                            addToast("Server error, please try again later.", { appearance: 'error' });
                             setTimeout(()=>{
                                 router.push('/');
                             },3000)
@@ -407,7 +407,7 @@ export default function bookingPage() {
                     })
                 }else{
                     setIsLoading(false)
-                    addToast(`Fly24 API response : 3rd party server error, please try again later.`, { appearance: 'error' });
+                    addToast(`3rd party server error, please try again later.`, { appearance: 'error' });
                     setTimeout(()=>{
                         router.push('/');
                     },3000)

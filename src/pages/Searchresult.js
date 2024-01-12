@@ -82,6 +82,7 @@ export default function Searchresult() {
     }).then((response) => response.json()).then((response) => {
       if (response !== null) {
         setAirportData(response.data)
+        // console.log(response)
       }
     })
   }
@@ -181,7 +182,7 @@ export default function Searchresult() {
         }).then((response) => response.json()).then((response) => {
           if(response!==null){
             if(response.Status===0){
-              addToast("Fly24 API response : "+response.Error.ErrorDesc, { appearance: 'error' });
+              addToast("Error: "+response.Error.ErrorDesc, { appearance: 'error' });
             }else{
               let result = response.Contracts.reduce(function (r, a) {
                 r[a.AirSegments[0].FlightNumber] = r[a.AirSegments[0].FlightNumber] || [];
@@ -255,7 +256,7 @@ export default function Searchresult() {
             setIsLoading(false)
           }else{
             if(response.Status===0){
-              addToast("Fly24 API response : "+response.Error.ErrorDesc, { appearance: 'error' });
+              // addToast("Fly24 API response : "+response.Error.ErrorDesc, { appearance: 'error' });
             }else{
               let result = response.Contracts.reduce(function (r, a) {
                 r[a.AirSegments[0].FlightNumber] = r[a.AirSegments[0].FlightNumber] || [];
@@ -1418,7 +1419,7 @@ export default function Searchresult() {
                 </div>
                 <div className='row' style={{marginLeft:'0%', marginRight:'0%'}}>
                   <div className='col-md-3'>
-                    <p style={{color:'#fff'}}>{oneWayToData} </p>
+                    <p style={{color:'#fff'}}>{oneWayFrom}-{oneWayTo} </p>
                   </div>
                   <div className='col-md-2'>
                     <p style={{color:'#fff'}}>{moment(new Date(oneWayTravelDate)).format('DD/MM/YYYY')}</p>

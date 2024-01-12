@@ -42,9 +42,9 @@ export default function Login() {
       .then((response) => {
         setIsLoading(false);
         if (response.status === 400) {
-          addToast("API response : " + response.message, { appearance: 'error' });
+          addToast("Error :" + response.message, { appearance: 'error' });
         } else {
-          addToast("API response : " + response.message, { appearance: 'success' });
+          addToast("Error : " + response.message, { appearance: 'success' });
           localStorage.setItem('userDetails', JSON.stringify(response.user));
           router.push('/')
         }

@@ -564,6 +564,7 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
                                   <h4>Baggage</h4>
                                   <div className="flight_info_taable">
                                     <h3>{item2.Origen}-{item2.Destination}</h3>
+                                    
                                     <p>
                                       <span>Chekin : {item2.BaggageAllowed.CheckInBaggage} /</span> person<br/>
                                       <span>Hand : {item2.BaggageAllowed.HandBaggage ? item2.BaggageAllowed.HandBaggage : 'N/A'} /</span> person

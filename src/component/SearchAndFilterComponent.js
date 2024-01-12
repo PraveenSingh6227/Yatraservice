@@ -51,7 +51,7 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
         }).then((response) => response.json()).then((response) => {
           if (response !== null) {
             if (response.Status === 0) {
-              addToast("Fly24 API response : " + response.Error.ErrorDesc, { appearance: 'error' });
+              addToast("Error : " + response.Error.ErrorDesc, { appearance: 'error' });
             } else {
               setFareRule(response.fareRules)
               setShowModal(true)
@@ -647,7 +647,7 @@ const htmlDecode = (input) => {
                                 </div>
                                 <div className="flight_search_destination">
                                   <p>From</p>
-                                  <h3>{Contracts[item][0].AirSegments[0].Origen}</h3>
+                                  <h3>{Contracts[item][0].AirSegments[0].Origen}  <span className="time">{moment(new Date(Contracts[item][0].AirSegments[0].DepartureDateTime)).format('h:mm a')}</span></h3>
                                   <h6>{Contracts[item][0].AirSegments[0].Origen} - {Contracts[item][0].AirSegments[0].sourceAirportName}</h6>
                                 </div>
                               </div>
@@ -666,7 +666,8 @@ const htmlDecode = (input) => {
                                 </div>
                                 <div className="flight_search_destination">
                                   <p>To</p>
-                                  <h3>{Contracts[item][0].AirSegments[Contracts[item][0].AirSegments.length - 1].Destination}</h3>
+                                  <h3>{Contracts[item][0].AirSegments[Contracts[item][0].AirSegments.length - 1].Destination} <span className="time">{moment(new Date(Contracts[item][0].AirSegments[0].ArrivalDateTime
+)).format('h:mm a')}</span></h3>
                                   <h6>{Contracts[item][0].AirSegments[Contracts[item][0].AirSegments.length - 1].Destination} - {Contracts[item][0].AirSegments[Contracts[item][0].AirSegments.length - 1].destinationAirportName}</h6>
                                 </div>
                               </div>
@@ -696,7 +697,10 @@ const htmlDecode = (input) => {
                                     />
                                     <label class="form-check-label">
                                       <span class="area_flex_one">
-                                        <span style={{ textTransform: 'uppercase' }}>({item3.FareType}) Rs. {item3.AirlineFare.BaseFare}</span>
+                                        <span style={{ textTransform: 'uppercase' }}>({item3.FareType}) Rs. {item3.AirlineFare.NetFare
+
+
+}</span>
                                       </span>
                                     </label>
                                     </div>
@@ -717,7 +721,8 @@ const htmlDecode = (input) => {
                                         />
                                         <label class="form-check-label">
                                           <span class="area_flex_one">
-                                            <span style={{ textTransform: 'uppercase' }}>({item3.FareType}) Rs. {item3.AirlineFare.NetFare}</span>
+                                            <span style={{ textTransform: 'uppercase' }}>({item3.FareType}) Rs. {item3.AirlineFare.GrossFare
+}</span>
                                           </span>
                                         </label>
                                       </div>
@@ -841,6 +846,7 @@ const htmlDecode = (input) => {
                                     <h4>Baggage</h4>
                                     <div className="flight_info_taable">
                                       <h3>{item2.Origen}-{Contracts[item][0].AirSegments[Contracts[item][0].AirSegments.length - 1].Destination}</h3>
+                                     
                                       <p>
                                         <span>Checkin : {item2.BaggageAllowed.CheckInBaggage} /</span> person<br />
                                         <span>Hand  : {item2.BaggageAllowed.HandBaggage && item2.BaggageAllowed.HandBaggage ? item2.BaggageAllowed.HandBaggage : 'N/A'} {item2.BaggageAllowed.HandBaggage && "/"}</span> {item2.BaggageAllowed.HandBaggage && "Person"}
