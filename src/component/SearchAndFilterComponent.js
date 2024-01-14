@@ -686,6 +686,7 @@ const htmlDecode = (input) => {
                                       type="radio"
                                       name={`radio_${index}`}
                                       value={`${item3.ContractId}`}
+                                      checked={selectedContract.ContractId == item3.ContractId}
                                       onClick={(e) => {
                                         setSelectedContract(item3)
                                         setSeatAvailable(prev => ({
@@ -711,6 +712,7 @@ const htmlDecode = (input) => {
                                           type="radio"
                                           name={`radio_${index}`}
                                           value={`${item3.ContractId}`}
+                                          checked={selectedContract.ContractId == item3.ContractId}
                                           onClick={(e) => {
                                             setSelectedContract(item3)
                                             setSeatAvailable(prev => ({
