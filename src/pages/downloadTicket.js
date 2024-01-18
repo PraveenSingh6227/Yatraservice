@@ -56,8 +56,8 @@ export default function DownloadTicket() {
               if (response !== null) {
                 setMyBookings(response.booking)
                 setBookingResponse(JSON.parse(response.booking.booking_response))
-                setContractOld(JSON.parse(response.booking.Contracts))
-                // setTravellers(JSON.parse(response.booking.customer_data))
+                setContractOld([JSON.parse(response.booking.Contracts)])
+                setTravellers(JSON.parse(response.booking.customer_data))
                 // console.log('response--->',response,response.booking.booking_key,JSON.parse(response.booking.booking_response).BookingId)              
                 let newBodyFormData = new FormData();
                 newBodyFormData.append("BookingId", JSON.parse(response.booking.booking_response).BookingId);
@@ -75,7 +75,7 @@ export default function DownloadTicket() {
                                 body: newBodyFormData
                             }).then((response) => response.json()).then((bookingResp) => {
                                 // console.log('bookingResp--->',bookingResp)
-                                setTravellers(bookingResp.Flightpassenger)
+                                // setTravellers(bookingResp.Flightpassenger)
                                 setContract(bookingResp.Contracts)
                             })  
                         }
@@ -128,11 +128,11 @@ export default function DownloadTicket() {
 
                         <div class="col-sm-6">
                             {/* <img src="img/1.png" height="25px" /> */}
-                            <p class="text-start">{contract.length > 0 && contract[0].AirSegments[0].AirlineCode}-{contract.length > 0 && contract[0].AirSegments[0].FlightNumber}</p>
+                            <p class="text-start">{contract!=null && contract.length > 0 ? contract[0].AirSegments[0].AirlineCode : contractOld.length>0 && contractOld[0].AirSegments[0].AirlineCode}-{contract!=null && contract.length > 0 ? contract[0].AirSegments[0].FlightNumber : contractOld.length>0 && contractOld[0].AirSegments[0].FlightNumber}</p>
                         </div>
 
                         <div class="col-sm-6">
-                            <h3 class="text-end">Booking Reference : {bookingResponse.BookingId}</h3>
+                            <h3 class="text-end">Booking Reference : {bookingResponse.BookingId ? bookingResponse.BookingId : bookingResponse.AirlinePnr}</h3>
                             <h3 class="text-end">Ticket Status : Booked</h3></div>
                     </div>
                     <table class="table">
@@ -146,16 +146,21 @@ export default function DownloadTicket() {
                             </tr>
                         </thead>
                         <tbody>
+                            {console.log('new->>>',contract)}
+                            {console.log('old->>>',contractOld)}
                             {/* {console.log('contract===',contract)} */}
                             {/* {console.log('contractOld===',contractOld,contractOld.AirSegments[0].DepartureDateTime)} */}
                             {/* {console.log('contract[0].AirSegments[0].DepartureDateTime--->',contract[0].AirSegments[0].DepartureDateTime,'--->',moment(new Date(contract[0].AirSegments[0].DepartureDateTime)).format('DD MMM YYYY'))} */}
                             <tr>
                                 <td>
-                                    <p>{contract.length > 0 ? contract[0].AirSegments[0].sourceAirportName+'('+contract[0].AirSegments[0].Origen+')' : ''}</p>
-                                    <p>{Object.keys(contractOld).length > 0 &&  moment(new Date(contractOld.AirSegments[0].DepartureDateTime)).format('Do MMM YYYY h:mm:a')}</p></td>
-                                <td><p>{contract.length > 0 &&  contract[0].AirSegments[contract[0].AirSegments.length - 1].destinationAirportName +'('+ contract[0].AirSegments[contract[0].AirSegments.length - 1].Destination+')' }</p>
-                                    <p>{Object.keys(contractOld).length > 0 &&  moment(new Date(contractOld.AirSegments[contractOld.AirSegments.length - 1].ArrivalDateTime)).format('Do MMM YYYY h:mm:a') } </p></td>
-                                <td>{contract.length > 0 && contract[0].AirSegments[0].AirlineCode}-{contract.length > 0 && contract[0].AirSegments[0].FlightNumber}</td>
+                                    <p>{contract!=null && contract.length > 0 ? contract[0].AirSegments[0].sourceAirportName+'('+contract[0].AirSegments[0].Origen+')' : contractOld.length>0 && contractOld[0].AirSegments[0].sourceAirportName+'('+contractOld[0].AirSegments[0].Origen+')'}</p>
+                                    <p>{contractOld.length > 0 &&  moment(new Date(contractOld[0].AirSegments[0].DepartureDateTime)).format('Do MMM YYYY h:mm:a')}</p></td>
+                                <td><p>{contract!=null && contract.length > 0 ?  contract[0].AirSegments[contract[0].AirSegments.length - 1].destinationAirportName +'('+ contract[0].AirSegments[contract[0].AirSegments.length - 1].Destination+')' : contractOld.length>0 && contractOld[0].AirSegments[contractOld[0].AirSegments.length - 1].destinationAirportName +'('+ contractOld[0].AirSegments[contractOld[0].AirSegments.length - 1].Destination+')' }</p>
+                                    <p>{contractOld.length > 0 &&  moment(new Date(contractOld[0].AirSegments[contractOld[0].AirSegments.length - 1].ArrivalDateTime)).format('Do MMM YYYY h:mm:a') } </p></td>
+                                {/* <td>{contract!=null && contract.length > 0 && contract[0].AirSegments[0].AirlineCode}-{contract!=null && contract.length > 0 && contract[0].AirSegments[0].FlightNumber}</td> */}
+                                <td>
+                                    <p class="text-start">{contract!=null && contract.length > 0 ? contract[0].AirSegments[0].AirlineCode : contractOld.length>0 && contractOld[0].AirSegments[0].AirlineCode}-{contract!=null && contract.length > 0 ? contract[0].AirSegments[0].FlightNumber : contractOld.length>0 && contractOld[0].AirSegments[0].FlightNumber}</p>
+                                </td>    
                                 <td>BT </td>
                                 <td>{bookingResponse.AirlinePnr}</td>
                             </tr>
@@ -179,11 +184,11 @@ export default function DownloadTicket() {
                         {travellers.map((item, i) => (
                             <tr>
                                 <td>{item.Title} {item.FirstName} </td>
-                                <td>{item.TicketNumber ? item.TicketNumber : 'N/A'} </td>
-                                <td>{contract.length > 0 && contract[0].AirSegments[0].BaggageAllowed.CheckInBaggage} </td>
+                                <td>{item.TicketNumber ? item.TicketNumber : bookingResponse.AirlinePnr} </td>
+                                <td>{contract!=null && contract.length > 0 ? contract[0].AirSegments[0].BaggageAllowed.CheckInBaggage : contractOld.length>0 && contractOld[0].AirSegments[0].BaggageAllowed.CheckInBaggage} </td>
                                 {/* <td>BT </td> */}
                                 <td>N/A</td>
-                                <td>{contract.length > 0 && contract[0].Refundable ? 'YES' : 'No'}</td>
+                                <td>{contract!=null && contract.length > 0 && contract[0].Refundable ? 'YES' : 'No'}</td>
                                 <td>Booked</td>
                             </tr>
                         ))}
@@ -202,9 +207,9 @@ export default function DownloadTicket() {
                         </thead>
                         <tbody>
                             <tr>
-                                <td>INR {contract.length > 0 && contract[0].AirlineFare.BaseFare} </td>
-                                <td>INR {contract.length > 0 && contract[0].AirlineFare.TaxFare} </td>
-                                <td>NR {contract.length > 0 && contract[0].AirlineFare.GrossFare} </td>
+                                <td>INR {contract!=null && contract.length > 0 ? contract[0].AirlineFare.BaseFare : contractOld.length > 0 && contractOld[0].AirlineFare.BaseFare} </td>
+                                <td>INR {contract!=null && contract.length > 0 ? contract[0].AirlineFare.TaxFare : contractOld.length > 0 && contractOld[0].AirlineFare.TaxFare} </td>
+                                <td>NR {contract!=null && contract.length > 0 ? contract[0].AirlineFare.GrossFare : contractOld.length > 0 && contractOld[0].AirlineFare.GrossFare} </td>
 
                             </tr>
 
