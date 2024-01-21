@@ -26,6 +26,125 @@
     <link rel="stylesheet" href="assets/css/style.css" />
     <!-- Responsive css -->
     <link rel="stylesheet" href="assets/css/responsive.css" />
+     <script src="https://kit.fontawesome.com/236ad0e659.js" crossorigin="anonymous"></script>
+     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Poppins:400,500%7CRoboto+Condensed:300,400,500,700">
+    <link rel="stylesheet" type="text/css" href="https://livedemo00.template-help.com/wt_prod-19077/css/fonts.css">
+    <style type="text/css">
+        .btn_fliter {
+    border: 1px solid;
+    width: 46px;
+    height: 44px;
+    position: absolute;
+    text-align: center;
+    line-height: 44px;
+    font-size: 16px;
+    margin: 6px;
+    background: #0a5cc0;
+    color: #ffffff;
+    border-radius: 5px;
+    cursor: pointer;
+}
+        .fixed_price {
+    background: #0a5cc0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 1;
+    color: #f1f1f1 !important;
+    padding: 10px 10px 5px;
+}
+.head span {
+    color: #fff;
+}
+.fa-circle {
+    color: #fff;
+    font-size: 4px;
+    margin: -10px 10px;
+}
+.fixed_price .totalfare .fare {
+    font-size: 26px;
+    font-weight: 600;
+    display: block;
+    line-height: 30px;
+}
+*, ::after, ::before {
+    box-sizing: border-box;
+}
+.totalfare {
+    display: inline-block;
+    text-align: center;
+    margin-right: 20px;
+    margin-top: 10px;
+}
+.fare i {
+    margin-right: 3px;
+    font-size: 24px;
+}
+ .over_link {
+    display: block;
+    line-height: 15px;
+    font-size: 13px;
+    font-style: italic;
+    color: #2bbae4;
+    cursor: pointer;
+}
+.btn_book {
+    border: 0;
+    background: #2bbae4;
+    color: #fff;
+    padding: 6px 20px;
+    display: inline-block;
+    font-size: 18px;
+    text-transform: uppercase;
+    text-decoration: none !important;
+    border-radius: 5px;
+    font-weight: 600;
+    float: right;
+    margin-top: 14px;
+}
+.bg {
+    background: #2bbae4;
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin-right: 5px;
+    color: #fff;
+}
+ .fixed_price .head {
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 400;
+}
+.fixed_price .box .b1 .time .arrow {
+    min-width: 25px;
+    text-align: center;
+    font-size: 14px;
+    vertical-align: middle;
+}
+.box {
+    border-right: 1px dashed #3674bf;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-right: 30px;
+    margin-bottom: 5px;
+}
+.left_side_search_area {
+    background: #dedede;
+    padding: 15px;
+}
+.fixed_price .box .b1 .f_logo {
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    display: block;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    padding: 4px;
+}
+.fixed_price .box .b1 .time {
+    font-size: 22px;
+    font-weight: 400;
+}
+    </style>
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="assets/img/favicon.png">
 </head>
@@ -1034,11 +1153,14 @@
                 </div>
             </div>
             <div class="row">
-                <button onclick="myFunction()" style="width: 105px;
+
+                <a class="" onclick="myFunction()" style="
                 z-index: 99;
                 left: 0px;
                 position: fixed;
-                top: 132px;">Filter</button>
+                top: 300px;"><span class="btn_fliter d-none d-sm-block">
+                    <i class="fa fa-filter"></i>
+                </span></a>
 
                 <div class="col-lg-3" id="myDIV" style="position: absolute;">
                     <div class="left_side_search_area">
@@ -3458,6 +3580,25 @@
             </div>
         </div>
     </footer>
+    <div class="fixed_price">
+                <div class="col-md-11 m-auto">
+                    <div class="row">
+                        <div id="divOnwordSelection" class="col-6 col-sm-4 p-2"><p class="head"><span class="bg">Onword</span><span>6E-2025</span><i class="fa fa-circle"></i><span>22, Jan 2024</span></p><div class="box"><div class="b1"><span class="f_logo"><img src="assets/img/6E.gif"></span></div><div class="b1"><span class="time">05:45 am<i class="arrow fa fa-long-arrow-right"></i>06:55 am</span></div><div class="b1"><span class="price"><i class="fa fa-rupee"></i>6831|</span><span class="tds_price" style="display: none;"><i class="fa fa-rupee"></i>5671</span></div></div></div>
+                        <div id="divReturnSelection" class="col-6 col-sm-4 p-2"><p class="head"><span class="bg">Return</span><span>6E-651</span><i class="fa fa-circle"></i><span>Fri, Jan 2024</span></p><div class="box"><div class="b1"><span class="f_logo"><img src="assets/img/6E.gif"></span></div><div class="b1"><span class="time">22:15 pm<i class="arrow fa fa-long-arrow-right"></i>00:25 am</span></div><div class="b1"><span class="price"><i class="fa fa-rupee"></i>5863</span><span class="tds_price" style="display: none;"><i class="fa fa-rupee"></i>4749</span></div></div></div>
+                        <div class="col-sm-4 text-right">
+                            <div class="totalfare">
+                                <span id="divTotal" class="fare"><i class="fa fa-rupee"></i>12694</span>
+                                <span id="divNetTotal" class="tds_price" style="display: none;"><i class="fa fa-rupee"></i>10420</span>
+                                <span class="over_link">Fare Details</span>
+                            </div>
+                            <input name="Out" type="hidden" id="Out" value="236">
+                            <input name="In" type="hidden" id="In" value="475">
+                            
+                            <input type="button" class="btn_book" value="Book Now" onclick="ValidateRoundFare();">
+                        </div>
+                    </div>
+                </div>
+            </div>
     <div class="copyright_area">
         <div class="container">
             <div class="row align-items-center">
@@ -3506,7 +3647,4 @@
 }
 </script>
 </body>
-
-
-<!-- Mirrored from andit.co/projects/html/and-tour/demo/flight-search-result.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 19 Nov 2022 05:32:00 GMT -->
 </html>
