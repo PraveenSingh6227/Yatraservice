@@ -64,6 +64,12 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
       )
   }
 
+  const filterContractByPrice = (Contracts) =>{
+    let clean = Contracts.filter((arr, index, self) =>
+        index === self.findIndex((t) => (t.AirlineFare.GrossFare === arr.AirlineFare.GrossFare)))
+    return clean
+  }
+
 const htmlDecode = (input) => {
     if(!input) return
     input = input.toString().replace(/\\/g, '')
@@ -688,7 +694,7 @@ const htmlDecode = (input) => {
                           </div>
                           <div className="flight_multis_area_wrapper" style={{ paddingBottom: '2%' }}>
                             <div class="tour_search_type">
-                              {Contracts[item].map((item3, index3) => {
+                              {filterContractByPrice(Contracts[item]).map((item3, index3) => {
                                 contractIds[index3] = item3.ContractId;
                                 return (
                                   <>
