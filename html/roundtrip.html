@@ -44,6 +44,10 @@
     border-radius: 5px;
     cursor: pointer;
 }
+.price_list li:nth-child(2n+1) .price_box {
+    background: #e6fffb;
+    border: 1px solid #d8fdf7;
+}
         .fixed_price {
     background: #0a5cc0;
     position: fixed;
@@ -113,6 +117,75 @@
     margin-bottom: 8px;
     font-size: 13px;
     font-weight: 400;
+}
+.price_list {
+    margin: 0;
+    padding: 0;
+}
+.result_list .price_list li {
+    list-style: none;
+    margin-bottom: 3px;
+}
+.result_list .price_list li:nth-child(2n+1) .price_box {
+    background: #e6fffb;
+    border: 1px solid #d8fdf7;
+}
+
+.result_list .price_list .price_box {
+    padding: 2px 5px;
+    display: inline-block;
+    position: relative;
+}
+.price_box {
+    padding: 2px 5px;
+    display: inline-block;
+    position: relative;
+}
+.result_list .price_list .price_box > .f_hvr {
+    position: absolute;
+    display: block;
+    top: 0;
+    font-size: 12px;
+    background: #2bbae4;
+    color: #ffffff;
+    padding: 5px 6px;
+    border-radius: 5px;
+    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    white-space: nowrap;
+}
+.price_list li:nth-child(2n+0) .price_box {
+    background: #ffe6e6;
+    border: 1px solid #ffe2e2;
+}
+.price_box input.rb_price[type=radio] {
+    position: relative;
+    margin-right: 5px;
+    vertical-align: -1px;
+    transform: scale(1.2);
+    outline: none !important;
+}
+.price_box label {
+    margin: 0;
+    font-size: 11px;
+    font-weight: 500;
+    color: #666666;
+    min-width: 78px;
+}
+.p_div {
+    margin: 2px 0 0 18px;
+}
+.price_box .price {
+    font-size: 15px;
+    font-weight: 500;
+    color: #222222;
+}
+.price_box .tds_priceOnword, .result-round .result_list .price_list .price_box .tds_priceReturn {
+    border: 1px dashed #bbbbbb;
+    padding: 1px 2px;
+    margin-left: 2px;
 }
 .fixed_price .box .b1 .time .arrow {
     min-width: 25px;
@@ -1363,10 +1436,7 @@
 
                                         </div>
                                         <div class="flight_search_right">
-                                            <h5><del>9,560 Rs.</del></h5>
-                                            <h2>7,560 Rs.<sup>*20% OFF</sup></h2>
-                                            <a href="flight-booking-submission.html" class="btn btn_theme btn_sm">Book
-                                                now</a>
+                                            <ul class="price_list"><li><div class="price_box"><span class="f_hvr"></span><input type="radio" checked="checked" class="rb_price" name="Onword" id="Onword169" onclick="SetFareGroupContractOnword(169,169);"><label>*TAC FARE</label><div class="p_div"><span class="price"><i class="fa fa-rupee"></i>5507</span><span class="tds_priceOnword" style="display: none;"><i class="fa fa-rupee"></i>4401</span></div></div></li><li><div class="price_box"><span class="f_hvr"></span><input type="radio" class="rb_price" name="Onword" id="Onword170" onclick="SetFareGroupContractOnword(170,169);"><label>*SME FARE</label><div class="p_div"><span class="price"><i class="fa fa-rupee"></i>6333</span><span class="tds_priceOnword" style="display: none;"><i class="fa fa-rupee"></i>5211</span></div></div></li><li><div class="price_box"><span class="f_hvr"></span><input type="radio" class="rb_price" name="Onword" id="Onword171" onclick="SetFareGroupContractOnword(171,169);"><label>*NOR FARE</label><div class="p_div"><span class="price"><i class="fa fa-rupee"></i>6386</span><span class="tds_priceOnword" style="display: none;"><i class="fa fa-rupee"></i>5263</span></div></div></li></ul>
                                             <p>*Discount applicable on some conditions</p>
                                             <h6 data-bs-toggle="collapse" data-bs-target="#collapseExample"
                                                 aria-expanded="false" aria-controls="collapseExample">Show more <i
