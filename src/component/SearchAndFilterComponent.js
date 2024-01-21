@@ -18,6 +18,7 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
   const [totalContract, setTotalContracts] = useState(totalContractData);
   const [selectedContract, setSelectedContract] = useState({})
   const [showNetFare, setShowNetFare] = useState(false)
+  const [selectedIndex, setSelectedIndex] = useState(0)
   //filter
   const [priceSlider, setPriceSlider] = useState(80000);
   const [airStops, setAirStops] = useState([]);
@@ -70,8 +71,9 @@ const htmlDecode = (input) => {
     return input
   }
 
-  const goToBooking = () => {
-    if (Object.keys(selectedContract).length == 0) {
+  const goToBooking = (index) => {
+    console.log("selectedIndex--->",index,selectedIndex)
+    if (Object.keys(selectedContract).length == 0 || selectedIndex!=index) {
       addToast("Please select the price", { appearance: 'error' });
       return
     }
@@ -366,6 +368,7 @@ const htmlDecode = (input) => {
                       defaultValue=""
                       id="flexCheckDefaultf1"
                       value={2}
+                      checked={airStops.includes(2)}
                       onChange={(event) => { handleStopFilter(event) }}
                     />
                     <label
@@ -385,6 +388,7 @@ const htmlDecode = (input) => {
                       defaultValue=""
                       id="flexCheckDefaultf2"
                       value={3}
+                      checked={airStops.includes(3)}
                       onChange={(event) => { handleStopFilter(event) }}
                     />
                     <label
@@ -404,6 +408,7 @@ const htmlDecode = (input) => {
                       defaultValue=""
                       id="flexCheckDefaultf4"
                       value={1}
+                      checked={airStops.includes(1)}
                       onChange={(event) => { handleStopFilter(event) }}
                     />
                     <label
@@ -429,6 +434,7 @@ const htmlDecode = (input) => {
                       type="checkbox"
                       defaultValue=""
                       value={"AI"}
+                      checked={airlines.includes("AI")}
                       id="flexCheckDefaults2"
                       onChange={(event) => { handleAirlinesFilter(event) }}
                     />
@@ -449,6 +455,7 @@ const htmlDecode = (input) => {
                       defaultValue=""
                       id="flexCheckDefaults3"
                       value={"IX"}
+                      checked={airlines.includes("IX")}
                       onChange={(event) => { handleAirlinesFilter(event) }}
                     />
                     <label
@@ -467,6 +474,7 @@ const htmlDecode = (input) => {
                       defaultValue=""
                       id="flexCheckDefaults4"
                       value={"I5"}
+                      checked={airlines.includes("I5")}
                       onChange={(event) => { handleAirlinesFilter(event) }}
                     />
                     <label
@@ -485,6 +493,7 @@ const htmlDecode = (input) => {
                       defaultValue=""
                       id="flexCheckDefaults5"
                       value={"G8"}
+                      checked={airlines.includes("G8")}
                       onChange={(event) => { handleAirlinesFilter(event) }}
                     />
                     <label
@@ -503,6 +512,7 @@ const htmlDecode = (input) => {
                       defaultValue=""
                       id="flexCheckDefaults5"
                       value={"6E"}
+                      checked={airlines.includes("6E")}
                       onChange={(event) => { handleAirlinesFilter(event) }}
                     />
                     <label
@@ -519,6 +529,8 @@ const htmlDecode = (input) => {
                       className="form-check-input"
                       type="checkbox"
                       defaultValue=""
+                      value={"SG"}
+                      checked={airlines.includes("SG")}
                       id="flexCheckDefaults1"
                       onChange={(event) => { handleAirlinesFilter(event) }}
                     />
@@ -538,6 +550,7 @@ const htmlDecode = (input) => {
                       defaultValue=""
                       id="flexCheckDefaults5"
                       value={"2T"}
+                      checked={airlines.includes("2T")}
                       onChange={(event) => { handleAirlinesFilter(event) }}
                     />
                     <label
@@ -556,6 +569,7 @@ const htmlDecode = (input) => {
                       defaultValue=""
                       value={"UK"}
                       id="flexCheckDefaults5"
+                      checked={airlines.includes("Uk")}
                       onChange={(event) => { handleAirlinesFilter(event) }}
                     />
                     <label
@@ -620,7 +634,6 @@ const htmlDecode = (input) => {
             <div className="row">
               {(Contracts !== null && Object.keys(Contracts).length > 0) && Object.keys(Contracts).map((item, index) => {
                 let contractIds = [];
-                const selectedContracts = {}
                 return (
                   <div className="col-lg-12">
                     <div className="flight_search_result_wrapper">
@@ -689,6 +702,7 @@ const htmlDecode = (input) => {
                                       checked={selectedContract.ContractId == item3.ContractId}
                                       onClick={(e) => {
                                         setSelectedContract(item3)
+                                        setSelectedIndex(index)
                                         setSeatAvailable(prev => ({
                                           ...prev,
                                           [Contracts[item][0].AirSegments[0].FlightNumber] : item3.TotalSeats
@@ -698,7 +712,7 @@ const htmlDecode = (input) => {
                                     />
                                     <label class="form-check-label">
                                       <span class="area_flex_one">
-                                        <span style={{ textTransform: 'uppercase' }}>({item3.FareType}) Rs. {item3.AirlineFare.NetFare
+                                        <span style={{ textTransform: 'uppercase' }}>({item3.FareType}) Rs. {item3.AirlineFare.GrossFare} <br/> Net Fare : Rs. {item3.AirlineFare.NetFare
 
 
 }</span>
@@ -715,6 +729,7 @@ const htmlDecode = (input) => {
                                           checked={selectedContract.ContractId == item3.ContractId}
                                           onClick={(e) => {
                                             setSelectedContract(item3)
+                                            setSelectedIndex(index)
                                             setSeatAvailable(prev => ({
                                               ...prev,
                                               [Contracts[item][0].AirSegments[0].FlightNumber] : item3.TotalSeats
@@ -753,7 +768,7 @@ const htmlDecode = (input) => {
                             </p>
                             {/* <a>View Fare Rules</a> */}
                             <button
-                              onClick={() => goToBooking()}
+                              onClick={() => goToBooking(index)}
                               className="btn btn_theme btn_sm"
                             >
                               Book now
