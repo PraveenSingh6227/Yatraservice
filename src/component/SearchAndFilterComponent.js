@@ -685,8 +685,7 @@ const htmlDecode = (input) => {
                                 </div>
                                 <div className="flight_search_destination">
                                   <p>To</p>
-                                  <h3>{Contracts[item][0].AirSegments[Contracts[item][0].AirSegments.length - 1].Destination} <span className="time">{moment(new Date(Contracts[item][0].AirSegments[0].ArrivalDateTime
-)).format('h:mm a')}</span></h3>
+                                  <h3>{Contracts[item][0].AirSegments[Contracts[item][0].AirSegments.length - 1].Destination} <span className="time">{moment(new Date(Contracts[item][0].AirSegments[Contracts[item][0].AirSegments.length - 1].ArrivalDateTime)).format('h:mm a')}</span></h3>
                                   <h6>{Contracts[item][0].AirSegments[Contracts[item][0].AirSegments.length - 1].Destination} - {Contracts[item][0].AirSegments[Contracts[item][0].AirSegments.length - 1].destinationAirportName}</h6>
                                 </div>
                               </div>
@@ -843,6 +842,7 @@ const htmlDecode = (input) => {
                                 </div>
                               </div>
                               <div className="flight_refund_policy">
+                              {index2==0 && (
                                 <div className="TabPanelInner flex_widht_less col-6" style={{ paddingBottom: '5%' }}>
                                   <h4>Fare Breakups</h4>
                                   <div class="tour_booking_amount_area">
@@ -864,7 +864,11 @@ const htmlDecode = (input) => {
                                     </div>
                                   </div>
                                 </div>
-                                <div className="TabPanelInner col-7">
+                              )}
+                              {index2!=0 && (
+                                <div className={`TabPanelInner flex_widht_less col-6`}></div>
+                              )}  
+                                <div className={`TabPanelInner col-7`}>
                                   <div style={{ float: 'right' }}>
                                     <h4>Baggage</h4>
                                     <div className="flight_info_taable">
