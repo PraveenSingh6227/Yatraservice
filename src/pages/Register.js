@@ -46,7 +46,7 @@ export default function Login() {
           bodyFormData.append("mobile", mobile);
           bodyFormData.append("password", password);
 
-              await fetch("https://yatriservice.com/admin/api/api.php", {
+              await fetch(`${url}api.php`, {
                 method: 'POST',
                 body: bodyFormData
               }).then((response) => response.json()).then((response) => {

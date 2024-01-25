@@ -6,6 +6,7 @@ import { useState } from 'react'
 import Link from 'next/link';
 import { useToasts } from 'react-toast-notifications';
 import LoadingSpinner from "../component/Loader";
+import {url} from '../../config/index'
 
 
 
@@ -32,7 +33,7 @@ export default function Login() {
     bodyFormData.append("password", password);
     bodyFormData.append("action", "user_login");
     await fetch(
-      "https://yatriservice.com/admin/api/api.php",
+      `${url}api.php`,
       {
         method: "POST",
         body: bodyFormData,

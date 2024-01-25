@@ -6,7 +6,7 @@ import OneWayComponent from '@/component/OneWayComponent'
 import RoundTripComponent from '@/component/RoundTripComponent'
 import React, { useEffect, useState } from 'react'
 import LoadingSpinner from "../component/Loader";
-
+import {url} from '../../config/index'
 
 
 
@@ -25,7 +25,7 @@ export default function Home() {
     setIsLoading(true)
     let bodyFormData = new FormData();
     bodyFormData.append("action", "get_airport");
-    await fetch("https://yatriservice.com/admin/api/api.php", {
+    await fetch(`${url}api.php`, {
       method: 'POST',
       body: bodyFormData
     }).then((response) => response.json()).then((response) => {

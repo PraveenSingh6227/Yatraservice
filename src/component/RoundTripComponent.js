@@ -14,6 +14,7 @@ export default function RoundTripComponent ({airlinesData}){
     const [roundTripTravelDay, setRoundTripTravelDay] = useState("");
     const [roundTripReturnDay, setRoundTripReturnDay] = useState("");
     const [currentDate, setCurrentDate] = useState("");
+    const [returnDate, setReturnDate] = useState("");
     const [roundTripTravelTotalPassenger, setRoundTripTravelTotalPassenger] = useState(0);
     const [roundTripTravelAdult, setRoundTripTravelAdult] = useState(0);
     const [roundTripTravelChildren, setRoundTripTravelChildren] = useState(0);
@@ -234,7 +235,8 @@ export default function RoundTripComponent ({airlinesData}){
                                             <input
                                                 type="date"
                                                 defaultValue={roundTripTravelDate}
-                                                onChange={(event) => { setRoundTripTravelDate(event.target.value); setRoundTripTravelDay(moment(event.target.value).format('dddd')) }}
+                                                // onChange={(event) => { setRoundTripTravelDate(event.target.value); setRoundTripTravelDay(moment(event.target.value).format('dddd')) }}
+                                                onChange={(event)=>{ setRoundTripTravelDate(event.target.value); setRoundTripTravelDay(moment(event.target.value).format('dddd')); setRoundTripReturnDate(moment(event.target.value).add(1,'day').format('YYYY-MM-DD'));setRoundTripReturnDay(moment(event.target.value).add(1,'day').format('dddd'));setReturnDate(moment(event.target.value).add(1,'day').format('YYYY-MM-DD'))}}
                                                 min={currentDate}
                                             />
                                             <span>{roundTripTravelDay}</span>
@@ -245,7 +247,7 @@ export default function RoundTripComponent ({airlinesData}){
                                                 type="date"
                                                 defaultValue={roundTripReturnDate}
                                                 onChange={(event) => { setRoundTripReturnDate(event.target.value); setRoundTripReturnDay(moment(event.target.value).format('dddd')) }}
-                                                min={currentDate}
+                                                min={returnDate}
                                             />
                                             <span>{roundTripReturnDay}</span>
                                         </div>

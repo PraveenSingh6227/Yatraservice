@@ -8,6 +8,7 @@ import LoadingSpinner from "../component/Loader";
 import * as moment from 'moment'
 import ReactDOMServer from "react-dom/server";
 import jsPDF from "jspdf";
+import {url} from '../../config/index'
 
 
 
@@ -39,7 +40,7 @@ export default function UserDashboard() {
         let bodyFormData = new FormData();
         bodyFormData.append("action", "get_my_bookings");
         bodyFormData.append("user_id", user_id);
-        await fetch("https://yatriservice.com/admin/api/api.php", {
+        await fetch(`${url}api.php`, {
           method: 'POST',
           body: bodyFormData
         }).then((response) => response.json()).then((response) => {
@@ -192,9 +193,11 @@ export default function UserDashboard() {
                                                     <thead>
                                                         <tr>
                                                             <th>Sl no.</th>
+                                                            <th>Source</th>
+                                                            <th>Destination</th>
                                                             <th>Booking ID</th>
                                                             <th>Booking type</th>
-                                                            <th>Booking amount</th>
+                                                            <th>Amount</th>
                                                             <th>Status</th>
                                                             <th>Date of Booking</th>
                                                             <th>Print Ticket</th>
@@ -202,9 +205,12 @@ export default function UserDashboard() {
                                                     </thead>
                                                     <tbody>
                                                     {myBookings.map((item, i) => (
+                                                        
                                                         <tr>
                                                             <td>{i+1}</td>
                                                             {/* <td>{JSON.parse(item.booking_response).BookingId}</td> */}
+                                                            <td>{JSON.parse(item.Contracts).AirSegments[0].Origen}</td>
+                                                            <td>{JSON.parse(item.Contracts).AirSegments[JSON.parse(item.Contracts).AirSegments.length-1].Destination}</td>
                                                             <td>{item.booking_id}</td>
                                                             <td>Flight</td>
                                                             <td>{'Rs. '+item.total_price}</td>

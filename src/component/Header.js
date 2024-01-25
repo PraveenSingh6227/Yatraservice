@@ -1,6 +1,7 @@
 import React,{ useEffect, useState } from 'react'
 import Link from 'next/link';
 import { useRouter } from 'next/navigation'
+import { url } from '../../config/index'
 
 
 export default function Header() {
@@ -25,7 +26,7 @@ export default function Header() {
       ) {
         bodyFormData.append("action", "user_details");
         bodyFormData.append("user_id", user.id);
-        await fetch("https://yatriservice.com/admin/api/api.php", {
+        await fetch(`${url}api.php`, {
             method: 'POST',
             body: bodyFormData
         }).then((response) => response.json()).then(async (responseUser) => {

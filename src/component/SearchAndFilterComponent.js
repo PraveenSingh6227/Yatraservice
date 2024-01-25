@@ -6,6 +6,7 @@ import '../../node_modules/react-tabs/style/react-tabs.css';
 import LoadingSpinner from "../component/Loader";
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+import {url} from '../../config/index'
 
 
 export default function SearchAndFilterComponent({ contractData, totalContractData, bookingKey, adultCount, childCount, InfantCount }) {
@@ -36,7 +37,7 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
     }
     setIsLoading(true)
     setFareRule([])
-    await fetch("https://yatriservice.com/admin/api/generateToken.php", {
+    await fetch(`${url}generateToken.php`, {
       method: 'GET',
     })
       .then((response) => response.json())
@@ -46,7 +47,7 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
         bodyFormData.append("BookingKey", bookingKey);
         bodyFormData.append("APIToken", response.ApiToken);
         bodyFormData.append("ContractId[]", selectedContract.ContractId);
-        await fetch("https://yatriservice.com/admin/api/api.php", {
+        await fetch(`${url}api.php`, {
           method: 'POST',
           body: bodyFormData
         }).then((response) => response.json()).then((response) => {
@@ -717,10 +718,7 @@ const htmlDecode = (input) => {
                                     />
                                     <label class="form-check-label">
                                       <span class="area_flex_one">
-                                        <span style={{ textTransform: 'uppercase' }}>({item3.FareType}) Rs. {item3.AirlineFare.GrossFare} <br/> Net Fare : Rs. {item3.AirlineFare.NetFare
-
-
-}</span>
+                                        <span style={{ textTransform: 'uppercase' }}>({item3.FareType}) Rs. {item3.AirlineFare.GrossFare} <br/> Net Fare : Rs. {item3.AirlineFare.NetFare}</span>
                                       </span>
                                     </label>
                                     </div>
@@ -756,12 +754,6 @@ const htmlDecode = (input) => {
                             </div>
                           </div>
                           <div className="flight_search_right">
-                            {/* <h5>
-                                  <del>9,560 Rs.</del>
-                                </h5> */}
-                            {/* <h2>
-                                  {item.AirlineFare.BaseFare} Rs.<sup>*20% OFF</sup>
-                                </h2> */}
                             {seatAvailable.hasOwnProperty(Contracts[item][0].AirSegments[0].FlightNumber) && (
                             <p>{seatAvailable.hasOwnProperty(Contracts[item][0].AirSegments[0].FlightNumber) ? seatAvailable[Contracts[item][0].AirSegments[0].FlightNumber] : 0} Seat/s Left</p>    
                             )}
@@ -771,20 +763,17 @@ const htmlDecode = (input) => {
                             >
                              View Fare Rules
                             </p>
-                            {/* <a>View Fare Rules</a> */}
                             <button
                               onClick={() => goToBooking(index)}
                               className="btn btn_theme btn_sm"
                             >
                               Book now
                             </button>
-                            {/* <p>*Discount applicable on some conditions</p> */}
                             <h6
                               data-bs-toggle="collapse"
                               data-bs-target={`#collapseExample_${index}`}
                               aria-expanded="false"
                               aria-controls={`collapseExample_${index}`}
-                              // onClick={() => getFareRule(contractIds)}
                             >
                               Show more <i className="fas fa-chevron-down" />
                             </h6>
@@ -795,6 +784,7 @@ const htmlDecode = (input) => {
                           id={`collapseExample_${index}`}
                         >
                           {Contracts[item][0].AirSegments.map((item2, index2) => {
+                          // {console.log('-raam-->',Contracts[item][0].AirSegments.length,index2)}
                             return (
                               <div className="flight_show_down_wrapper">
                               <div className="flight-shoe_dow_item">
@@ -842,7 +832,7 @@ const htmlDecode = (input) => {
                                 </div>
                               </div>
                               <div className="flight_refund_policy">
-                              {index2==0 && (
+                              {index2 == (Contracts[item][0].AirSegments.length-1) && (
                                 <div className="TabPanelInner flex_widht_less col-6" style={{ paddingBottom: '5%' }}>
                                   <h4>Fare Breakups</h4>
                                   <div class="tour_booking_amount_area">
@@ -865,10 +855,10 @@ const htmlDecode = (input) => {
                                   </div>
                                 </div>
                               )}
-                              {index2!=0 && (
-                                <div className={`TabPanelInner flex_widht_less col-6`}></div>
+                              {index2!=(Contracts[item][0].AirSegments.length-1) && (
+                                <div className={`TabPanelInner flex_widht_less  col-6`}></div>
                               )}  
-                                <div className={`TabPanelInner col-7`}>
+                                <div className={`TabPanelInner ${index2 == (Contracts[item][0].AirSegments.length-1) ? `col-7` : `col-11`}`}>
                                   <div style={{ float: 'right' }}>
                                     <h4>Baggage</h4>
                                     <div className="flight_info_taable">

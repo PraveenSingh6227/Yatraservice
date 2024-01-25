@@ -5324,3 +5324,195 @@ textarea {
     font-size: 14px;
     font-weight: 500;
 }
+
+
+
+
+
+.btn_fliter {
+    border: 1px solid;
+    width: 46px;
+    height: 44px;
+    position: absolute;
+    text-align: center;
+    line-height: 44px;
+    font-size: 16px;
+    margin: 6px;
+    background: #0a5cc0;
+    color: #ffffff;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.price_list li:nth-child(2n+1) .price_box {
+    background: #e6fffb;
+    border: 1px solid #d8fdf7;
+}
+        .fixed_price {
+    background: #0a5cc0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 1;
+    color: #f1f1f1 !important;
+    padding: 10px 10px 5px;
+}
+.head span {
+    color: #fff;
+}
+.fa-circle {
+    color: #fff;
+    font-size: 4px;
+    margin: -10px 10px;
+}
+.fixed_price .totalfare .fare {
+    font-size: 26px;
+    font-weight: 600;
+    display: block;
+    line-height: 30px;
+}
+*, ::after, ::before {
+    box-sizing: border-box;
+}
+.totalfare {
+    display: inline-block;
+    text-align: center;
+    margin-right: 20px;
+    margin-top: 10px;
+}
+.fare i {
+    margin-right: 3px;
+    font-size: 24px;
+}
+ .over_link {
+    display: block;
+    line-height: 15px;
+    font-size: 13px;
+    font-style: italic;
+    color: #2bbae4;
+    cursor: pointer;
+}
+.btn_book {
+    border: 0;
+    background: #2bbae4;
+    color: #fff;
+    padding: 6px 20px;
+    display: inline-block;
+    font-size: 18px;
+    text-transform: uppercase;
+    text-decoration: none !important;
+    border-radius: 5px;
+    font-weight: 600;
+    float: right;
+    margin-top: 14px;
+}
+.bg {
+    background: #2bbae4;
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin-right: 5px;
+    color: #fff;
+}
+ .fixed_price .head {
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 400;
+}
+.price_list {
+    margin: 0;
+    padding: 0;
+}
+.result_list .price_list li {
+    list-style: none;
+    margin-bottom: 3px;
+}
+.result_list .price_list li:nth-child(2n+1) .price_box {
+    background: #e6fffb;
+    border: 1px solid #d8fdf7;
+}
+
+.result_list .price_list .price_box {
+    padding: 2px 5px;
+    display: inline-block;
+    position: relative;
+}
+.price_box {
+    padding: 2px 5px;
+    display: inline-block;
+    position: relative;
+}
+.result_list .price_list .price_box > .f_hvr {
+    position: absolute;
+    display: block;
+    top: 0;
+    font-size: 12px;
+    background: #2bbae4;
+    color: #ffffff;
+    padding: 5px 6px;
+    border-radius: 5px;
+    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    white-space: nowrap;
+}
+.price_list li:nth-child(2n+0) .price_box {
+    background: #ffe6e6;
+    border: 1px solid #ffe2e2;
+}
+.price_box input.rb_price[type=radio] {
+    position: relative;
+    margin-right: 5px;
+    vertical-align: -1px;
+    transform: scale(1.2);
+    outline: none !important;
+}
+.price_box label {
+    margin: 0;
+    font-size: 11px;
+    font-weight: 500;
+    color: #666666;
+    min-width: 78px;
+}
+.p_div {
+    margin: 2px 0 0 18px;
+}
+.price_box .price {
+    font-size: 15px;
+    font-weight: 500;
+    color: #222222;
+}
+.price_box .tds_priceOnword, .result-round .result_list .price_list .price_box .tds_priceReturn {
+    border: 1px dashed #bbbbbb;
+    padding: 1px 2px;
+    margin-left: 2px;
+}
+.fixed_price .box .b1 .time .arrow {
+    min-width: 25px;
+    text-align: center;
+    font-size: 14px;
+    vertical-align: middle;
+}
+.box {
+    border-right: 1px dashed #3674bf;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-right: 30px;
+    margin-bottom: 5px;
+}
+.left_side_search_area {
+    background: #dedede;
+    padding: 15px;
+}
+.fixed_price .box .b1 .f_logo {
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    display: block;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    padding: 4px;
+}
+.fixed_price .box .b1 .time {
+    font-size: 22px;
+    font-weight: 400;
+}

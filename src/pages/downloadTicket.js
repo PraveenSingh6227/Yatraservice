@@ -7,6 +7,7 @@ import { useRouter } from 'next/router'
 import { useToasts } from 'react-toast-notifications';
 import jsPDF from "jspdf";
 import LoadingSpinner from "../component/Loader";
+import { url } from '../../config/index'
 
 
 
@@ -48,7 +49,7 @@ export default function DownloadTicket() {
             let bodyFormData = new FormData();
             bodyFormData.append("action", "get_booking_details");
             bodyFormData.append("booking_id", ticketId);
-            await fetch("https://yatriservice.com/admin/api/api.php", {
+            await fetch(`${url}api.php`, {
               method: 'POST',
               body: bodyFormData
             }).then((response) => response.json()).then(async(response) => {
@@ -63,14 +64,14 @@ export default function DownloadTicket() {
                 newBodyFormData.append("BookingId", JSON.parse(response.booking.booking_response).BookingId);
                 newBodyFormData.append("BookingKey", response.booking.booking_key);
                 newBodyFormData.append("action", "get_flight_booking_details");
-                await fetch("https://yatriservice.com/admin/api/generateToken.php", {
+                await fetch(`${url}generateToken.php`, {
                     method: 'GET',
                 })
                     .then((response) => response.json())
                     .then(async (response) => {
                         if(response.ApiToken){
                             newBodyFormData.append("APIToken", response.ApiToken);
-                            await fetch("https://yatriservice.com/admin/api/api.php", {
+                            await fetch(`${url}api.php`, {
                                 method: 'POST',
                                 body: newBodyFormData
                             }).then((response) => response.json()).then((bookingResp) => {
