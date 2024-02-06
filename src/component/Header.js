@@ -227,7 +227,7 @@ export default function Header() {
                   </Link>
                 </div>
                 <div className="option-item">
-                  <Link href="/becomevendor" className="btn  btn_navber">
+                  <Link href="/Register" className="btn  btn_navber">
                     Become a partner
                   </Link>
                 </div>
