@@ -108,10 +108,10 @@ export default function DownloadTicket() {
                             <img src="https://yatriservice.com/assets/img/logo2.png" class="img-fluid" style={{ height: '125px' }} />
                         </div>
                         <div class="col-sm-9">
-                            <p class="text-end">{myBookings.name}</p>
-                            <p class="text-end">S/O : RAMESH CHANDRA, ASAINAPUR, ASAINA, KANPUR. DEHAT ASIANAPUR,</p>
-                            <p class="text-end">UTTAR PRADESH-209301,</p>
-                            <p class="text-end">Kanpur,</p>
+                            <p class="text-end">{myBookings.name} {myBookings.l_name}</p>
+                            <p class="text-end">{myBookings.address},</p>
+                            <p class="text-end">{myBookings.state_name}-{myBookings.pin},</p>
+                            <p class="text-end">{myBookings.city},</p>
                             <p class="text-end">INDIA, Phone : {myBookings.mobile}</p>
                             <p class="text-end">Email Id : {myBookings.email}</p>
                         </div>

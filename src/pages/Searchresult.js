@@ -553,7 +553,7 @@ export default function Searchresult() {
                             </div>
                             <div className="tab-content" id="myTabContent1">
                               <div
-                                className={`tab-pane fade show ${router.query.oneWayTravelDate ? '' : 'active'}`}
+                                className={`tab-pane fade show ${isRoundTrip==1 ? '' : 'active'}`}
                                 id="oneway_flight"
                                 role="tabpanel"
                                 aria-labelledby="oneway-tab"
@@ -794,7 +794,7 @@ export default function Searchresult() {
                                 </div>
                               </div>
                               <div
-                                className={`tab-pane fade show ${router.query.oneWayReturnDate ? 'active' : ''}`}
+                                className={`tab-pane fade show ${isRoundTrip==1 ? 'active' : ''}`}
                                 id="roundtrip"
                                 role="tabpanel"
                                 aria-labelledby="roundtrip-tab"

@@ -45,7 +45,7 @@ export default function Login() {
         if (response.status === 400) {
           addToast("Error :" + response.message, { appearance: 'error' });
         } else {
-          addToast("Error : " + response.message, { appearance: 'success' });
+          addToast("Success : " + response.message, { appearance: 'success' });
           localStorage.setItem('userDetails', JSON.stringify(response.user));
           router.push('/')
         }
