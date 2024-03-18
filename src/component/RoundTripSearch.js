@@ -7,9 +7,11 @@ import LoadingSpinner from "./Loader";
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { url } from '../../config/index'
+import { airlnesFlag } from '../pages/airlines'
 
 
-export default function RoundTripSearch({ contractData, contractRoundData, totalContractData, totalContractRoundData, bookingKey, bookingKeyRound, adultCount, childCount, InfantCount }) {
+
+export default function RoundTripSearch({ contractData, contractRoundData, totalContractData, totalContractRoundData, bookingKey, bookingKeyRound, adultCount, childCount, InfantCount,airlineLists }) {
   const router = useRouter();
   const { addToast } = useToasts();
   const [isLoading, setIsLoading] = useState(false);
@@ -156,7 +158,7 @@ export default function RoundTripSearch({ contractData, contractRoundData, total
 
   }
 
-   //one way filter
+  //one way filter
   const handleFilter = () => {
     let filter = []
     let finalPriceFilter = []
@@ -308,19 +310,19 @@ export default function RoundTripSearch({ contractData, contractRoundData, total
         .filter((item) => {
           filter[item].filter(items => {
             if (airStops.includes(items.AirSegments.length)) {
-              console.log('los--->',airStops,items)
+              console.log('los--->', airStops, items)
               finalAirStopsFilter.push(item)
             }
           })
         })
-        console.log('finalAirStopsFilter--->',finalAirStopsFilter)
+      console.log('finalAirStopsFilter--->', finalAirStopsFilter)
       filter = Object.keys(filter)
         .filter(key => [...new Set(finalAirStopsFilter)].includes(key))
         .reduce((obj, key) => {
           obj[key] = totalContractRound[key];
           return obj;
         }, {});
-        console.log('filter>>--->',filter)
+      console.log('filter>>--->', filter)
     } else if (airStops.length > 0 && Object.keys(filter).length === 0 && totalContractRound !== null && Object.keys(totalContractRound).length > 0) {
       Object.keys(totalContractRound)
         .filter((item) => {
@@ -449,7 +451,7 @@ export default function RoundTripSearch({ contractData, contractRoundData, total
               </div>
             </div>
             {isFilterDisplay && (
-              <div class="row" id='displayFilter' style={{ position: 'absolute', background: '#dedede', zIndex: '1', paddingTop: '2%', width:'20%' }}>
+              <div class="row" id='displayFilter' style={{ position: 'absolute', background: '#dedede', zIndex: '1', paddingTop: '2%', width: '20%',paddingBottom:'2%' }}>
                 <div class="col-lg-3" style={{ width: '100%', maxHeight: '500px', overflowY: 'scroll' }}>
                   <div class="left_side_search_area">
                     <div class="left_side_search_boxed">
@@ -563,159 +565,47 @@ export default function RoundTripSearch({ contractData, contractRoundData, total
                         <h5>Airlines</h5>
                       </div>
                       <div class="tour_search_type">
-                        <div class="form-check">
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            defaultValue=""
-                            value={"AI"}
-                            checked={airlines.includes("AI")}
-                            id="flexCheckDefaults2"
-                            onChange={(event) => { handleAirlinesFilter(event) }}
-                          />
-                          <label
-                            class="form-check-label"
-                            htmlFor="flexCheckDefaults2"
-                          >
-                            <span class="area_flex_one">
-                              <span>Air India</span>
-                              {/* <span>14</span> */}
-                            </span>
-                          </label>
-                        </div>
-                        <div class="form-check">
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            defaultValue=""
-                            id="flexCheckDefaults3"
-                            value={"IX"}
-                            checked={airlines.includes("IX")}
-                            onChange={(event) => { handleAirlinesFilter(event) }}
-                          />
-                          <label
-                            class="form-check-label"
-                            htmlFor="flexCheckDefaults3"
-                          >
-                            <span class="area_flex_one">
-                              <span>Air India Express</span>
-                            </span>
-                          </label>
-                        </div>
-                        <div class="form-check">
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            defaultValue=""
-                            id="flexCheckDefaults4"
-                            value={"I5"}
-                            checked={airlines.includes("I5")}
-                            onChange={(event) => { handleAirlinesFilter(event) }}
-                          />
-                          <label
-                            class="form-check-label"
-                            htmlFor="flexCheckDefaults4"
-                          >
-                            <span class="area_flex_one">
-                              <span>Air Asia</span>
-                            </span>
-                          </label>
-                        </div>
-                        <div class="form-check">
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            defaultValue=""
-                            id="flexCheckDefaults5"
-                            value={"G8"}
-                            checked={airlines.includes("G8")}
-                            onChange={(event) => { handleAirlinesFilter(event) }}
-                          />
-                          <label
-                            class="form-check-label"
-                            htmlFor="flexCheckDefaults5"
-                          >
-                            <span class="area_flex_one">
-                              <span>Go First</span>
-                            </span>
-                          </label>
-                        </div>
-                        <div class="form-check">
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            defaultValue=""
-                            id="flexCheckDefaults5"
-                            value={"6E"}
-                            checked={airlines.includes("6E")}
-                            onChange={(event) => { handleAirlinesFilter(event) }}
-                          />
-                          <label
-                            class="form-check-label"
-                            htmlFor="flexCheckDefaults5"
-                          >
-                            <span class="area_flex_one">
-                              <span>IndiGo</span>
-                            </span>
-                          </label>
-                        </div>
-                        <div class="form-check">
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            defaultValue=""
-                            value={"SG"}
-                            checked={airlines.includes("SG")}
-                            id="flexCheckDefaults1"
-                            onChange={(event) => { handleAirlinesFilter(event) }}
-                          />
-                          <label
-                            class="form-check-label"
-                            htmlFor="flexCheckDefaults1"
-                          >
-                            <span class="area_flex_one">
-                              <span>SpiceJet</span>
-                            </span>
-                          </label>
-                        </div>
-                        <div class="form-check">
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            defaultValue=""
-                            id="flexCheckDefaults5"
-                            value={"2T"}
-                            checked={airlines.includes("2T")}
-                            onChange={(event) => { handleAirlinesFilter(event) }}
-                          />
-                          <label
-                            class="form-check-label"
-                            htmlFor="flexCheckDefaults5"
-                          >
-                            <span class="area_flex_one">
-                              <span>TruJet</span>
-                            </span>
-                          </label>
-                        </div>
-                        <div class="form-check">
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            defaultValue=""
-                            value={"UK"}
-                            id="flexCheckDefaults5"
-                            checked={airlines.includes("Uk")}
-                            onChange={(event) => { handleAirlinesFilter(event) }}
-                          />
-                          <label
-                            class="form-check-label"
-                            htmlFor="flexCheckDefaults5"
-                          >
-                            <span class="area_flex_one">
-                              <span>Vistara</span>
-                            </span>
-                          </label>
-                        </div>
+                        {airlineLists && airlineLists.map((item, index) => {
+                          return (
+                            <div className="form-check">
+                              <input
+                                className="form-check-input"
+                                type="checkbox"
+                                defaultValue=""
+                                value={item?.AirlineCode}
+                                checked={airlines.includes(item?.AirlineCode)}
+                                id="flexCheckDefaults2"
+                                onChange={(event) => { handleAirlinesFilter(event) }}
+                              />
+                              <label
+                                className="form-check-label"
+                                htmlFor="flexCheckDefaults2"
+                              >
+                                <span className="area_flex_one">
+                                  <span>
+                                    {
+                                      airlnesFlag && airlnesFlag.map((itemAirlines, index) => {
+                                        if (itemAirlines?.id == item?.AirlineCode) {
+                                          return (
+                                            <>
+                                              <img
+                                                style={{ width: 30, height: 30, borderRadius: 30 }}
+                                                src={`${itemAirlines?.logo}`}
+                                                alt="img"
+                                              />
+                                            </>
+                                          )
+                                        }
+                                      })
+                                    }
+                                    {' '}{item?.AirlineName}
+                                  </span>
+                                  {/* <span>14</span> */}
+                                </span>
+                              </label>
+                            </div>
+                          )
+                        })}
                       </div>
                     </div>
                     <div class="left_side_search_boxed">
@@ -798,6 +688,22 @@ export default function RoundTripSearch({ contractData, contractRoundData, total
                                                   <span className="airlineName fw-500">
                                                     {Contracts[item][0].AirSegments[0].AirlineCode}{Contracts[item][0].AirSegments[0].FlightNumber}
                                                   </span>
+                                                  {
+                                                    airlnesFlag && airlnesFlag.map((itemAirlines, index) => {
+                                                      if (itemAirlines?.id == Contracts[item][0].AirSegments[0].AirlineCode) {
+                                                        return (
+                                                          <>
+                                                            <br />
+                                                            <img
+                                                              style={{ width: 30,height:30,borderRadius:30 }}
+                                                              src={`${itemAirlines?.logo}`}
+                                                              alt="img"
+                                                            />
+                                                          </>
+                                                        )
+                                                      }
+                                                    })
+                                                  }
                                                 </div>
                                                 <img src="https://yatriservice.com/assets/img/icon/right_arrow.png" alt="icon" />
                                                 <h6>{Contracts[item][0].AirSegments.length === 1 ? 'Non-stop' : (Contracts[item][0].AirSegments.length - 1) + ' Stop(s)'}</h6>
@@ -897,7 +803,7 @@ export default function RoundTripSearch({ contractData, contractRoundData, total
                                       <div
                                         className="flight_policy_refund collapse"
                                         id={`collapseExample_onward_${index}`}
-                                        style={{width: '100%',overflowX: 'scroll'}}
+                                        style={{ width: '100%', overflowX: 'scroll' }}
                                       >
                                         {Contracts[item][0].AirSegments.map((item2, index2) => {
                                           return (
@@ -1022,6 +928,22 @@ export default function RoundTripSearch({ contractData, contractRoundData, total
                                                   <span className="airlineName fw-500">
                                                     {ContractsRound[item][0].AirSegments[0].AirlineCode}{ContractsRound[item][0].AirSegments[0].FlightNumber}
                                                   </span>
+                                                  {
+                                                    airlnesFlag && airlnesFlag.map((itemAirlines, index) => {
+                                                    if(itemAirlines?.id==ContractsRound[item][0].AirSegments[0].AirlineCode){
+                                                      return (
+                                                        <>
+                                                          <br/>
+                                                          <img
+                                                            style={{width:30,height:30,borderRadius:30}}
+                                                            src={`${itemAirlines?.logo}`}
+                                                            alt="img"
+                                                          /> 
+                                                        </>
+                                                      )
+                                                    } 
+                                                    })  
+                                                  }
                                                 </div>
                                                 <img src="https://yatriservice.com/assets/img/icon/right_arrow.png" alt="icon" />
                                                 <h6>{ContractsRound[item][0].AirSegments.length === 1 ? 'Non-stop' : (ContractsRound[item][0].AirSegments.length - 1) + ' Stop(s)'}</h6>
@@ -1121,7 +1043,7 @@ export default function RoundTripSearch({ contractData, contractRoundData, total
                                       <div
                                         className="flight_policy_refund collapse"
                                         id={`collapseExample_return_${index}`}
-                                        style={{width: '100%',overflowX: 'scroll'}}
+                                        style={{ width: '100%', overflowX: 'scroll' }}
                                       >
                                         {ContractsRound[item][0].AirSegments.map((item2, index2) => {
                                           return (
@@ -1247,70 +1169,70 @@ export default function RoundTripSearch({ contractData, contractRoundData, total
               </Modal.Footer>
             </Modal.Dialog>
           </div>
-            <div class="fixed_price">
-              <div class="col-md-11 m-auto">
-                <div class="row">
-                  <div id="divOnwordSelection" class="col-6 col-sm-4 p-2">
-                    <p class="head">
-                      <span class="bg">Onword</span>
-                      {(selectedContract !== null && Object.keys(selectedContract).length > 0) && (
-                        <>
+          <div class="fixed_price">
+            <div class="col-md-11 m-auto">
+              <div class="row">
+                <div id="divOnwordSelection" class="col-6 col-sm-4 p-2">
+                  <p class="head">
+                    <span class="bg">Onword</span>
+                    {(selectedContract !== null && Object.keys(selectedContract).length > 0) && (
+                      <>
                         <span>{selectedContract.AirSegments[0].AirlineCode}-{selectedContract.AirSegments[0].AirlineName}</span><i class="fa fa-circle"></i><span>{moment(new Date(selectedContract.AirSegments[0].DepartureDateTime)).format("Do MMM YYYY")}</span>
-                        </>
-                      )}
-                    </p>
-                    <div class="box">
-                      <div class="b1">
+                      </>
+                    )}
+                  </p>
+                  <div class="box">
+                    <div class="b1">
                       {(selectedContract !== null && Object.keys(selectedContract).length > 0) && (
                         <span class="time">{selectedContract.AirSegments[0].Origen}  <span className="time">{moment(new Date(selectedContract.AirSegments[0].DepartureDateTime)).format('h:mm a')}</span><i class="arrow fa fa-arrow-right"></i>{moment(new Date(selectedContract.AirSegments[selectedContract.AirSegments.length - 1].ArrivalDateTime)).format('h:mm a')}</span>
                       )}
-                      </div>
-                      <div class="b1">
+                    </div>
+                    <div class="b1">
                       {(selectedContract !== null && Object.keys(selectedContract).length > 0) && (
                         <span class="price">
                           RS. {selectedContract.AirlineFare.GrossFare}
                         </span>
                       )}
-                      </div>
                     </div>
                   </div>
-                  <div id="divReturnSelection" class="col-6 col-sm-4 p-2">
+                </div>
+                <div id="divReturnSelection" class="col-6 col-sm-4 p-2">
                   <p class="head">
-                      <span class="bg">Return</span>
-                      {(selectedRoundTripContract !== null && Object.keys(selectedRoundTripContract).length > 0) && (
-                        <>
+                    <span class="bg">Return</span>
+                    {(selectedRoundTripContract !== null && Object.keys(selectedRoundTripContract).length > 0) && (
+                      <>
                         <span>{selectedRoundTripContract.AirSegments[0].AirlineCode}-{selectedRoundTripContract.AirSegments[0].AirlineName}</span><i class="fa fa-circle"></i><span>{moment(new Date(selectedRoundTripContract.AirSegments[selectedRoundTripContract.AirSegments.length - 1].ArrivalDateTime)).format('Do MMM YYYY')}</span>
-                        </>
-                      )}
-                    </p>
-                    <div class="box">
-                      <div class="b1">
+                      </>
+                    )}
+                  </p>
+                  <div class="box">
+                    <div class="b1">
                       {(selectedRoundTripContract !== null && Object.keys(selectedRoundTripContract).length > 0) && (
                         <span class="time">{selectedRoundTripContract.AirSegments[0].Origen}  <span className="time">{moment(new Date(selectedRoundTripContract.AirSegments[0].DepartureDateTime)).format('h:mm a')}</span><i class="arrow fa fa-arrow-right"></i>{moment(new Date(selectedRoundTripContract.AirSegments[selectedRoundTripContract.AirSegments.length - 1].ArrivalDateTime)).format('h:mm a')}</span>
                       )}
-                      </div>
-                      <div class="b1">
+                    </div>
+                    <div class="b1">
                       {(selectedRoundTripContract !== null && Object.keys(selectedRoundTripContract).length > 0) && (
                         <span class="price">
                           RS. {selectedRoundTripContract.AirlineFare.GrossFare}
                         </span>
                       )}
-                      </div>
                     </div>
                   </div>
-                  <div class="col-sm-4 text-right">
-                    <div class="totalfare">
+                </div>
+                <div class="col-sm-4 text-right">
+                  <div class="totalfare">
                     {(selectedContract !== null && Object.keys(selectedContract).length > 0) && (selectedRoundTripContract !== null && Object.keys(selectedRoundTripContract).length > 0) && (
-                      <span id="divTotal" class="fare">RS. {selectedContract.AirlineFare.GrossFare+selectedRoundTripContract.AirlineFare.GrossFare}</span>
+                      <span id="divTotal" class="fare">RS. {selectedContract.AirlineFare.GrossFare + selectedRoundTripContract.AirlineFare.GrossFare}</span>
                     )}
-                      {/* <span class="over_link">Fare Details</span> */}
-                    </div>
-                    <button onClick={() => goToBooking()} className="btn_book"> Book now </button>
-                    {/* <input type="button" class="btn_book" value="Book Now" onclick="ValidateRoundFare();" /> */}
+                    {/* <span class="over_link">Fare Details</span> */}
                   </div>
+                  <button onClick={() => goToBooking()} className="btn_book"> Book now </button>
+                  {/* <input type="button" class="btn_book" value="Book Now" onclick="ValidateRoundFare();" /> */}
                 </div>
               </div>
             </div>
+          </div>
         </section>
       )}
     </>
