@@ -59,6 +59,9 @@ export default function UserDashboard() {
         router.push('/')
       }
 
+
+      
+
     return (
         <>
             {isLoading ? (
@@ -115,7 +118,7 @@ export default function UserDashboard() {
                                         <div class="dashboard_sidebar">
                                             <div class="dashboard_sidebar_user">
                                                 <img src="https://yatriservice.com/assets/img/common/how-3.png" alt="img" />
-                                                <h3>{userDetails.name}</h3>
+                                                <h3>{userDetails.agency_name}</h3>
                                                 <p><a href={`tel:${userDetails.name}`}>{userDetails.mobile}</a></p>
                                                 <p><a href="mailto:sherlyn@domain.com">{userDetails.email}</a></p>
                                             </div>
@@ -201,6 +204,7 @@ export default function UserDashboard() {
                                                             <th>Status</th>
                                                             <th>Date of Booking</th>
                                                             <th>Print Ticket</th>
+                                                            <th>Add Markup</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -235,6 +239,14 @@ export default function UserDashboard() {
                                                             ) : (
                                                                 <p>N/A</p>
                                                             )}
+                                                            </td>
+                                                            <td>
+                                                            <Link 
+                                                            href={`/addmarkup?ticketPrice=${item.id}`} 
+                                                            // href={"/downloadTicket/"}
+                                                            // href="/[id]"
+                                                            // as={`ticket/${item.id}`}
+                                                            >Add Markup</Link>
                                                             </td>
                                                         </tr>
                                                     ))}

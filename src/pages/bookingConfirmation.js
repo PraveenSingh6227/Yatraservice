@@ -36,6 +36,7 @@ export default function bookingConfirmation() {
             setBookingId(router.query.bookingId)
             console.log('router.query.responseStatus--->',router.query.responseStatus)
             setResponseCode(router.query.responseStatus)
+           
             setOneWayTotalTravellers(parseInt(router.query.adultCount) + parseInt(router.query.childCount) + parseInt(router.query.InfantCount))
         }
         setIsLoading(false)

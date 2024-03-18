@@ -67,12 +67,12 @@ export default function Header() {
               </li>
               <li>
                 <Link href="#!">
-                  <span>+91-8178020841</span>
+                  <span>+91- 9721647550</span>
                 </Link>
               </li>
               <li>
                 <Link href="#!">
-                  <span>support@serviceyatri.com</span>
+                  <span>Support@yatriservice.com</span>
                 </Link>
               </li>
             </ul>
@@ -90,7 +90,7 @@ export default function Header() {
                     aria-haspopup="true"
                     aria-expanded="false"
                   >
-                    <span className="lang-name"> Hello, {userDetails.name}</span>
+                    <span className="lang-name"> Hello, {userDetails.agency_name}</span>
                   </button>
                   <div className="dropdown-menu language-dropdown-menu">
                     <Link className="dropdown-item" href="/UserDashboard">

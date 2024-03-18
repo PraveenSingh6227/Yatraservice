@@ -47,6 +47,7 @@ export default function Login() {
         } else {
           addToast("Success : " + response.message, { appearance: 'success' });
           localStorage.setItem('userDetails', JSON.stringify(response.user));
+          console.log(response.user)
           router.push('/')
         }
       });

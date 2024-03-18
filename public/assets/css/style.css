@@ -514,14 +514,13 @@ section {
 
 /* --Banner Area-- */
 #home_one_banner {
-    background-image: url("../img/banner/bg.png");
-    padding: 370px 0 280px 0;
+    background: #828282;
+    padding: 168px 0 280px 0;
     position: relative;
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
 }
-
 .banner_one_text {
     text-align: center;
 }
@@ -537,9 +536,11 @@ section {
 
 /* --Theme Search Form-- */
 #theme_search_form {
-    margin-top: -140px;
+    margin-top: -285px;
 }
-
+.banner_one_text {
+    display: none;
+}
 .theme_search_form_area {
     background: #FFFFFF;
     box-shadow: 4px 14px 28px rgba(0, 0, 0, 0.1);
@@ -5515,4 +5516,22 @@ textarea {
 .fixed_price .box .b1 .time {
     font-size: 22px;
     font-weight: 400;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* praveen style */
+
+.form-box{
+    width: 300px;
+    margin: auto;
 }

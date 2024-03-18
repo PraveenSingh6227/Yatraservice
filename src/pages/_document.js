@@ -14,7 +14,7 @@ export default function Document() {
     <link rel="stylesheet" href="https://yatriservice.com/assets/css/owl.theme.default.min.css" />
     <link rel="stylesheet" href="https://yatriservice.com/assets/css/navber.css" />
     <link rel="stylesheet" href="https://yatriservice.com/assets/css/meanmenu.css" />
-   <link rel="stylesheet" href="https://yatriservice.com/assets/css/style.css" />
+   <link rel="stylesheet" href="assets/css/style.css" />
    <link rel="stylesheet" href="https://yatriservice.com/assets/css/responsive.css" />
     <link rel="icon" type="image/png" href="https://yatriservice.com/assets/img/favicon.png" />
       </Head>

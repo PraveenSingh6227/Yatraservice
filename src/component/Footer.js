@@ -15,41 +15,17 @@ export default function Footer() {
               <h5>Call 24/7 for any help</h5>
               <h3>
                 {" "}
-                <a href="tel:+00-123-456-789">+00 123 456 789</a>
+                <a href="tel:+918178020841">+91-8178020841</a>
               </h3>
             </div>
             <div className="footer_inquery_area">
               <h5>Mail to our support team</h5>
               <h3>
                 {" "}
-                <a href="mailto:support@domain.com">support@domain.com</a>
+                <a href="mailto:support@domain.com">Sales@yatriservice.com</a>
               </h3>
             </div>
-            <div className="footer_inquery_area">
-              <h5>Follow us on</h5>
-              <ul className="soical_icon_footer">
-                <li>
-                  <a href="#!">
-                    <i className="fab fa-facebook" />
-                  </a>
-                </li>
-                <li>
-                  <a href="#!">
-                    <i className="fab fa-twitter-square" />
-                  </a>
-                </li>
-                <li>
-                  <a href="#!">
-                    <i className="fab fa-instagram" />
-                  </a>
-                </li>
-                <li>
-                  <a href="#!">
-                    <i className="fab fa-linkedin" />
-                  </a>
-                </li>
-              </ul>
-            </div>
+            
           </div>
         </div>
         <div className="col-lg-2 offset-lg-1 col-md-6 col-sm-6 col-12">
@@ -61,21 +37,11 @@ export default function Footer() {
               <li>
                 <a href="about.html">About Us</a>
               </li>
-              <li>
-                <a href="testimonials.html">Testimonials</a>
-              </li>
-              <li>
-                <a href="faqs.html">Rewards</a>
-              </li>
+             
               <li>
                 <a href="terms-service.html">Work with Us</a>
               </li>
-              <li>
-                <a href="tour-guides.html">Meet the Team </a>
-              </li>
-              <li>
-                <a href="news.html">Blog</a>
-              </li>
+             
             </ul>
           </div>
         </div>
@@ -85,21 +51,11 @@ export default function Footer() {
           </div>
           <div className="footer_link_area">
             <ul>
-              <li>
-                <a href="dashboard.html">Account</a>
-              </li>
-              <li>
-                <a href="faq.html">Faq</a>
-              </li>
-              <li>
-                <a href="testimonials.html">Legal</a>
-              </li>
+             
               <li>
                 <a href="contact.html">Contact</a>
               </li>
-              <li>
-                <a href="top-destinations.html"> Affiliate Program</a>
-              </li>
+             
               <li>
                 <a href="privacy-policy.html">Privacy Policy</a>
               </li>
@@ -115,50 +71,23 @@ export default function Footer() {
               <li>
                 <a href="top-destinations-details.html">Community program</a>
               </li>
-              <li>
-                <a href="top-destinations-details.html">Investor Relations</a>
-              </li>
+            
               <li>
                 <a href="flight-search-result.html">Rewards Program</a>
               </li>
-              <li>
-                <a href="room-booking.html">PointsPLUS</a>
-              </li>
+            
               <li>
                 <a href="testimonials.html">Partners</a>
               </li>
-              <li>
-                <a href="hotel-search.html">List My Hotel</a>
-              </li>
+              
             </ul>
           </div>
         </div>
         <div className="col-lg-2 col-md-4 col-sm-6 col-12">
           <div className="footer_heading_area">
-            <h5>Top cities</h5>
+            <h5></h5>
           </div>
-          <div className="footer_link_area">
-            <ul>
-              <li>
-                <a href="room-details.html">Chicago</a>
-              </li>
-              <li>
-                <a href="hotel-details.html">New York</a>
-              </li>
-              <li>
-                <a href="hotel-booking.html">San Francisco</a>
-              </li>
-              <li>
-                <a href="tour-search.html">California</a>
-              </li>
-              <li>
-                <a href="tour-booking.html">Ohio </a>
-              </li>
-              <li>
-                <a href="tour-guides.html">Alaska</a>
-              </li>
-            </ul>
-          </div>
+       
         </div>
       </div>
     </div>

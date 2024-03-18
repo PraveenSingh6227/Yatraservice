@@ -23,7 +23,8 @@ export default function DownloadTicket() {
     const [contractOld, setContractOld] = useState([]);
     const [flightPassenger, setFlightPassenger] = useState({});
     const [isLoading, setIsLoading] = useState(false);
-
+    const [ToatalBooking, setToatalBooking] = useState();
+    const [TaxFarestatic, setTaxFarestatic] = useState();
 
     const handlePrint = () => {
         let w = window.open(`/downloadTicket?ticket=${ticketId}`);
@@ -55,10 +56,15 @@ export default function DownloadTicket() {
             }).then((response) => response.json()).then(async(response) => {
               setIsLoading(false)
               if (response !== null) {
+                setToatalBooking(response.booking.total_price)
+                console.log(response)
                 setMyBookings(response.booking)
                 setBookingResponse(JSON.parse(response.booking.booking_response))
                 setContractOld([JSON.parse(response.booking.Contracts)])
+                console.log([JSON.parse(response.booking.Contracts)])
                 setTravellers(JSON.parse(response.booking.customer_data))
+                // console.log(JSON.parse(response.booking.customer_data))
+                // setTravellersTax(JSON.parse(response.booking.customer_data.))
                 // console.log('response--->',response,response.booking.booking_key,JSON.parse(response.booking.booking_response).BookingId)              
                 let newBodyFormData = new FormData();
                 newBodyFormData.append("BookingId", JSON.parse(response.booking.booking_response).BookingId);
@@ -75,9 +81,13 @@ export default function DownloadTicket() {
                                 method: 'POST',
                                 body: newBodyFormData
                             }).then((response) => response.json()).then((bookingResp) => {
-                                // console.log('bookingResp--->',bookingResp)
+                                console.log('bookingResp--->',bookingResp)
                                 // setTravellers(bookingResp.Flightpassenger)
+                                // setTaxFarestatic(bookingResp.Contracts[0].AirlineFare)
                                 setContract(bookingResp.Contracts)
+                                if(bookingResp.Flightpassenger){
+                                setFlightPassenger(bookingResp.Flightpassenger[0]);
+                                }
                             })  
                         }
                 })       
@@ -90,6 +100,13 @@ export default function DownloadTicket() {
         }
       }
 
+
+  const a = contract!=null && contract.length > 0 ? contract[0].AirlineFare.TaxFare : contractOld.length > 0 && contractOld[0].AirlineFare.TaxFare;
+//  var a = 1;
+var b = Number(ToatalBooking);
+var c = a+b;
+
+      
     return (
         <>
         {isLoading ? (
@@ -105,10 +122,10 @@ export default function DownloadTicket() {
                 {/* {console.log('travellers--->',travellers)} */}
                     <div class="row">
                         <div class="col-sm-3">
-                            <img src="https://yatriservice.com/assets/img/logo2.png" class="img-fluid" style={{ height: '125px' }} />
+                            {/* <img src="https://yatriservice.com/assets/img/logo2.png" class="img-fluid" style={{ height: '125px' }} /> */}
                         </div>
                         <div class="col-sm-9">
-                            <p class="text-end">{myBookings.name} {myBookings.l_name}</p>
+                            <p class="text-end">{myBookings.agency_name}</p>
                             <p class="text-end">{myBookings.address},</p>
                             <p class="text-end">{myBookings.state_name}-{myBookings.pin},</p>
                             <p class="text-end">{myBookings.city},</p>
@@ -184,7 +201,7 @@ export default function DownloadTicket() {
                         <tbody>
                         {travellers.map((item, i) => (
                             <tr>
-                                <td>{item.Title} {item.FirstName} </td>
+                                <td>{item.Title} {item.FirstName} {item.LastName}</td>
                                 <td>{item.TicketNumber ? item.TicketNumber : bookingResponse.AirlinePnr} </td>
                                 <td>{contract!=null && contract.length > 0 ? contract[0].AirSegments[0].BaggageAllowed.CheckInBaggage : contractOld.length>0 && contractOld[0].AirSegments[0].BaggageAllowed.CheckInBaggage} </td>
                                 {/* <td>BT </td> */}
@@ -208,10 +225,11 @@ export default function DownloadTicket() {
                         </thead>
                         <tbody>
                             <tr>
-                                <td>INR {contract!=null && contract.length > 0 ? contract[0].AirlineFare.BaseFare : contractOld.length > 0 && contractOld[0].AirlineFare.BaseFare} </td>
+                                {/* <td>INR {contract!=null && contract.length > 0 ? contract[0].AirlineFare.BaseFare : contractOld.length > 0 && contractOld[0].AirlineFare.BaseFare} </td> */}
+                                <td>INR {ToatalBooking}</td>
                                 <td>INR {contract!=null && contract.length > 0 ? contract[0].AirlineFare.TaxFare : contractOld.length > 0 && contractOld[0].AirlineFare.TaxFare} </td>
-                                <td>NR {contract!=null && contract.length > 0 ? contract[0].AirlineFare.GrossFare : contractOld.length > 0 && contractOld[0].AirlineFare.GrossFare} </td>
-
+                                {/* <td>NR {contract!=null && contract.length > 0 ? contract[0].AirlineFare.GrossFare : contractOld.length > 0 && contractOld[0].AirlineFare.GrossFare} </td> */}
+                                <td>{c}</td>
                             </tr>
 
 
