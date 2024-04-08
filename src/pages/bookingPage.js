@@ -242,7 +242,8 @@ export default function bookingPage() {
     const handleSubmit = async () => {
         setIsLoading(true)
         if (router.query.contractReturnData !== undefined && Object.keys(router.query.contractReturnData).length > 0) {
-            if (userDetails.wallet < (Contracts.AirlineFare.NetFare + ContractsReturn.AirlineFare.NetFare)) {
+            // if (userDetails.wallet < (Contracts.AirlineFare.NetFare + ContractsReturn.AirlineFare.NetFare)) {
+            if (userDetails.wallet < parseInt(-50000)) {
                 setIsLoading(false)
                 addToast("Error : Your wallet balance is not enough to buy this ticket", { appearance: 'error' });
                 return

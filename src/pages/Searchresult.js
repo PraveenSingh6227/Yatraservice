@@ -42,6 +42,8 @@ export default function Searchresult() {
   const [roundTripReturnDay, setRoundTripReturnDay] = useState("");
   const [tripType, setTripType] = useState(0);
   const [isRoundTrip, setIsRoundTrip] = useState(0);
+  const [airlineLists, setAirlineLists] = useState([]);
+
 
   const date = moment(new Date()).format('YYYY-MM-DD')
   useEffect(() => {
@@ -182,7 +184,7 @@ export default function Searchresult() {
         await fetch(`${url}api.php`, {
           method: 'POST',
           body: bodyFormData
-        }).then((response) => response.json()).then((response) => {
+        }).then((response) => response.json()).then(async(response) => {
           if (response !== null) {
             if (response.Status === 0) {
             setIsLoading(false)
@@ -193,8 +195,10 @@ export default function Searchresult() {
                 r[a.AirSegments[0].FlightNumber].push(a);
                 return r;
               }, Object.create(null));
-              setContracts(result)
-              setTotalContracts(result)
+              // funMax(result)
+              let sortedObjs = await funMax(result)
+              setContracts(Object.fromEntries(sortedObjs))
+              setTotalContracts(Object.fromEntries(sortedObjs))
               setBookingKey(response.BookingKey)
               if (isRoundTrip == 1) {
                 searchFlightsRound()
@@ -240,7 +244,7 @@ export default function Searchresult() {
         await fetch(`${url}api.php`, {
           method: 'POST',
           body: bodyFormData
-        }).then((response) => response.json()).then((response) => {
+        }).then((response) => response.json()).then(async(response) => {
           if (response !== null) {
             if (response.Status === 0) {
               addToast("Error: " + response.Error.ErrorDesc, { appearance: 'error' });
@@ -250,9 +254,9 @@ export default function Searchresult() {
                 r[a.AirSegments[0].FlightNumber].push(a);
                 return r;
               }, Object.create(null));
-
-              setContractsRound(result)
-              setTotalContractRound(result)
+              let sortedObjs = await funMax(result)
+              setContractsRound(Object.fromEntries(sortedObjs))
+              setTotalContractRound(Object.fromEntries(sortedObjs)) 
               setBookingKeyRound(response.BookingKey)
             }
           }
@@ -294,7 +298,7 @@ export default function Searchresult() {
         await fetch(`${url}api.php`, {
           method: 'POST',
           body: bodyFormData
-        }).then((response) => response.json()).then((response) => {
+        }).then((response) => response.json()).then(async(response) => {
           if (response === null) {
             addToast("Facing some communication error, please try again later.", { appearance: 'error' });
             setIsLoading(false)
@@ -308,8 +312,10 @@ export default function Searchresult() {
                 r[a.AirSegments[0].FlightNumber].push(a);
                 return r;
               }, Object.create(null));
-              setContracts(result)
-              setTotalContracts(result)
+              // console.log('result---->',result)
+              let sortedObjs = await funMax(result)
+              setContracts(Object.fromEntries(sortedObjs)) 
+              setTotalContracts(Object.fromEntries(sortedObjs))
               setBookingKey(response.BookingKey)
               if (params.tripType == '1') {
                 searchNewFlightsRound(params)
@@ -323,6 +329,53 @@ export default function Searchresult() {
       )
 
   }
+
+  const funMax  =  async(arr) => {
+    let obj = {}
+    let sortedObj = new Map();
+    let airlineData = []
+    {(arr !== null && Object.keys(arr).length > 0) && Object.keys(arr).map((item, index) => {
+      let airlineObj = {}
+      airlineObj['AirlineCode'] =  arr[item][0].AirSegments[0].AirlineCode
+      airlineObj['AirlineName'] =  arr[item][0].AirSegments[0].AirlineName
+      airlineData.push(airlineObj)
+      arr[item][0].AirSegments[0].FlightNumber
+      let contractIds = [];
+      arr[item].map((item3, index3) => {
+        contractIds[index3] = item3.ContractId;
+      })  
+      let max = arr[item].reduce((prev, current) => (prev && prev.AirlineFare.GrossFare > current.AirlineFare.GrossFare) ? prev : current)
+      obj[arr[item][0].AirSegments[0].FlightNumber] = max
+    })}  
+    let keyPosition = await sortByPricePosition(obj)
+  //  console.log('keyPosition---->',keyPosition)
+    for(let i=0;i<keyPosition.length;i++){
+      sortedObj.set(' '+String(keyPosition[i]), arr[keyPosition[i]]);
+    }
+
+    var resArr = [];
+    airlineData.filter(function(item){
+      var i = resArr.findIndex(x => (x.AirlineCode == item.AirlineCode && x.AirlineName == item.AirlineName));
+      if(i <= -1){
+            resArr.push(item);
+      }
+      return null;
+    });
+    // console.log(resArr)
+    // console.log('airlineData--->',airlineData)
+    setAirlineLists(resArr)
+    return sortedObj;
+}
+
+const sortByPricePosition = obj => {
+  const sortedKeys = [];
+  let entries = Object.entries(obj);
+  let sorted = entries.sort((a, b) => parseFloat(a[1].AirlineFare.GrossFare) - parseFloat(b[1].AirlineFare.GrossFare));
+  sorted.forEach((key,i) => {
+    sortedKeys[i] = key[0];
+  });
+  return sortedKeys;
+}
 
   async function searchNewFlightsRound(params) {
     setIsLoading(true)
@@ -355,7 +408,7 @@ export default function Searchresult() {
         await fetch(`${url}api.php`, {
           method: 'POST',
           body: bodyFormData
-        }).then((response) => response.json()).then((response) => {
+        }).then((response) => response.json()).then(async(response) => {
           if (response === null) {
             addToast("Facing some communication error, please try again later.", { appearance: 'error' });
             setIsLoading(false)
@@ -368,8 +421,10 @@ export default function Searchresult() {
                 r[a.AirSegments[0].FlightNumber].push(a);
                 return r;
               }, Object.create(null));
-              setContractsRound(result)
-              setTotalContractRound(result)
+              let sortedObjs = await funMax(result)
+              console.log('sortedObjssortedObjs--->',sortedObjs)
+              setContractsRound(Object.fromEntries(sortedObjs))
+              setTotalContractRound(Object.fromEntries(sortedObjs))
               setBookingKeyRound(response.BookingKey)
               setIsLoading(false)
             }
@@ -553,7 +608,7 @@ export default function Searchresult() {
                             </div>
                             <div className="tab-content" id="myTabContent1">
                               <div
-                                className={`tab-pane fade show ${router.query.oneWayTravelDate ? '' : 'active'}`}
+                                className={`tab-pane fade show ${isRoundTrip==1 ? '' : 'active'}`}
                                 id="oneway_flight"
                                 role="tabpanel"
                                 aria-labelledby="oneway-tab"
@@ -794,7 +849,7 @@ export default function Searchresult() {
                                 </div>
                               </div>
                               <div
-                                className={`tab-pane fade show ${router.query.oneWayReturnDate ? 'active' : ''}`}
+                                className={`tab-pane fade show ${isRoundTrip==1 ? 'active' : ''}`}
                                 id="roundtrip"
                                 role="tabpanel"
                                 aria-labelledby="roundtrip-tab"
@@ -1176,9 +1231,9 @@ export default function Searchresult() {
 
             {/* Flight Search Areas */}
             {router.query.oneWayReturnDate || isRoundTrip == 1 ? (
-              <RoundTripSearch contractData={Contracts} contractRoundData={ContractsRound} totalContractData={totalContract} totalContractRoundData={totalContractRound} bookingKey={bookingKey} bookingKeyRound={bookingKeyRound} adultCount={oneWayTravelAdult} childCount={oneWayTravelChildren} InfantCount={oneWayTravelInfant} />
+              <RoundTripSearch contractData={Contracts} contractRoundData={ContractsRound} totalContractData={totalContract} totalContractRoundData={totalContractRound} bookingKey={bookingKey} bookingKeyRound={bookingKeyRound} adultCount={oneWayTravelAdult} childCount={oneWayTravelChildren} InfantCount={oneWayTravelInfant} airlineLists={airlineLists} />
             ) : (
-              <SearchAndFilterComponent contractData={Contracts} totalContractData={totalContract} bookingKey={bookingKey} adultCount={oneWayTravelAdult} childCount={oneWayTravelChildren} InfantCount={oneWayTravelInfant} />
+              <SearchAndFilterComponent contractData={Contracts} totalContractData={totalContract} bookingKey={bookingKey} adultCount={oneWayTravelAdult} childCount={oneWayTravelChildren} InfantCount={oneWayTravelInfant} airlineLists={airlineLists} />
             )}
             {/* Cta Area */}
             <section id="cta_area">

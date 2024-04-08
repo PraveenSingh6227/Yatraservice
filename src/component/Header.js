@@ -226,11 +226,13 @@ export default function Header() {
                     <i className="bi bi-search" />
                   </Link>
                 </div>
+            {Object.keys(userDetails).length == 0 && (
                 <div className="option-item">
-                  <Link href="/becomevendor" className="btn  btn_navber">
+                  <Link href="/Register" className="btn  btn_navber">
                     Become a partner
                   </Link>
                 </div>
+            )}
               </div>
             </div>
           </nav>

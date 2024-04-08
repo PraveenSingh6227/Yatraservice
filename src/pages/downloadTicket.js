@@ -104,16 +104,16 @@ export default function DownloadTicket() {
                 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
                 {/* {console.log('travellers--->',travellers)} */}
                     <div class="row">
-                        <div class="col-sm-3">
+                        {/* <div class="col-sm-3">
                             <img src="https://yatriservice.com/assets/img/logo2.png" class="img-fluid" style={{ height: '125px' }} />
-                        </div>
+                        </div> */}
                         <div class="col-sm-9">
-                            <p class="text-end">{myBookings.name}</p>
-                            <p class="text-end">S/O : RAMESH CHANDRA, ASAINAPUR, ASAINA, KANPUR. DEHAT ASIANAPUR,</p>
-                            <p class="text-end">UTTAR PRADESH-209301,</p>
-                            <p class="text-end">Kanpur,</p>
-                            <p class="text-end">INDIA, Phone : {myBookings.mobile}</p>
-                            <p class="text-end">Email Id : {myBookings.email}</p>
+                            <p class="">{myBookings.name} {myBookings.l_name}</p>
+                            <p class="">{myBookings.address},</p>
+                            <p class="">{myBookings.state_name}-{myBookings.pin},</p>
+                            <p class="">{myBookings.city},</p>
+                            <p class="">INDIA, Phone : {myBookings.mobile}</p>
+                            <p class="">Email Id : {myBookings.email}</p>
                         </div>
 
                     </div>
