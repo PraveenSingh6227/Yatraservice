@@ -1,5 +1,5 @@
-import Footer from '@/component/Footer'
-import Header from '@/component/Header'
+import Footer from '../component/Footer'
+import Header from '../component/Header'
 import React from 'react'
 
 export default function Contact() {

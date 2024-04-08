@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
-import Header from '@/component/Header'
-import Footer from '@/component/Footer'
+import Header from '../component/Header'
+import Footer from '../component/Footer'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import Link from 'next/link';

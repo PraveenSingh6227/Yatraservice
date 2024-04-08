@@ -1,5 +1,5 @@
-import Footer from '@/component/Footer'
-import Header from '@/component/Header'
+import Footer from '../component/Footer'
+import Header from '../component/Header'
 import React, { useEffect, useState } from 'react'
 import * as moment from 'moment'
 import { useRouter } from 'next/router'
@@ -39,6 +39,7 @@ export default function bookingPage() {
     const [bookingKey, setBookingKey] = useState("");
     const [bookingKeyRound, setBookingKeyRound] = useState("");
     const [oneWayTotalTravellers, setOneWayTotalTravellers] = useState([]);
+    const [totalFare, setTotalFare] = useState('0');
 
     useEffect(() => {
         if (Object.keys(router.query).length === 0) {
@@ -213,6 +214,11 @@ export default function bookingPage() {
                     </div>
                 </>);
             }
+            if(router.query.contractReturnData !== undefined && Object.keys(router.query.contractReturnData).length > 0 ){
+                setTotalFare(Number(JSON.parse(router.query.contractData).AirlineFare.NetFare)+ Number(JSON.parse(router.query.ContractsReturn).AirlineFare.NetFare))
+            }else{
+                setTotalFare(JSON.parse(router.query.contractData).AirlineFare.NetFare)
+            }
             setAdultFormData(adultForm)
             setChildrenFormData(childrenForm)
             setInfantFormData(infantForm)
@@ -241,160 +247,162 @@ export default function bookingPage() {
 
     const handleSubmit = async () => {
         setIsLoading(true)
-        if (router.query.contractReturnData !== undefined && Object.keys(router.query.contractReturnData).length > 0) {
-            if (userDetails.wallet < (Contracts.AirlineFare.NetFare + ContractsReturn.AirlineFare.NetFare)) {
+        if (router.query.contractData !== undefined && Object.keys(router.query.contractData).length > 0) {
+            // if (userDetails.wallet < (Contracts.AirlineFare.NetFare + ContractsReturn.AirlineFare.NetFare)) {
+            if ((Number(userDetails.wallet)+Number(userDetails.credit_limit)) < totalFare) {
                 setIsLoading(false)
                 addToast("Error : Your wallet balance is not enough to buy this ticket", { appearance: 'error' });
                 return
-            }
-        } else {
-            if (userDetails.wallet < Contracts.AirlineFare.NetFare) {
-                setIsLoading(false)
-                addToast("Error : Your wallet balance is not enough to buy this ticket", { appearance: 'error' });
-                return
-            }
-        }
-        let bodyFormData = new FormData();
-        let ApiToken = ""
-        bodyFormData.append("action", "pax_details");
-        bodyFormData.append("BookingKey", bookingKey);
-        bodyFormData.append("ContractId", Contracts.ContractId);
-        await fetch(`${url}generateToken.php`, {
-            method: 'GET',
-        })
-            .then((response) => response.json())
-            .then(async (response) => {
-                if (response.ApiToken) {
-                    bodyFormData.append("APIToken", response.ApiToken);
-                    ApiToken = response.ApiToken;
-                    await fetch(`${url}api.php`, {
-                        method: 'POST',
-                        body: bodyFormData
-                    }).then((response) => response.json()).then(async (responseSell) => {
-                        if (responseSell.Sell !== null) {
-                            let bookingFormData = new FormData();
-                            bookingFormData.append("action", "book_flight");
-                            bookingFormData.append("BookingKey", bookingKey);
-                            bookingFormData.append("user_wallet", userDetails.wallet);
-                            bookingFormData.append("ContractId", Contracts.ContractId);
-                            bookingFormData.append("Contracts", JSON.stringify(Contracts));
-                            bookingFormData.append("APIToken", ApiToken);
-                            bookingFormData.append("user_id", userDetails.id);
-                            bookingFormData.append("TotalPrice", Contracts.AirlineFare.NetFare);
-                            let adultPexFare = responseSell.Sell.Contracts[0].PexFareDetails.filter((el) => el.PaxType == 1)
-                            if (adultPexFare.length > 0) {
-                                adultPexFare[0].PaxType = 1;
-                                adultPexFare[0].BaseFare = (adultPexFare[0].BaseFare) / adultPexFare[0].TotPax;
-                                adultPexFare[0].TaxFare = (adultPexFare[0].TaxFare) / adultPexFare[0].TotPax;
-                                adultPexFare[0].YQTax = (adultPexFare[0].YQTax) / adultPexFare[0].TotPax;
-                                adultPexFare[0].GrossFare = (adultPexFare[0].GrossFare) / adultPexFare[0].TotPax;
-                                adultPexFare[0].NetFare = (adultPexFare[0].NetFare) / adultPexFare[0].TotPax;
-                                adultPexFare[0].ServiceCharge = (adultPexFare[0].ServiceCharge) / adultPexFare[0].TotPax;
-                                adultPexFare[0].TotPax = 1;
-                            }
-
-                            let childrenPexFare = responseSell.Sell.Contracts[0].PexFareDetails.filter((el) => el.PaxType == 2)
-
-                            if (childrenPexFare.length > 0) {
-                                childrenPexFare[0].PaxType = 2;
-                                childrenPexFare[0].BaseFare = (childrenPexFare[0].BaseFare) / childrenPexFare[0].TotPax;
-                                childrenPexFare[0].TaxFare = (childrenPexFare[0].TaxFare) / childrenPexFare[0].TotPax;
-                                childrenPexFare[0].YQTax = (childrenPexFare[0].YQTax) / childrenPexFare[0].TotPax;
-                                childrenPexFare[0].GrossFare = (childrenPexFare[0].GrossFare) / childrenPexFare[0].TotPax;
-                                childrenPexFare[0].NetFare = (childrenPexFare[0].NetFare) / childrenPexFare[0].TotPax;
-                                childrenPexFare[0].ServiceCharge = (childrenPexFare[0].ServiceCharge) / childrenPexFare[0].TotPax;
-                                childrenPexFare[0].TotPax = 1;
-                            }
-
-                            let infantPexFare = responseSell.Sell.Contracts[0].PexFareDetails.filter((el) => el.PaxType == 3)
-
-                            if (infantPexFare.length > 0) {
-                                infantPexFare[0].PaxType = 3;
-                                infantPexFare[0].BaseFare = (infantPexFare[0].BaseFare) / infantPexFare[0].TotPax;
-                                infantPexFare[0].TaxFare = (infantPexFare[0].TaxFare) / infantPexFare[0].TotPax;
-                                infantPexFare[0].YQTax = (infantPexFare[0].YQTax) / infantPexFare[0].TotPax;
-                                infantPexFare[0].GrossFare = (infantPexFare[0].GrossFare) / infantPexFare[0].TotPax;
-                                infantPexFare[0].NetFare = (infantPexFare[0].NetFare) / infantPexFare[0].TotPax;
-                                infantPexFare[0].ServiceCharge = (infantPexFare[0].ServiceCharge) / infantPexFare[0].TotPax;
-                                infantPexFare[0].TotPax = 1;
-                            }
-
-                            for (let i = 0; i < formMergeAdultData.length; i++) {
-                                formMergeAdultData[i].PaxFare = adultPexFare[0];
-                                formMergeAdultData[i].Gender = null;
-                                formMergeAdultData[i].PaxType = 1;
-                                formMergeAdultData[i].DateOfBirth = moment(formMergeAdultData[i].DateOfBirth).format('DD-MM-YYYY');
-                                formMergeAdultData[i].PassportNo = formMergeAdultData[i].PassportNo;
-                                formMergeAdultData[i].ContactNo = contactData;
-                                formMergeAdultData[i].Email = emailData;
-                                formMergeAdultData[i].PassportExpiry = null;
-                                formMergeAdultData[i].IsLeadPax = true;
-                                formMergeAdultData[i].MealCode = "";
-                                formMergeAdultData[i].BaggageCode = "";
-                                formMergeAdultData[i].SeatCode = "";
-                                formMergeAdultData[i].TicketNumber = null;
-                            }
-
-                            for (let i = 0; i < formMergeChildrenData.length; i++) {
-                                formMergeChildrenData[i].PaxFare = childrenPexFare[0];
-                                formMergeChildrenData[i].Gender = null;
-                                formMergeChildrenData[i].PaxType = 2;
-                                formMergeChildrenData[i].DateOfBirth = moment(formMergeChildrenData[i].DateOfBirth).format('DD-MM-YYYY');
-                                formMergeChildrenData[i].PassportNo = formMergeChildrenData[i].PassportNo;
-                                formMergeChildrenData[i].ContactNo = contactData;
-                                formMergeChildrenData[i].Email = emailData;
-                                formMergeChildrenData[i].PassportExpiry = null;
-                                formMergeChildrenData[i].IsLeadPax = true;
-                                formMergeChildrenData[i].MealCode = "";
-                                formMergeChildrenData[i].BaggageCode = "";
-                                formMergeChildrenData[i].SeatCode = "";
-                                formMergeChildrenData[i].TicketNumber = null;
-                            }
-
-                            for (let i = 0; i < formMergeInfantData.length; i++) {
-                                formMergeInfantData[i].PaxFare = infantPexFare[0];
-                                formMergeInfantData[i].Gender = null;
-                                formMergeInfantData[i].PaxType = 3;
-                                formMergeInfantData[i].DateOfBirth = moment(formMergeInfantData[i].DateOfBirth).format('DD-MM-YYYY');
-                                formMergeInfantData[i].PassportNo = formMergeInfantData[i].PassportNo;;
-                                formMergeInfantData[i].ContactNo = contactData;
-                                formMergeInfantData[i].Email = emailData;
-                                formMergeInfantData[i].PassportExpiry = null;
-                                formMergeInfantData[i].IsLeadPax = true;
-                                formMergeInfantData[i].MealCode = "";
-                                formMergeInfantData[i].BaggageCode = "";
-                                formMergeInfantData[i].SeatCode = "";
-                                formMergeInfantData[i].TicketNumber = null;
-                            }
-                            let combinedFormData = [...formMergeAdultData, ...formMergeChildrenData, ...formMergeInfantData]
-                            bookingFormData.append("Flightpassenger", JSON.stringify(combinedFormData));
+            }else{
+                let bodyFormData = new FormData();
+                let ApiToken = ""
+                bodyFormData.append("action", "pax_details");
+                bodyFormData.append("BookingKey", bookingKey);
+                bodyFormData.append("ContractId", Contracts.ContractId);
+                await fetch(`${url}generateToken.php`, {
+                    method: 'GET',
+                })
+                    .then((response) => response.json())
+                    .then(async (response) => {
+                        if (response.ApiToken) {
+                            bodyFormData.append("APIToken", response.ApiToken);
+                            ApiToken = response.ApiToken;
                             await fetch(`${url}api.php`, {
                                 method: 'POST',
-                                body: bookingFormData
-                            }).then((response) => response.json()).then((response) => {
-                                if (response !== null) {
-                                    checkUser()
-                                    if (router.query.contractReturnData !== undefined && Object.keys(router.query.contractReturnData).length > 0) {
-                                        handleRoundTripSubmit()
-                                    } else {
-                                        setIsLoading(false)
-                                        router.push({
-                                            pathname: '/bookingConfirmation',
-                                            query: {
-                                                contractData: JSON.stringify(Contracts),
-                                                adultCount: router.query.adultCount,
-                                                childCount: router.query.childCount,
-                                                InfantCount: router.query.InfantCount,
-                                                formData: JSON.stringify(combinedFormData),
-                                                bookingId: response.BookingId,
-                                                responseStatus: response.Error.ErrorCode
-                                            }
-                                        }, '/bookingConfirmation');
+                                body: bodyFormData
+                            }).then((response) => response.json()).then(async (responseSell) => {
+                                if (responseSell.Sell !== null) {
+                                    let bookingFormData = new FormData();
+                                    bookingFormData.append("action", "book_flight");
+                                    bookingFormData.append("BookingKey", bookingKey);
+                                    bookingFormData.append("user_wallet", userDetails.wallet);
+                                    bookingFormData.append("ContractId", Contracts.ContractId);
+                                    bookingFormData.append("Contracts", JSON.stringify(Contracts));
+                                    bookingFormData.append("APIToken", ApiToken);
+                                    bookingFormData.append("user_id", userDetails.id);
+                                    bookingFormData.append("TotalPrice", Contracts.AirlineFare.NetFare);
+                                    let adultPexFare = responseSell.Sell.Contracts[0].PexFareDetails.filter((el) => el.PaxType == 1)
+                                    if (adultPexFare.length > 0) {
+                                        adultPexFare[0].PaxType = 1;
+                                        adultPexFare[0].BaseFare = (adultPexFare[0].BaseFare) / adultPexFare[0].TotPax;
+                                        adultPexFare[0].TaxFare = (adultPexFare[0].TaxFare) / adultPexFare[0].TotPax;
+                                        adultPexFare[0].YQTax = (adultPexFare[0].YQTax) / adultPexFare[0].TotPax;
+                                        adultPexFare[0].GrossFare = (adultPexFare[0].GrossFare) / adultPexFare[0].TotPax;
+                                        adultPexFare[0].NetFare = (adultPexFare[0].NetFare) / adultPexFare[0].TotPax;
+                                        adultPexFare[0].ServiceCharge = (adultPexFare[0].ServiceCharge) / adultPexFare[0].TotPax;
+                                        adultPexFare[0].TotPax = 1;
                                     }
-
+        
+                                    let childrenPexFare = responseSell.Sell.Contracts[0].PexFareDetails.filter((el) => el.PaxType == 2)
+        
+                                    if (childrenPexFare.length > 0) {
+                                        childrenPexFare[0].PaxType = 2;
+                                        childrenPexFare[0].BaseFare = (childrenPexFare[0].BaseFare) / childrenPexFare[0].TotPax;
+                                        childrenPexFare[0].TaxFare = (childrenPexFare[0].TaxFare) / childrenPexFare[0].TotPax;
+                                        childrenPexFare[0].YQTax = (childrenPexFare[0].YQTax) / childrenPexFare[0].TotPax;
+                                        childrenPexFare[0].GrossFare = (childrenPexFare[0].GrossFare) / childrenPexFare[0].TotPax;
+                                        childrenPexFare[0].NetFare = (childrenPexFare[0].NetFare) / childrenPexFare[0].TotPax;
+                                        childrenPexFare[0].ServiceCharge = (childrenPexFare[0].ServiceCharge) / childrenPexFare[0].TotPax;
+                                        childrenPexFare[0].TotPax = 1;
+                                    }
+        
+                                    let infantPexFare = responseSell.Sell.Contracts[0].PexFareDetails.filter((el) => el.PaxType == 3)
+        
+                                    if (infantPexFare.length > 0) {
+                                        infantPexFare[0].PaxType = 3;
+                                        infantPexFare[0].BaseFare = (infantPexFare[0].BaseFare) / infantPexFare[0].TotPax;
+                                        infantPexFare[0].TaxFare = (infantPexFare[0].TaxFare) / infantPexFare[0].TotPax;
+                                        infantPexFare[0].YQTax = (infantPexFare[0].YQTax) / infantPexFare[0].TotPax;
+                                        infantPexFare[0].GrossFare = (infantPexFare[0].GrossFare) / infantPexFare[0].TotPax;
+                                        infantPexFare[0].NetFare = (infantPexFare[0].NetFare) / infantPexFare[0].TotPax;
+                                        infantPexFare[0].ServiceCharge = (infantPexFare[0].ServiceCharge) / infantPexFare[0].TotPax;
+                                        infantPexFare[0].TotPax = 1;
+                                    }
+        
+                                    for (let i = 0; i < formMergeAdultData.length; i++) {
+                                        formMergeAdultData[i].PaxFare = adultPexFare[0];
+                                        formMergeAdultData[i].Gender = null;
+                                        formMergeAdultData[i].PaxType = 1;
+                                        formMergeAdultData[i].DateOfBirth = moment(formMergeAdultData[i].DateOfBirth).format('DD-MM-YYYY');
+                                        formMergeAdultData[i].PassportNo = formMergeAdultData[i].PassportNo;
+                                        formMergeAdultData[i].ContactNo = contactData;
+                                        formMergeAdultData[i].Email = emailData;
+                                        formMergeAdultData[i].PassportExpiry = null;
+                                        formMergeAdultData[i].IsLeadPax = true;
+                                        formMergeAdultData[i].MealCode = "";
+                                        formMergeAdultData[i].BaggageCode = "";
+                                        formMergeAdultData[i].SeatCode = "";
+                                        formMergeAdultData[i].TicketNumber = null;
+                                    }
+        
+                                    for (let i = 0; i < formMergeChildrenData.length; i++) {
+                                        formMergeChildrenData[i].PaxFare = childrenPexFare[0];
+                                        formMergeChildrenData[i].Gender = null;
+                                        formMergeChildrenData[i].PaxType = 2;
+                                        formMergeChildrenData[i].DateOfBirth = moment(formMergeChildrenData[i].DateOfBirth).format('DD-MM-YYYY');
+                                        formMergeChildrenData[i].PassportNo = formMergeChildrenData[i].PassportNo;
+                                        formMergeChildrenData[i].ContactNo = contactData;
+                                        formMergeChildrenData[i].Email = emailData;
+                                        formMergeChildrenData[i].PassportExpiry = null;
+                                        formMergeChildrenData[i].IsLeadPax = true;
+                                        formMergeChildrenData[i].MealCode = "";
+                                        formMergeChildrenData[i].BaggageCode = "";
+                                        formMergeChildrenData[i].SeatCode = "";
+                                        formMergeChildrenData[i].TicketNumber = null;
+                                    }
+        
+                                    for (let i = 0; i < formMergeInfantData.length; i++) {
+                                        formMergeInfantData[i].PaxFare = infantPexFare[0];
+                                        formMergeInfantData[i].Gender = null;
+                                        formMergeInfantData[i].PaxType = 3;
+                                        formMergeInfantData[i].DateOfBirth = moment(formMergeInfantData[i].DateOfBirth).format('DD-MM-YYYY');
+                                        formMergeInfantData[i].PassportNo = formMergeInfantData[i].PassportNo;;
+                                        formMergeInfantData[i].ContactNo = contactData;
+                                        formMergeInfantData[i].Email = emailData;
+                                        formMergeInfantData[i].PassportExpiry = null;
+                                        formMergeInfantData[i].IsLeadPax = true;
+                                        formMergeInfantData[i].MealCode = "";
+                                        formMergeInfantData[i].BaggageCode = "";
+                                        formMergeInfantData[i].SeatCode = "";
+                                        formMergeInfantData[i].TicketNumber = null;
+                                    }
+                                    let combinedFormData = [...formMergeAdultData, ...formMergeChildrenData, ...formMergeInfantData]
+                                    bookingFormData.append("Flightpassenger", JSON.stringify(combinedFormData));
+                                    await fetch(`${url}api.php`, {
+                                        method: 'POST',
+                                        body: bookingFormData
+                                    }).then((response) => response.json()).then((response) => {
+                                        if (response !== null) {
+                                            checkUser()
+                                            if (router.query.contractReturnData !== undefined && Object.keys(router.query.contractReturnData).length > 0) {
+                                                handleRoundTripSubmit()
+                                            } else {
+                                                setIsLoading(false)
+                                                router.push({
+                                                    pathname: '/bookingConfirmation',
+                                                    query: {
+                                                        contractData: JSON.stringify(Contracts),
+                                                        adultCount: router.query.adultCount,
+                                                        childCount: router.query.childCount,
+                                                        InfantCount: router.query.InfantCount,
+                                                        formData: JSON.stringify(combinedFormData),
+                                                        bookingId: response.BookingId,
+                                                        responseStatus: response.Error.ErrorCode
+                                                    }
+                                                }, '/bookingConfirmation');
+                                            }
+        
+                                        } else {
+                                            addToast(" Server error, please try again later.", { appearance: 'error' });
+                                            setIsLoading(false)
+                                            setTimeout(() => {
+                                                router.push('/');
+                                            }, 3000)
+                                        }
+                                    })
                                 } else {
-                                    addToast(" Server error, please try again later.", { appearance: 'error' });
                                     setIsLoading(false)
+                                    addToast("Server error, please try again later.", { appearance: 'error' });
                                     setTimeout(() => {
                                         router.push('/');
                                     }, 3000)
@@ -402,21 +410,18 @@ export default function bookingPage() {
                             })
                         } else {
                             setIsLoading(false)
-                            addToast("Server error, please try again later.", { appearance: 'error' });
+                            addToast(`3rd party server error, please try again later.`, { appearance: 'error' });
                             setTimeout(() => {
                                 router.push('/');
                             }, 3000)
                         }
-                    })
-                } else {
-                    setIsLoading(false)
-                    addToast(`3rd party server error, please try again later.`, { appearance: 'error' });
-                    setTimeout(() => {
-                        router.push('/');
-                    }, 3000)
-                }
+                    }
+                    )
             }
-            )
+        }else{
+            setIsLoading(false)
+        }
+        
     };
 
     const handleRoundTripSubmit = async () => {

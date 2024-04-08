@@ -3,8 +3,8 @@ import { useRouter } from 'next/router'
 import { useSearchParams } from 'next/navigation'
 import { url } from '../../config/index'
 import LoadingSpinner from "../component/Loader";
-import Header from '@/component/Header'
-import Footer from '@/component/Footer'
+import Header from '../component/Header'
+import Footer from '../component/Footer'
 import { useToasts } from 'react-toast-notifications';
 import Link from 'next/link';
 

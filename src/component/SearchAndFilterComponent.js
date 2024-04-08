@@ -7,9 +7,11 @@ import LoadingSpinner from "../component/Loader";
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import {url} from '../../config/index'
+const airlnesFlag = require('../pages/airlines.json')
 
 
-export default function SearchAndFilterComponent({ contractData, totalContractData, bookingKey, adultCount, childCount, InfantCount }) {
+
+export default function SearchAndFilterComponent({ contractData, totalContractData, bookingKey, adultCount, childCount, InfantCount, airlineLists }) {
   const router = useRouter();
   const { addToast } = useToasts();
   const [isLoading, setIsLoading] = useState(false);
@@ -68,7 +70,8 @@ export default function SearchAndFilterComponent({ contractData, totalContractDa
   const filterContractByPrice = (Contracts) =>{
     let clean = Contracts.filter((arr, index, self) =>
         index === self.findIndex((t) => (t.AirlineFare.GrossFare === arr.AirlineFare.GrossFare)))
-    return clean
+    let max = clean.sort((a, b) => parseFloat(a.AirlineFare.GrossFare) - parseFloat(b.AirlineFare.GrossFare));
+    return max
   }
 
 const htmlDecode = (input) => {
@@ -304,6 +307,8 @@ const htmlDecode = (input) => {
     return hours + ' h ' + minutes + ' m'
   }
 
+
+
   
 
   return (
@@ -435,27 +440,48 @@ const htmlDecode = (input) => {
                   <h5>Airlines</h5>
                 </div>
                 <div className="tour_search_type">
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      defaultValue=""
-                      value={"AI"}
-                      checked={airlines.includes("AI")}
-                      id="flexCheckDefaults2"
-                      onChange={(event) => { handleAirlinesFilter(event) }}
-                    />
-                    <label
-                      className="form-check-label"
-                      htmlFor="flexCheckDefaults2"
-                    >
-                      <span className="area_flex_one">
-                        <span>Air India</span>
-                        {/* <span>14</span> */}
-                      </span>
-                    </label>
-                  </div>
-                  <div className="form-check">
+                 {airlineLists && airlineLists.map((item, index) => { 
+                  return (
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        defaultValue=""
+                        value={item?.AirlineCode}
+                        checked={airlines.includes(item?.AirlineCode)}
+                        id="flexCheckDefaults2"
+                        onChange={(event) => { handleAirlinesFilter(event) }}
+                      />
+                      <label
+                        className="form-check-label"
+                        htmlFor="flexCheckDefaults2"
+                      >
+                        <span className="area_flex_one">
+                          <span>
+                          {
+                             airlnesFlag && airlnesFlag.map((itemAirlines, index) => {
+                              if(itemAirlines?.id==item?.AirlineCode){
+                               return (
+                                 <>
+                                   <img
+                                     style={{width:30,height:30,borderRadius:30}}
+                                     src={`${itemAirlines?.logo}`}
+                                     alt="img"
+                                   /> 
+                                 </>
+                               )
+                              }
+                             })  
+                          }
+                            {' '}{item?.AirlineName}
+                          </span>
+                          {/* <span>14</span> */}
+                        </span>
+                      </label>
+                    </div>
+                  )
+                 })} 
+                  {/* <div className="form-check">
                     <input
                       className="form-check-input"
                       type="checkbox"
@@ -568,14 +594,14 @@ const htmlDecode = (input) => {
                         <span>TruJet</span>
                       </span>
                     </label>
-                  </div>
-                  <div className="form-check">
+                  </div> */}
+                  {/* <div className="form-check">
                     <input
                       className="form-check-input"
                       type="checkbox"
                       defaultValue=""
                       value={"UK"}
-                      id="flexCheckDefaults5"
+                      id="flexCheckDefaults15"
                       checked={airlines.includes("Uk")}
                       onChange={(event) => { handleAirlinesFilter(event) }}
                     />
@@ -587,7 +613,7 @@ const htmlDecode = (input) => {
                         <span>Vistara</span>
                       </span>
                     </label>
-                  </div>
+                  </div> */}
                 </div>
               </div>
               <div className="left_side_search_boxed">
@@ -658,16 +684,34 @@ const htmlDecode = (input) => {
                                       src="assets/img/common/biman_bangla.png"
                                       alt="img"
                                     /> */}
+                                   
                                   {Contracts[item][0].AirSegments[0].AirlineName}<br />
                                   {/* {Contracts[item][0].AirSegments[0].AirlineCode}{Contracts[item][0].AirSegments[0].FlightNumber} */}
-                                  <span className="airlineName fw-500">
+                                  <span className="airlineName fw-500">                  
                                     {Contracts[item][0].AirSegments[0].AirlineCode}{Contracts[item][0].AirSegments[0].FlightNumber}
                                   </span>
+                                  {
+                                      airlnesFlag && airlnesFlag.map((itemAirlines, index) => {
+                                       if(itemAirlines?.id==Contracts[item][0].AirSegments[0].AirlineCode){
+                                        return (
+                                          <>
+                                            <br/>
+                                            <img
+                                              style={{width:30,height:30,borderRadius:30}}
+                                              src={`${itemAirlines?.logo}`}
+                                              alt="img"
+                                            /> 
+                                          </>
+                                        )
+                                       }
+                                      })  
+                                    }
 
                                 </div>
                                 <div className="flight_search_destination">
                                   <p>From</p>
                                   <h3>{Contracts[item][0].AirSegments[0].Origen}  <span className="time">{moment(new Date(Contracts[item][0].AirSegments[0].DepartureDateTime)).format('h:mm a')}</span></h3>
+                                  <p><span className="time">{moment(new Date(Contracts[item][0].AirSegments[0].DepartureDateTime)).format('DD MMMM YYYY')}</span></p>
                                   <h6>{Contracts[item][0].AirSegments[0].Origen} - {Contracts[item][0].AirSegments[0].sourceAirportName}</h6>
                                 </div>
                               </div>
@@ -687,6 +731,7 @@ const htmlDecode = (input) => {
                                 <div className="flight_search_destination">
                                   <p>To</p>
                                   <h3>{Contracts[item][0].AirSegments[Contracts[item][0].AirSegments.length - 1].Destination} <span className="time">{moment(new Date(Contracts[item][0].AirSegments[Contracts[item][0].AirSegments.length - 1].ArrivalDateTime)).format('h:mm a')}</span></h3>
+                                  <p><span className="time">{moment(new Date(Contracts[item][0].AirSegments[Contracts[item][0].AirSegments.length - 1].ArrivalDateTime)).format('DD MMMM YYYY')}</span></p>
                                   <h6>{Contracts[item][0].AirSegments[Contracts[item][0].AirSegments.length - 1].Destination} - {Contracts[item][0].AirSegments[Contracts[item][0].AirSegments.length - 1].destinationAirportName}</h6>
                                 </div>
                               </div>
@@ -742,7 +787,7 @@ const htmlDecode = (input) => {
                                         <label class="form-check-label">
                                           <span class="area_flex_one">
                                             <span style={{ textTransform: 'uppercase' }}>({item3.FareType}) Rs. {item3.AirlineFare.GrossFare
-}</span>
+                                      }</span>
                                           </span>
                                         </label>
                                       </div>
@@ -832,30 +877,30 @@ const htmlDecode = (input) => {
                                 </div>
                               </div>
                               <div className="flight_refund_policy">
-                              {index2 == (Contracts[item][0].AirSegments.length-1) && (
+                              {Object.keys(selectedContract).length > 0 && contractIds.includes(selectedContract.ContractId) && index2 == (Contracts[item][0].AirSegments.length-1) && (
                                 <div className="TabPanelInner flex_widht_less col-6" style={{ paddingBottom: '5%' }}>
                                   <h4>Fare Breakups</h4>
                                   <div class="tour_booking_amount_area">
                                     <ul>
-                                      <li>Base Fare <span>{"Rs. " + Contracts[item][0].AirlineFare.BaseFare}</span></li>
-                                      <li>Tax Fare<span>{"Rs. " + Contracts[item][0].AirlineFare.TaxFare}</span></li>
-                                      <li>Service Charge <span>{"Rs. " + Contracts[item][0].AirlineFare.ServiceCharge}</span></li>
+                                      <li>Base Fare <span>{"Rs. " + selectedContract.AirlineFare.BaseFare}</span></li>
+                                      <li>Tax Fare<span>{"Rs. " + selectedContract.AirlineFare.TaxFare}</span></li>
+                                      <li>Service Charge <span>{"Rs. " + selectedContract.AirlineFare.ServiceCharge}</span></li>
                                     </ul>
                                     <div class="tour_bokking_subtotal_area">
-                                      <h6>Subtotal <span>{"Rs. " + (Contracts[item][0].AirlineFare.BaseFare + Contracts[item][0].AirlineFare.TaxFare + Contracts[item][0].AirlineFare.ServiceCharge)}</span></h6>
+                                      <h6>Subtotal <span>{"Rs. " + (selectedContract.AirlineFare.BaseFare + selectedContract.AirlineFare.TaxFare + selectedContract.AirlineFare.ServiceCharge)}</span></h6>
                                     </div>
                                     <div class="coupon_add_area">
                                       <h6>Commission
-                                        <span>{" - Rs. " + Contracts[item][0].AirlineFare.Commission}</span>
+                                        <span>{" - Rs. " + selectedContract.AirlineFare.Commission}</span>
                                       </h6>
                                     </div>
                                     <div class="total_subtotal_booking">
-                                      <h6>Total Amount <span>{"Rs. " + Contracts[item][0].AirlineFare.NetFare}</span> </h6>
+                                      <h6>Total Amount <span>{"Rs. " + selectedContract.AirlineFare.NetFare}</span> </h6>
                                     </div>
                                   </div>
                                 </div>
                               )}
-                              {index2!=(Contracts[item][0].AirSegments.length-1) && (
+                              {Object.keys(selectedContract).length > 0 && index2!=(Contracts[item][0].AirSegments.length-1) && (
                                 <div className={`TabPanelInner flex_widht_less  col-6`}></div>
                               )}  
                                 <div className={`TabPanelInner ${index2 == (Contracts[item][0].AirSegments.length-1) ? `col-7` : `col-11`}`}>

@@ -21,6 +21,8 @@ export default function UserDashboard() {
     const [myBookings, setMyBookings] = useState([]);
     const [confirmBooking, setConfirmBooking] = useState([]);
     const [pendingBooking, setPendingBooking] = useState([]);
+    const [ledger, setLedger] = useState([]);
+
 
     useEffect(() => {
         if (
@@ -43,14 +45,32 @@ export default function UserDashboard() {
         await fetch(`${url}api.php`, {
           method: 'POST',
           body: bodyFormData
-        }).then((response) => response.json()).then((response) => {
+        }).then((response) => response.json()).then(async(response) => {
           setIsLoading(false)
           if (response !== null) {
             setMyBookings(response.booking)
             setConfirmBooking(response.completeBooking)
             setPendingBooking(response.pendingBooking)
           }
+          await getLedger(user_id)
         })
+      }
+
+      const getLedger = async(user_id)=>{
+        setIsLoading(true)
+        let bodyFormData = new FormData();
+        bodyFormData.append("action", "get_ledger");
+        bodyFormData.append("user_id", user_id);
+        await fetch(`${url}api.php`, {
+          method: 'POST',
+          body: bodyFormData
+        }).then((response) => response.json()).then(async(response) => {
+            setIsLoading(false)
+            if (response !== null) {
+                // console.log('response--->',response,response.data)
+                setLedger(response.data)
+            }
+          })
       }
 
     const signOut = ()=>{
@@ -100,10 +120,10 @@ export default function UserDashboard() {
                                 <div class="row">
                                     <div class="col-lg-12">
                                         <div class="common_bannner_text">
-                                            <h2>Customer dashboard</h2>
+                                            <h2>Customer transactions</h2>
                                             <ul>
                                                 <li><a href="index.html">Home</a></li>
-                                                <li><span><i class="fas fa-circle"></i></span>Customer dashboard</li>
+                                                <li><span><i class="fas fa-circle"></i></span>Customer transactions</li>
                                             </ul>
                                         </div>
                                     </div>
@@ -124,10 +144,10 @@ export default function UserDashboard() {
                                             </div>
                                             <div class="dashboard_menu_area">
                                                 <ul>
-                                                    <li><Link href="/UserDashboard" class="active"><i
+                                                    <li><Link href="/UserDashboard" class=""><i
                                                         class="fas fa-tachometer-alt"></i>Dashboard</Link></li>
-                                                        <li><Link href="/UserTransaction" class=""><i
-                                                        class="fas fa-exchange-alt"></i>Transaction</Link></li>
+                                                        <li><Link href="/UserTransaction" class="active"><i
+                                                        class="fas fa-exchange-alt"></i>Transactions</Link></li>
                                                     {/* <li class="dashboard_dropdown_button" id="dashboard_dropdowns"><i
                                                         class="fas fa-address-card"></i>My bookings
                                                         <span> <i class="fas fa-angle-down"></i></span>
@@ -192,64 +212,42 @@ export default function UserDashboard() {
                                             </div>
                                         </div>
                                         <div class="dashboard_common_table">
-                                            <h3>My bookings</h3>
+                                            <h3>My Transactions</h3>
                                             <div class="table-responsive-lg table_common_area">
                                                 <table class="table">
                                                     <thead>
                                                         <tr>
                                                             <th>Sl no.</th>
-                                                            <th>Source</th>
-                                                            <th>Destination</th>
-                                                            <th>Booking ID</th>
-                                                            <th>Booking type</th>
-                                                            <th>Amount</th>
-                                                            <th>Status</th>
-                                                            <th>Date of Booking</th>
-                                                            <th>Print Ticket</th>
-                                                            <th>Add Markup</th>
+                                                            <th>Transaction Type</th>
+                                                            <th>Transaction Amount</th>
+                                                            <th>Description</th>
+                                                            <th>Date</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                    {myBookings.map((item, i) => (
+                                                    {ledger && ledger.map((item, i) => (
                                                         
                                                         <tr>
                                                             <td>{i+1}</td>
-                                                            {/* <td>{JSON.parse(item.booking_response).BookingId}</td> */}
-                                                            <td>{JSON.parse(item.Contracts).AirSegments[0].Origen}</td>
-                                                            <td>{JSON.parse(item.Contracts).AirSegments[JSON.parse(item.Contracts).AirSegments.length-1].Destination}</td>
-                                                            <td>{item.booking_id}</td>
-                                                            <td>Flight</td>
-                                                            <td>{'Rs. '+item.total_price}</td>
-                                                            {/* <td class="complete">{JSON.parse(item.booking_response).BookingId ? 'Completed' : 'Pending'}</td> */}
                                                             <td>
-                                                            {Object.keys(item.booking_response).length > 0 && JSON.parse(item.booking_response).AirlinePnr ? (
-                                                                <p style={{color:'#21be1d'}}>Confirmed</p>
-                                                            ):(
-                                                                <p style={{color:'#f3ae0b'}}>Pending</p>
-                                                            )}
+                                                                {
+                                                                    item.trans_type == 0 && (
+                                                                        <div>
+                                                                            <p style={{color:'red'}}>Debited <i className="fa fa-arrow-up"></i></p>
+                                                                        </div>
+                                                                    )
+                                                                }
+                                                                {
+                                                                    item.trans_type == 1 && (
+                                                                        <div>
+                                                                            <p style={{color:'green'}}>Credited <i className="fa fa-arrow-down"></i></p>
+                                                                        </div>
+                                                                    )
+                                                                }
                                                             </td>
-                                                            <td>{moment(new Date(item.created_at)).format('DD-MM-YYYY h:mm a')}</td>
-                                                            <td>
-                                                                {console.log('))--',JSON.parse(item.booking_response))}
-                                                            {Object.keys(item.booking_response).length > 0 && JSON.parse(item.booking_response).AirlinePnr ? (
-                                                                <Link 
-                                                            href={`/downloadTicket?ticket=${item.id}`} 
-                                                            // href={"/downloadTicket/"}
-                                                            // href="/[id]"
-                                                            // as={`ticket/${item.id}`}
-                                                            ><i class="fas fa-print"></i></Link>
-                                                            ) : (
-                                                                <p>N/A</p>
-                                                            )}
-                                                            </td>
-                                                            <td>
-                                                            <Link 
-                                                            href={`/addmarkup?ticketPrice=${item.id}`} 
-                                                            // href={"/downloadTicket/"}
-                                                            // href="/[id]"
-                                                            // as={`ticket/${item.id}`}
-                                                            >Add Markup</Link>
-                                                            </td>
+                                                            <td>INR {item.transaction}</td>
+                                                            <td>{item.description ? item.description : 'N/A'}</td>
+                                                            <td>{item.created_at}</td>
                                                         </tr>
                                                     ))}
                                                         {/* <tr>

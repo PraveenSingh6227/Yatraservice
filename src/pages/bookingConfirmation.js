@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import Footer from '@/component/Footer'
-import Header from '@/component/Header'
+import Footer from '../component/Footer'
+import Header from '../component/Header'
 import * as moment from 'moment'
 import { useRouter } from 'next/router'
 import LoadingSpinner from "../component/Loader";

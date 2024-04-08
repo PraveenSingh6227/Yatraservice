@@ -25,6 +25,10 @@
     "react-loading": "^2.0.3",
     "react-search-autocomplete": "^8.5.2",
     "react-tabs": "^6.0.2",
-    "react-toast-notifications": "^2.5.1"
+    "react-toast-notifications": "^2.5.1",
+    "typescript": "^5.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "20.12.2"
   }
 }

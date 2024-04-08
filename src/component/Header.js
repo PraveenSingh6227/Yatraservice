@@ -110,6 +110,9 @@ export default function Header() {
               <li>
                 <Link href="javascript:void(0)">Wallet (INR {userDetails.wallet})</Link>
               </li>
+              <li>
+                <Link href="javascript:void(0)">Credit Limit (INR {userDetails.credit_limit})</Link>
+              </li>
               {/* <li>
                 <Link href="javascript:void(0)"
                  onClick={signOut()}

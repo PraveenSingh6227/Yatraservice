@@ -1,5 +1,5 @@
-import Footer from '@/component/Footer'
-import Header from '@/component/Header'
+import Footer from '../component/Footer'
+import Header from '../component/Header'
 import React, { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import * as moment from 'moment'
@@ -8,6 +8,7 @@ import { useToasts } from 'react-toast-notifications';
 import jsPDF from "jspdf";
 import LoadingSpinner from "../component/Loader";
 import { url } from '../../config/index'
+const airlnesFlag = require('../pages/airlines.json')
 
 
 
@@ -56,8 +57,8 @@ export default function DownloadTicket() {
             }).then((response) => response.json()).then(async(response) => {
               setIsLoading(false)
               if (response !== null) {
+                console.log('response--->',response)
                 setToatalBooking(response.booking.total_price)
-                console.log(response)
                 setMyBookings(response.booking)
                 setBookingResponse(JSON.parse(response.booking.booking_response))
                 setContractOld([JSON.parse(response.booking.Contracts)])
@@ -145,8 +146,32 @@ var c = a+b;
                     <div class="row" style={{ bordeTop: '1px solid #000', borderBottom: '1px solid #000' }}>
 
                         <div class="col-sm-6">
-                            {/* <img src="img/1.png" height="25px" /> */}
-                            <p class="text-start">{contract!=null && contract.length > 0 ? contract[0].AirSegments[0].AirlineCode : contractOld.length>0 && contractOld[0].AirSegments[0].AirlineCode}-{contract!=null && contract.length > 0 ? contract[0].AirSegments[0].FlightNumber : contractOld.length>0 && contractOld[0].AirSegments[0].FlightNumber}</p>
+                            {
+                             airlnesFlag && airlnesFlag.map((itemAirlines, index) => {
+                              if(contract!=null && contract.length > 0 && itemAirlines?.id==contract[0].AirSegments[0].AirlineCode){
+                               return (
+                                 <>
+                                   <img
+                                     style={{width:30,height:30,borderRadius:30,marginTop:'2rem'}}
+                                     src={`${itemAirlines?.logo}`}
+                                     alt="img"
+                                   /> 
+                                 </>
+                               )
+                              }else if(contractOld!=null && contractOld.length > 0 && itemAirlines?.id==contractOld[0].AirSegments[0].AirlineCode){
+                                return (
+                                    <>
+                                      <img
+                                        style={{width:30,height:30,borderRadius:30,marginTop:'2rem'}}
+                                        src={`${itemAirlines?.logo}`}
+                                        alt="img"
+                                      /> 
+                                    </>
+                                  )
+                              }
+                             })  
+                            } 
+                            <p class="text-start">{contract!=null && contract.length > 0 ? contract[0].AirSegments[0].AirlineCode : contractOld.length>0 &&  contractOld[0].AirSegments[0].AirlineName} - {contract!=null && contract.length > 0 ? contract[0].AirSegments[0].AirlineCode : contractOld.length>0 &&  contractOld[0].AirSegments[0].AirlineCode} {contract!=null && contract.length > 0 ? contract[0].AirSegments[0].FlightNumber : contractOld.length>0 && contractOld[0].AirSegments[0].FlightNumber}</p>
                         </div>
 
                         <div class="col-sm-6">
@@ -164,8 +189,6 @@ var c = a+b;
                             </tr>
                         </thead>
                         <tbody>
-                            {console.log('new->>>',contract)}
-                            {console.log('old->>>',contractOld)}
                             {/* {console.log('contract===',contract)} */}
                             {/* {console.log('contractOld===',contractOld,contractOld.AirSegments[0].DepartureDateTime)} */}
                             {/* {console.log('contract[0].AirSegments[0].DepartureDateTime--->',contract[0].AirSegments[0].DepartureDateTime,'--->',moment(new Date(contract[0].AirSegments[0].DepartureDateTime)).format('DD MMM YYYY'))} */}

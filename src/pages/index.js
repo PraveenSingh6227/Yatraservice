@@ -1,9 +1,9 @@
 import Head from 'next/head'
 import { Inter } from 'next/font/google'
-import Header from '@/component/Header'
-import Footer from '@/component/Footer'
-import OneWayComponent from '@/component/OneWayComponent'
-import RoundTripComponent from '@/component/RoundTripComponent'
+import Header from '../component/Header'
+import Footer from '../component/Footer'
+import OneWayComponent from '../component/OneWayComponent'
+import RoundTripComponent from '../component/RoundTripComponent'
 import React, { useEffect, useState } from 'react'
 import LoadingSpinner from "../component/Loader";
 import {url} from '../../config/index'
